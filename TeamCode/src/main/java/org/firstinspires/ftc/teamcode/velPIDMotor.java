@@ -21,7 +21,9 @@ public class velPIDMotor implements Subsystem {
     public static double p,i,d;
 
     private ControlSystem controlSystem = ControlSystem.builder()
-            .velPid(.008, 0, 0).build();
+            .velPid(.008, 0, 0)
+            .basicFF(0,0,.12)
+            .build();
 
     @Override
     public void periodic(){
@@ -30,6 +32,10 @@ public class velPIDMotor implements Subsystem {
 
     public Command runTo(int goal){
         return new RunToVelocity(controlSystem, goal).requires(this);
+    }
+
+    public void setPwr(double t){
+        motor.setPower(t);
     }
 
     public double getPos(){
