@@ -45,6 +45,7 @@ public class velPIDMotor implements Subsystem {
     public void PIDchange(){
         controlSystem = ControlSystem.builder()
                 .velPid(p,i,d)
+                .basicFF(0,0,.12)
                 .build();
     }
 
