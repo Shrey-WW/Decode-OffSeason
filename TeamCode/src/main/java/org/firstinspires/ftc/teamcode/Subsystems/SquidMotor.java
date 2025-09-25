@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -13,7 +13,6 @@ public class SquidMotor implements Subsystem {
     public static final SquidMotor INSTANCE = new SquidMotor();
     private SquidMotor() { }
 
-    //.0.00695 , 0.0000000000005, 0.0000005
     private MotorEx motor = new MotorEx("bl");
     public static double p = .00573,i = .000000000001 ,d = 0.00000033;
 
@@ -31,7 +30,7 @@ public class SquidMotor implements Subsystem {
                 .posSquid(p, i, d)
                 .build();
     }
-    public Command SpinTo(int goal){
+    public Command SpinTo(double goal){
         return new RunToPosition(controlSystem, goal).requires(this);
     }
     public double getPos(){
@@ -40,10 +39,6 @@ public class SquidMotor implements Subsystem {
 
     public double getVelo(){
         return motor.getVelocity();
-    }
-
-    public Command OutOfFrameGoal(double x){
-        return new RunToPosition(controlSystem, motor.getCurrentPosition() - x * 1.25);
     }
 
     public void setPwr(double x){

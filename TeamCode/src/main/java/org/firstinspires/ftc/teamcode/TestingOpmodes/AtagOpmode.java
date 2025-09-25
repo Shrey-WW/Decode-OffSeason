@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TestingOpmodes;
 
 import android.util.Size;
 
@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -15,7 +16,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous
+@Autonomous (name = "April tag follower")
 public class AtagOpmode extends NextFTCOpMode {
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
@@ -30,7 +31,7 @@ public class AtagOpmode extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(SquidMotor.INSTANCE),
+                new SubsystemComponent(velSquidMotor.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -38,7 +39,6 @@ public class AtagOpmode extends NextFTCOpMode {
                 .setDrawAxes(true)
                 .setDrawTagID(true)
                 .setDrawTagOutline(true)
-                .setDrawCubeProjection(true)
                 .build();
         visionPortal = new VisionPortal.Builder()
                 .addProcessor(tagProcessor)
@@ -55,27 +55,28 @@ public class AtagOpmode extends NextFTCOpMode {
             double Bearing = tag.ftcPose.bearing;
 
             if (Math.abs(Bearing) <= .75) {
-                SquidMotor.INSTANCE.resetPwr();
+                velSquidMotor.INSTANCE.resetPwr();
             }
-            else if (.2 <= UpdateLimiter.seconds() && Bearing >= 15) {
-                SquidMotor.INSTANCE.FollowCam(Bearing * .5).schedule();
+            else if (Bearing >= 15) {
+                velSquidMotor.INSTANCE.FollowCam(Bearing * .75).schedule();
                 UpdateLimiter.reset();
             }
-            else if (.2 <= UpdateLimiter.seconds()){
-                SquidMotor.INSTANCE.FollowCam(Bearing).schedule();
+            else{
+                velSquidMotor.INSTANCE.FollowCam(Bearing).schedule();
                 UpdateLimiter.reset();
             }
             telemetry.addData("Bearing", tag.ftcPose.bearing);
             LastBearing = Bearing;
         }
-
-        if (tagProcessor.getDetections().isEmpty()){
-            SquidMotor.INSTANCE.OutOfFrameGoal(LastBearing);
+        double cPos = velSquidMotor.INSTANCE.getPos();
+        if (cPos >= 2000){
+            velSquidMotor.INSTANCE.resetPwr();
+            velSquidMotor.INSTANCE.FollowCam(-30);
         }
 
         telemetry.addData("Last bearing", LastBearing);
-        telemetry.addData("Goal", SquidMotor.INSTANCE.getGoal(LastBearing));
-        telemetry.addData("Current motor pos", SquidMotor.INSTANCE.getPos());
+        telemetry.addData("Goal", velSquidMotor.INSTANCE.getGoal(LastBearing));
+        telemetry.addData("Current motor pos", velSquidMotor.INSTANCE.getPos());
         telemetry.addData("loop", loop);
         loop.reset();
         telemetry.update();

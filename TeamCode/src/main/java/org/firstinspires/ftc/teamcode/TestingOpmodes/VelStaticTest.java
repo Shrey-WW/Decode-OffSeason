@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode;
-
-import static dev.nextftc.bindings.Bindings.button;
+package org.firstinspires.ftc.teamcode.TestingOpmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import dev.nextftc.bindings.Button;
+import org.firstinspires.ftc.teamcode.Subsystems.velPIDMotor;
+
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;

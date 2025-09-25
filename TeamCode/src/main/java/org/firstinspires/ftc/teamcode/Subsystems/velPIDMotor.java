@@ -1,13 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 
 import dev.nextftc.control.ControlSystem;
-import dev.nextftc.control.KineticState;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -17,12 +15,13 @@ public class velPIDMotor implements Subsystem {
     private velPIDMotor() { }
 
     private MotorEx motor = new MotorEx("bl");
-// p: .01 i: .016
     public static double p,i,d;
 
+    private PIDCoefficients PIDCoeff = new PIDCoefficients(p,i,d);
+
     private ControlSystem controlSystem = ControlSystem.builder()
-            .velPid(.008, 0, 0)
-            .basicFF(0,0,.12)
+            .velPid(PIDCoeff)
+            .basicFF(0,0,.091)
             .build();
 
     @Override
@@ -42,10 +41,15 @@ public class velPIDMotor implements Subsystem {
         return motor.getCurrentPosition();
     }
 
+    public PIDCoefficients getPIDCoeff(){
+        return PIDCoeff;
+    }
+
     public void PIDchange(){
+        PIDCoeff = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
-                .velPid(p,i,d)
-                .basicFF(0,0,.12)
+                .velPid(PIDCoeff)
+                .basicFF(0,0,.091)
                 .build();
     }
 
@@ -53,12 +57,8 @@ public class velPIDMotor implements Subsystem {
         return motor.getVelocity();
     }
 
-    public double getGoal(double bearing){
-        return motor.getCurrentPosition() - bearing * 4.7;
-    }
-
     public Command FollowCam(double bearing){
-        return new RunToPosition(controlSystem, motor.getCurrentPosition() - bearing * 4.7);
+        return new RunToVelocity(controlSystem, motor.getCurrentPosition() - bearing * 4.7);
     }
 
 }

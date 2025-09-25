@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TestingOpmodes;
 
 
 import static dev.nextftc.bindings.Bindings.button;
@@ -7,6 +7,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.components.BindingsComponent;
@@ -23,21 +25,24 @@ public class VelMotorTest extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(velPIDMotor.INSTANCE),
+                new SubsystemComponent(velSquidMotor.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
         telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-        Button my = button(() -> gamepad1.a);
-        my.whenBecomesTrue(() -> velPIDMotor.INSTANCE.PIDchange());
     }
 
     @Override
     public void onUpdate(){
-        velPIDMotor.INSTANCE.runTo(target).schedule();
+        if(velSquidMotor.INSTANCE.getPIDCoeff().kP != velSquidMotor.INSTANCE.p
+                || velSquidMotor.INSTANCE.getPIDCoeff().kD != velSquidMotor.INSTANCE.d
+                || velSquidMotor.INSTANCE.getPIDCoeff().kI != velSquidMotor.INSTANCE.i)
+        {velSquidMotor.INSTANCE.PIDchange();}
+
+        velSquidMotor.INSTANCE.runTo(target).schedule();
         telemetry.addData("target", target);
-        telemetry.addData("current velo", velPIDMotor.INSTANCE.getVelo());
-        telemetry.addData("current pos", velPIDMotor.INSTANCE.getPos());
+        telemetry.addData("current velo", velSquidMotor.INSTANCE.getVelo());
+        telemetry.addData("current pos", velSquidMotor.INSTANCE.getPos());
         telemetry.update();
     }
 

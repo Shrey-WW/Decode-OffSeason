@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TestingOpmodes;
 
 
 import static dev.nextftc.bindings.Bindings.button;
@@ -7,6 +7,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Subsystems.SquidMotor;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.components.BindingsComponent;
