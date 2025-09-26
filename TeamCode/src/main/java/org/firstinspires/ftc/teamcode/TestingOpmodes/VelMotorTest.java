@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.TestingOpmodes;
 
 
-import static dev.nextftc.bindings.Bindings.button;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -10,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 
-import dev.nextftc.bindings.Button;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
@@ -25,7 +22,7 @@ public class VelMotorTest extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(velSquidMotor.INSTANCE),
+                new SubsystemComponent(velSquidMotor.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -34,15 +31,15 @@ public class VelMotorTest extends NextFTCOpMode {
 
     @Override
     public void onUpdate(){
-        if(velSquidMotor.INSTANCE.getPIDCoeff().kP != velSquidMotor.INSTANCE.p
-                || velSquidMotor.INSTANCE.getPIDCoeff().kD != velSquidMotor.INSTANCE.d
-                || velSquidMotor.INSTANCE.getPIDCoeff().kI != velSquidMotor.INSTANCE.i)
-        {velSquidMotor.INSTANCE.PIDchange();}
+        if(velSquidMotor.X.getPIDGains().kP != velSquidMotor.X.p
+                || velSquidMotor.X.getPIDGains().kD != velSquidMotor.X.d
+                || velSquidMotor.X.getPIDGains().kI != velSquidMotor.X.i)
+        {velSquidMotor.X.velPID();}
 
-        velSquidMotor.INSTANCE.runTo(target).schedule();
+        velSquidMotor.X.runTo(target).schedule();
         telemetry.addData("target", target);
-        telemetry.addData("current velo", velSquidMotor.INSTANCE.getVelo());
-        telemetry.addData("current pos", velSquidMotor.INSTANCE.getPos());
+        telemetry.addData("current velo", velSquidMotor.X.getVelo());
+        telemetry.addData("current pos", velSquidMotor.X.getPos());
         telemetry.update();
     }
 

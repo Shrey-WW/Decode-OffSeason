@@ -25,21 +25,21 @@ public class MotorTest extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(SquidMotor.INSTANCE),
+                new SubsystemComponent(SquidMotor.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
 
         telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         Button my = button(() -> gamepad1.a);
-        my.whenBecomesTrue(() -> SquidMotor.INSTANCE.PIDchange());
+        my.whenBecomesTrue(() -> SquidMotor.X.PIDchange());
     }
 
     @Override
     public void onUpdate(){
-        SquidMotor.INSTANCE.SpinTo(goal).schedule();
+        SquidMotor.X.SpinTo(goal).schedule();
         telemetry.addData("target", goal);
-        telemetry.addData("current pos", SquidMotor.INSTANCE.getPos());
+        telemetry.addData("current pos", SquidMotor.X.getPos());
         telemetry.update();
     }
 

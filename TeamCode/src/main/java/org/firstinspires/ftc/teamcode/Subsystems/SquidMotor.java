@@ -10,7 +10,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 @Config
 public class SquidMotor implements Subsystem {
-    public static final SquidMotor INSTANCE = new SquidMotor();
+    public static final SquidMotor X = new SquidMotor();
     private SquidMotor() { }
 
     private MotorEx motor = new MotorEx("bl");

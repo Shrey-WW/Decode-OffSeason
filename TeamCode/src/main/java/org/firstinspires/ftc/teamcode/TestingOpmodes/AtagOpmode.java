@@ -18,68 +18,75 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous (name = "April tag follower")
 public class AtagOpmode extends NextFTCOpMode {
+
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
     ElapsedTime loop = new ElapsedTime();
-    ElapsedTime UpdateLimiter = new ElapsedTime();
     AprilTagDetection tag;
-    private int frameWidth = 640;
-    private double LastBearing = 0;
-
-
 
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(velSquidMotor.INSTANCE),
+                new SubsystemComponent(velSquidMotor.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
         tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawTagID(true)
                 .setDrawTagOutline(true)
+                .setLensIntrinsics(875.433,875.433,335.381,264.405)
                 .build();
         visionPortal = new VisionPortal.Builder()
                 .addProcessor(tagProcessor)
                 .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
-                .setCameraResolution(new Size(frameWidth, 480))
+                .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true)
                 .build();
     }
 
     @Override
+    public void onWaitForStart(){
+        velSquidMotor.X.resetPwr();
+        velSquidMotor.X.PIDReset();
+    }
+
+    @Override
+    public void onStartButtonPressed(){
+        velSquidMotor.X.velPID();
+    }
+
+    @Override
     public void onUpdate() {
-        if (!tagProcessor.getDetections().isEmpty() && tagProcessor.getDetections().get(0) != null) {
-            AprilTagDetection tag = tagProcessor.getDetections().get(0);
-            double Bearing = tag.ftcPose.bearing;
-
-            if (Math.abs(Bearing) <= .75) {
-                velSquidMotor.INSTANCE.resetPwr();
-            }
-            else if (Bearing >= 15) {
-                velSquidMotor.INSTANCE.FollowCam(Bearing * .75).schedule();
-                UpdateLimiter.reset();
-            }
-            else{
-                velSquidMotor.INSTANCE.FollowCam(Bearing).schedule();
-                UpdateLimiter.reset();
-            }
-            telemetry.addData("Bearing", tag.ftcPose.bearing);
-            LastBearing = Bearing;
-        }
-        double cPos = velSquidMotor.INSTANCE.getPos();
-        if (cPos >= 2000){
-            velSquidMotor.INSTANCE.resetPwr();
-            velSquidMotor.INSTANCE.FollowCam(-30);
-        }
-
-        telemetry.addData("Last bearing", LastBearing);
-        telemetry.addData("Goal", velSquidMotor.INSTANCE.getGoal(LastBearing));
-        telemetry.addData("Current motor pos", velSquidMotor.INSTANCE.getPos());
+        TrackTag();
+        telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
         telemetry.addData("loop", loop);
         loop.reset();
         telemetry.update();
+    }
+
+    public void TrackTag(){
+        if (!tagProcessor.getDetections().isEmpty() && tagProcessor.getDetections().get(0) != null && tagProcessor.getDetections().get(0).id == 20) {
+            tag = tagProcessor.getDetections().get(0);
+            double Bearing = tag.ftcPose.bearing;
+
+            if (Math.abs(Bearing) <= .75) {
+                velSquidMotor.X.resetPwr();
+            }
+            else{
+                velSquidMotor.X.FollowCam(Bearing).schedule();
+            }
+            telemetry.addData("Bearing", tag.ftcPose.bearing);
         }
+        double cPos = velSquidMotor.X.getPos();
+        if (cPos >= 2000){
+            velSquidMotor.X.posPID();
+            velSquidMotor.X.SpinTo(cPos - (cPos % 1608) * 1608).schedule();
+            velSquidMotor.X.velPID();
+        }
+        else if (cPos <= -2000){
+            velSquidMotor.X.posPID();
+            velSquidMotor.X.SpinTo(cPos + (Math.abs(cPos) % 1608) * 1608).schedule();
+            velSquidMotor.X.velPID();
+        }
+    }
 }
 
