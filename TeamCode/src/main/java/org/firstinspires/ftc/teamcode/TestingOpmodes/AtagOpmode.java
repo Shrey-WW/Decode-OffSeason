@@ -3,11 +3,18 @@ package org.firstinspires.ftc.teamcode.TestingOpmodes;
 import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.conditionals.IfElseCommand;
+import dev.nextftc.core.commands.conditionals.SwitchCommand;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -21,6 +28,8 @@ public class AtagOpmode extends NextFTCOpMode {
     VisionPortal visionPortal;
     ElapsedTime loop = new ElapsedTime();
     AprilTagDetection tag;
+    double cPos;
+    double Bearing;
 
     @Override
     public void onInit() {
@@ -56,7 +65,8 @@ public class AtagOpmode extends NextFTCOpMode {
     public void onUpdate() {
         TrackTag();
         telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
-        telemetry.addData("loop", loop);
+        telemetry.addData("loop", loop.milliseconds());
+        RobotLog.dd("TeamCode", String.valueOf(loop.milliseconds()));
         loop.reset();
         telemetry.update();
     }
@@ -64,17 +74,16 @@ public class AtagOpmode extends NextFTCOpMode {
     public void TrackTag(){
         if (!tagProcessor.getDetections().isEmpty() && tagProcessor.getDetections().get(0) != null && tagProcessor.getDetections().get(0).id == 20) {
             tag = tagProcessor.getDetections().get(0);
-            double Bearing = tag.ftcPose.bearing;
-
-            if (Math.abs(Bearing) <= .75) {
+            Bearing = tag.ftcPose.bearing;
+            if (Math.abs(Bearing) <= 1) {
                 velSquidMotor.X.resetPwr();
             }
             else{
                 velSquidMotor.X.FollowCam(Bearing).schedule();
             }
-            telemetry.addData("Bearing", tag.ftcPose.bearing);
+            telemetry.addData("Bearing", Bearing);
         }
-        double cPos = velSquidMotor.X.getPos();
+        cPos = velSquidMotor.X.getPos();
         if (cPos >= 2000){
             velSquidMotor.X.posPID();
             velSquidMotor.X.SpinTo(cPos - ((int) (cPos / 1680.312)) * 1680.312).schedule();
