@@ -1,14 +1,9 @@
-package org.firstinspires.ftc.teamcode.TestingOpmodes;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;

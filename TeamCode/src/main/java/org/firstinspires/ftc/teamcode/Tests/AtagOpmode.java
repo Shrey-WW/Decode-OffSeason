@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestingOpmodes;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -11,10 +11,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.List;
+
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.conditionals.IfElseCommand;
-import dev.nextftc.core.commands.conditionals.SwitchCommand;
-import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -27,9 +26,10 @@ public class AtagOpmode extends NextFTCOpMode {
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
     ElapsedTime loop = new ElapsedTime();
-    AprilTagDetection tag;
     double cPos;
     double Bearing;
+    Command setVelPID;
+    final double TPR = 1680.312;
 
     @Override
     public void onInit() {
@@ -48,6 +48,7 @@ public class AtagOpmode extends NextFTCOpMode {
                 .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true)
                 .build();
+        setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.5);
     }
 
     @Override
@@ -63,36 +64,39 @@ public class AtagOpmode extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
+        long start = System.nanoTime();
         TrackTag();
-        telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
-        telemetry.addData("loop", loop.milliseconds());
-        RobotLog.dd("TeamCode", String.valueOf(loop.milliseconds()));
-        loop.reset();
-        telemetry.update();
+        if (loop.milliseconds() > 100) {
+            telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
+            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start) / 1e6));
+            telemetry.update();
+            loop.reset();
+        }
     }
 
     public void TrackTag(){
-        if (!tagProcessor.getDetections().isEmpty() && tagProcessor.getDetections().get(0) != null && tagProcessor.getDetections().get(0).id == 20) {
-            tag = tagProcessor.getDetections().get(0);
-            Bearing = tag.ftcPose.bearing;
-            if (Math.abs(Bearing) <= 1) {
-                velSquidMotor.X.resetPwr();
+        List<AprilTagDetection> detections = tagProcessor.getDetections();
+        if (!detections.isEmpty()) {
+            AprilTagDetection tag = detections.get(0);
+            if (tag.id == 20) {
+                Bearing = tag.ftcPose.bearing;
+                if (Math.abs(Bearing) <= 1) { velSquidMotor.X.resetPwr(); }
+                else { velSquidMotor.X.FollowCam(Bearing).schedule(); }
+                telemetry.addData("Bearing", Bearing);
             }
-            else{
-                velSquidMotor.X.FollowCam(Bearing).schedule();
-            }
-            telemetry.addData("Bearing", Bearing);
         }
         cPos = velSquidMotor.X.getPos();
-        if (cPos >= 2000){
+        if (cPos >= 1700){
             velSquidMotor.X.posPID();
-            velSquidMotor.X.SpinTo(cPos - ((int) (cPos / 1680.312)) * 1680.312).schedule();
-            new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.7).schedule();
+            double target = cPos - ((int) (cPos / TPR)) * TPR;
+            velSquidMotor.X.SpinTo(target).schedule();
+            setVelPID.schedule();
         }
-        else if (cPos <= -2000){
+        else if (cPos <= -1700){
             velSquidMotor.X.posPID();
-            velSquidMotor.X.SpinTo(cPos + ((int) Math.abs(cPos) / 1680.312) * 1680.312).schedule();
-            new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.7).schedule();
+            double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
+            velSquidMotor.X.SpinTo(target).schedule();
+            setVelPID.schedule();
         }
     }
 }
