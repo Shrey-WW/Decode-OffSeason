@@ -37,13 +37,8 @@ public class Robot {
     Command setVelPID;
     final double TPR = 1680.312;
     DcMotor fL, fR, bL, bR;
-//    private MotorEx FLM = new MotorEx("fl").reversed();
-//    private MotorEx FRM = new MotorEx("fr").reversed();
-//    private MotorEx BLM = new MotorEx("bl");
-//    private MotorEx BRM = new MotorEx("br").reversed();
     private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
     public IMU imu1;
-//    public MecanumDriverControlled Drive;
 
     public Robot(OpMode opmode){
         tagProcessor = new AprilTagProcessor.Builder()
@@ -57,16 +52,6 @@ public class Robot {
                 .enableLiveView(true)
                 .build();
         setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID());
-//        Drive = new MecanumDriverControlled(
-//                FLM,
-//                FRM,
-//                BLM,
-//                BRM,
-//                Gamepads.gamepad1().leftStickY(),
-//                Gamepads.gamepad1().leftStickX(),
-//                Gamepads.gamepad1().rightStickX(),
-//                new FieldCentric(imu)
-//        );
         fL = opmode.hardwareMap.get(DcMotor .class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
@@ -107,25 +92,5 @@ public class Robot {
         }
     }
 
-    public void Fieldcentric(double x, double y, double rx){
-        double botHeading = imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio,
-        // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-        fL.setPower(frontLeftPower);
-        fR.setPower(frontRightPower);
-        bL.setPower(backLeftPower);
-        bR.setPower(backRightPower);
-    }
 }

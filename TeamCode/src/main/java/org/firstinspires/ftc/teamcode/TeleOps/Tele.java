@@ -56,7 +56,6 @@ public class Tele extends NextFTCOpMode {
         long start = System.nanoTime();
         if(gamepad1.a) {bot.imu1.resetYaw();}
         bot.TrackTag();
-        bot.Fieldcentric(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
         if (timer.milliseconds() > 100) {
             telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
             telemetry.addData("Current motor vel", velSquidMotor.X.getVelo());
