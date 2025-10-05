@@ -20,10 +20,10 @@ public class BigFunThings extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
 
-        final MotorEx frontLeftMotor = new MotorEx("fl").reversed();
-        final MotorEx frontRightMotor = new MotorEx("fr");
-        final MotorEx backLeftMotor = new MotorEx("bl").reversed();
-        final MotorEx backRightMotor = new MotorEx("br");
+        final MotorEx frontLeftMotor = new MotorEx("fl").reversed().floatMode();
+        final MotorEx frontRightMotor = new MotorEx("fr").floatMode();
+        final MotorEx backLeftMotor = new MotorEx("bl").reversed().floatMode();
+        final MotorEx backRightMotor = new MotorEx("br").floatMode();
         driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,
                 frontRightMotor,

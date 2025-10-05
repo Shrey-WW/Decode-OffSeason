@@ -21,7 +21,7 @@ public class Shooter extends SubsystemGroup {
     private ServoEx servo = new ServoEx("arm1");
 
     public void speed(double h){
-        motor.setPower((318.31*Math.sqrt(19.6*h))/2000);
+        motor.setPower((318.31*Math.sqrt(19.6*h))/6000);
     }
     public void angle(double h)
     {
@@ -36,7 +36,7 @@ class ShootMotor implements Subsystem {
 
     private MotorEx motor = new MotorEx("br");
     private ControlSystem controlSystem = ControlSystem.builder()
-            .posSquid(.00573, .000000000001, 0.00000033)
+            .velSquID(.00573, .000000000001, 0.00000033)
             .build();
     @Override
     public void periodic(){

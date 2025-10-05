@@ -14,6 +14,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.conditionals.IfElseCommand;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -25,7 +26,7 @@ public class AtagOpmode extends NextFTCOpMode {
 
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
-    ElapsedTime loop = new ElapsedTime();
+    ElapsedTime timer = new ElapsedTime();
     double cPos;
     double Bearing;
     Command setVelPID;
@@ -48,7 +49,7 @@ public class AtagOpmode extends NextFTCOpMode {
                 .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true)
                 .build();
-        setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.5);
+        setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID());
     }
 
     @Override
@@ -66,11 +67,12 @@ public class AtagOpmode extends NextFTCOpMode {
     public void onUpdate() {
         long start = System.nanoTime();
         TrackTag();
-        if (loop.milliseconds() > 100) {
+        if (timer.milliseconds() > 100) {
             telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
-            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start) / 1e6));
+            telemetry.addData("Current motor vel", velSquidMotor.X.getVelo());
+            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
             telemetry.update();
-            loop.reset();
+            timer.reset();
         }
     }
 
@@ -82,7 +84,6 @@ public class AtagOpmode extends NextFTCOpMode {
                 Bearing = tag.ftcPose.bearing;
                 if (Math.abs(Bearing) <= 1) { velSquidMotor.X.resetPwr(); }
                 else { velSquidMotor.X.FollowCam(Bearing).schedule(); }
-                telemetry.addData("Bearing", Bearing);
             }
         }
         cPos = velSquidMotor.X.getPos();
@@ -90,13 +91,13 @@ public class AtagOpmode extends NextFTCOpMode {
             velSquidMotor.X.posPID();
             double target = cPos - ((int) (cPos / TPR)) * TPR;
             velSquidMotor.X.SpinTo(target).schedule();
-            setVelPID.schedule();
+            setVelPID.afterTime(.7).schedule();
         }
         else if (cPos <= -1700){
             velSquidMotor.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
             velSquidMotor.X.SpinTo(target).schedule();
-            setVelPID.schedule();
+            setVelPID.afterTime(.7).schedule();
         }
     }
 }

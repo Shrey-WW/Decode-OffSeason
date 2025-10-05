@@ -2,28 +2,33 @@ package org.firstinspires.ftc.teamcode.TeleOps;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.List;
+
+import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
+import dev.nextftc.hardware.driving.MecanumDriverControlled;
 
 @TeleOp
 public class Tele extends NextFTCOpMode {
-    AprilTagProcessor tagProcessor;
-    VisionPortal visionPortal;
-    ElapsedTime loop = new ElapsedTime();
-    AprilTagDetection tag;
-
+    Robot bot;
+    ElapsedTime timer;
 
     @Override
     public void onInit(){
@@ -31,17 +36,8 @@ public class Tele extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
-
-        tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawTagOutline(true)
-                .setLensIntrinsics(875.433,875.433,335.381,264.405)
-                .build();
-        visionPortal = new VisionPortal.Builder()
-                .addProcessor(tagProcessor)
-                .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
-                .setCameraResolution(new Size(640, 480))
-                .enableLiveView(true)
-                .build();
+        bot = new Robot(this);
+        timer = new ElapsedTime();
     }
 
     @Override
@@ -51,41 +47,25 @@ public class Tele extends NextFTCOpMode {
     }
 
     @Override
-    public void onStartButtonPressed(){
+    public void onStartButtonPressed() {
         velSquidMotor.X.velPID();
     }
 
     @Override
     public void onUpdate() {
-        TrackTag();
-        telemetry.addData("loop", loop.milliseconds());
-        loop.reset();
-        telemetry.update();
+        long start = System.nanoTime();
+        if(gamepad1.a) {bot.imu1.resetYaw();}
+        bot.TrackTag();
+        bot.Fieldcentric(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
+        if (timer.milliseconds() > 100) {
+            telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
+            telemetry.addData("Current motor vel", velSquidMotor.X.getVelo());
+            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
+            telemetry.update();
+            timer.reset();
+
+        }
     }
 
-    public void TrackTag(){
-        if (!tagProcessor.getDetections().isEmpty() && tagProcessor.getDetections().get(0) != null && tagProcessor.getDetections().get(0).id == 20) {
-            tag = tagProcessor.getDetections().get(0);
-            double Bearing = tag.ftcPose.bearing;
 
-            if (Math.abs(Bearing) <= .75) {
-                velSquidMotor.X.resetPwr();
-            }
-            else{
-                velSquidMotor.X.FollowCam(Bearing).schedule();
-            }
-            telemetry.addData("Bearing", tag.ftcPose.bearing);
-        }
-        double cPos = velSquidMotor.X.getPos();
-        if (cPos >= 2000){
-            velSquidMotor.X.posPID();
-            velSquidMotor.X.SpinTo(cPos - ((int) (cPos / 1680.312)) * 1680.312).schedule();
-            new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.7).schedule();
-        }
-        else if (cPos <= -2000){
-            velSquidMotor.X.posPID();
-            velSquidMotor.X.SpinTo(cPos + ((int) Math.abs(cPos) / 1680.312) * 1680.312).schedule();
-            new InstantCommand(() -> velSquidMotor.X.velPID()).afterTime(.7).schedule();
-        }
-        }
 }
