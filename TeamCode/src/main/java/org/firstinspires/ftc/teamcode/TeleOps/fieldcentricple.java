@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeleOps;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 public class fieldcentricple extends OpMode {
@@ -15,25 +19,26 @@ public class fieldcentricple extends OpMode {
     IMU imu;
     @Override
     public void init(){
-        fL = hardwareMap.get(DcMotor.class, "fl");
-        fR = hardwareMap.get(DcMotor.class, "fr");
-        bL = hardwareMap.get(DcMotor.class, "bl");
-        bR = hardwareMap.get(DcMotor.class, "br");
-        imu = hardwareMap.get(IMU.class, "imu");
-        fR.setDirection(DcMotorSimple.Direction.REVERSE);
-        fL.setDirection(DcMotorSimple.Direction.REVERSE);
-        bL.setDirection(DcMotorSimple.Direction.REVERSE);
-        // Adjust the orientation parameters to match your robot
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        imu.initialize(parameters);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(0,0));
+        follower.update();
+    }
+
+    @Override
+    public void start(){
+        follower.startTeleopDrive();
+        follower.setTeleOpDrive(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x,
+                -gamepad1.right_stick_x,
+                false
+        );
+        follower.update();
     }
 
     @Override
     public void loop(){
-        drive();
+
     }
 
 

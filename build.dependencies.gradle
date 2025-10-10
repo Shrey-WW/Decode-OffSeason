@@ -19,7 +19,7 @@ dependencies {
 
     implementation 'com.pedropathing:ftc:2.0.1'
     implementation 'com.pedropathing:telemetry:0.0.6'
-    implementation 'com.bylazar:fullpanels:1.0.0'
+    implementation 'com.bylazar:fullpanels:1.0.6'
     implementation 'dev.nextftc:control:1.0.0'
     implementation 'dev.nextftc:bindings:1.0.1'
     implementation 'com.acmerobotics.slothboard:dashboard:0.2.4+0.4.17'

@@ -14,7 +14,6 @@ public class TrainTest extends OpMode {
         fR = hardwareMap.get(DcMotor.class, "fr");
         bL = hardwareMap.get(DcMotor.class, "bl");
         bR = hardwareMap.get(DcMotor.class, "br");
-        fL.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
