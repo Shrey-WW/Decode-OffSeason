@@ -11,35 +11,68 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
+import dev.nextftc.hardware.driving.DriverControlledCommand;
+import dev.nextftc.hardware.driving.FieldCentric;
+import dev.nextftc.hardware.driving.MecanumDriverControlled;
+import dev.nextftc.hardware.impl.Direction;
+import dev.nextftc.hardware.impl.IMUEx;
+import dev.nextftc.hardware.impl.MotorEx;
 
 @TeleOp
-public class fieldcentricple extends OpMode {
-    DcMotor fL, fR, bL, bR;
-    IMU imu;
+public class fieldcentricple extends NextFTCOpMode {
+    MotorEx fL, fR, bL, bR;
+    DcMotor fl, fr, bl, br;
+    DriverControlledCommand driverControlled;
+    private IMUEx imu;
+    private IMU imu1;
     @Override
-    public void init(){
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(0,0));
-        follower.update();
-    }
-
-    @Override
-    public void start(){
-        follower.startTeleopDrive();
-        follower.setTeleOpDrive(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x,
-                false
+    public void onInit(){
+        addComponents(
+                BulkReadComponent.INSTANCE,
+                BindingsComponent.INSTANCE
         );
-        follower.update();
+        imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
+        fL = new MotorEx("fl").reversed();
+        fR = new MotorEx("fr");
+        bL = new MotorEx("bl").reversed();
+        bR = new MotorEx("br");
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        br = hardwareMap.get(DcMotor.class, "br");
+        imu1 = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu1.initialize(parameters);
     }
 
     @Override
-    public void loop(){
-
+    public void onStartButtonPressed(){
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+        driverControlled = new MecanumDriverControlled(
+                fL,
+                fR,
+                bL,
+                bR,
+                Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickX(),
+                Gamepads.gamepad1().rightStickX(),
+                new FieldCentric(imu)
+        );
+        driverControlled.schedule();
     }
+
+    @Override
+    public void onUpdate(){
+    }
+
 
 
     public void drive(){
@@ -51,10 +84,10 @@ public class fieldcentricple extends OpMode {
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
             if (gamepad1.dpad_up) {
-                imu.resetYaw();
+                imu1.resetYaw();
             }
 
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double botHeading = imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -71,9 +104,9 @@ public class fieldcentricple extends OpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            fL.setPower(frontLeftPower);
-            bL.setPower(backLeftPower);
-            fR.setPower(frontRightPower);
-            bR.setPower(backRightPower);
+            fl.setPower(frontLeftPower);
+            bl.setPower(backLeftPower);
+            fr.setPower(frontRightPower);
+            br.setPower(backRightPower);
     }
 }

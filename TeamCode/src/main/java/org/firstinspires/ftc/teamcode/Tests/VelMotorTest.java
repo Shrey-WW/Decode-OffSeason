@@ -42,7 +42,4 @@ public class VelMotorTest extends NextFTCOpMode {
         telemetry.addData("current pos", velSquidMotor.X.getPos());
         telemetry.update();
     }
-
-
-
 }
