@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -30,6 +32,7 @@ public class fieldcentricple extends NextFTCOpMode {
     DriverControlledCommand driverControlled;
     private IMUEx imu;
     private IMU imu1;
+    ElapsedTime timer = new ElapsedTime();
     @Override
     public void onInit(){
         addComponents(
@@ -66,11 +69,18 @@ public class fieldcentricple extends NextFTCOpMode {
                 Gamepads.gamepad1().rightStickX(),
                 new FieldCentric(imu)
         );
-        driverControlled.schedule();
+//        driverControlled.schedule();
     }
 
     @Override
     public void onUpdate(){
+        drive();
+        long start = System.nanoTime();
+        if (timer.milliseconds() > 2000) {
+            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
+            telemetry.update();
+            timer.reset();
+        }
     }
 
 
