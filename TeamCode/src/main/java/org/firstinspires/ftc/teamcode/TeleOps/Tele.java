@@ -33,6 +33,7 @@ public class Tele extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+        bot.drive.schedule();
         velSquidMotor.X.velPID();
     }
 
@@ -46,9 +47,6 @@ public class Tele extends NextFTCOpMode {
             RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
             telemetry.update();
             timer.reset();
-
         }
     }
-
-
 }

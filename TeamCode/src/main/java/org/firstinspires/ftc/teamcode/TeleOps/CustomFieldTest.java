@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.Subsystems.FieldMecanum;
-import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
 
 
 import dev.nextftc.core.components.BindingsComponent;

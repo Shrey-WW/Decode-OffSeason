@@ -19,22 +19,21 @@ import java.util.List;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.hardware.impl.Direction;
-import dev.nextftc.hardware.impl.IMUEx;
+import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public class Robot {
+    public DriverControlledCommand drive;
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
-    AprilTagDetection tag;
-    double cPos;
-    double Bearing;
+    double cPos, Bearing;
     Command setVelPID;
     final double TPR = 1680.312;
     DcMotor fL, fR, bL, bR;
-    private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
-    public IMU imu1;
+    public IMU imu;
 
     public Robot(OpMode opmode){
+
+        //april tag vision
         tagProcessor = new AprilTagProcessor.Builder()
                 .setDrawTagOutline(true)
                 .setLensIntrinsics(875.433,875.433,335.381,264.405)
@@ -46,18 +45,23 @@ public class Robot {
                 .enableLiveView(true)
                 .build();
         setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID());
+
+
+
+        //drivetrain
         fL = opmode.hardwareMap.get(DcMotor .class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
         bR = opmode.hardwareMap.get(DcMotor.class, "br");
-        fR.setDirection(DcMotorSimple.Direction.REVERSE);
-        bR.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        imu1 = opmode.hardwareMap.get(IMU.class, "imu");
+        fL.setDirection(DcMotorSimple.Direction.REVERSE);
+        bL.setDirection(DcMotorSimple.Direction.REVERSE);
+        imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu1.initialize(parameters);
+        imu.initialize(parameters);
+        DcMotor[] motors = new DcMotor[]{fL, bL, fR, bR};
+        drive = new FieldMecanum(motors, imu, opmode);
     }
 
 
@@ -85,6 +89,41 @@ public class Robot {
             setVelPID.afterTime(.7).schedule();
         }
     }
+
+//    public void drive() {
+//        double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+//        double x = gamepad1.left_stick_x;
+//        double rx = gamepad1.right_stick_x;
+//
+//        // This button choice was made so that it is hard to hit on accident,
+//        // it can be freely changed based on preference.
+//        // The equivalent button is start on Xbox-style controllers.
+//        if (gamepad1.dpad_up) {
+//            imu1.resetYaw();
+//        }
+//
+//        double botHeading = imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+//
+//        // Rotate the movement direction counter to the bot's rotation
+//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+//
+//        rotX = rotX * 1.1;  // Counteract imperfect strafing
+//
+//        // Denominator is the largest motor power (absolute value) or 1
+//        // This ensures all the powers maintain the same ratio,
+//        // but only if at least one is out of the range [-1, 1]
+//        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+//        double frontLeftPower = (rotY + rotX + rx) / denominator;
+//        double backLeftPower = (rotY - rotX + rx) / denominator;
+//        double frontRightPower = (rotY - rotX - rx) / denominator;
+//        double backRightPower = (rotY + rotX - rx) / denominator;
+//
+//        fl.setPower(frontLeftPower);
+//        bl.setPower(backLeftPower);
+//        fr.setPower(frontRightPower);
+//        br.setPower(backRightPower);
+//    }
 
 
 }
