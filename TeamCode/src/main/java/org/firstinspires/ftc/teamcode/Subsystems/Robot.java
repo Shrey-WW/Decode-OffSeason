@@ -22,6 +22,7 @@ import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public class Robot {
+    DcMotor[] motors;
     public DriverControlledCommand drive;
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
@@ -34,33 +35,33 @@ public class Robot {
     public Robot(OpMode opmode){
 
         //april tag vision
-        tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawTagOutline(true)
-                .setLensIntrinsics(875.433,875.433,335.381,264.405)
-                .build();
-        visionPortal = new VisionPortal.Builder()
-                .addProcessor(tagProcessor)
-                .setCamera(opmode.hardwareMap.get(WebcamName.class, "webcam"))
-                .setCameraResolution(new Size(640, 480))
-                .enableLiveView(true)
-                .build();
+//        tagProcessor = new AprilTagProcessor.Builder()
+//                .setDrawTagOutline(true)
+//                .setLensIntrinsics(875.433,875.433,335.381,264.405)
+//                .build();
+//        visionPortal = new VisionPortal.Builder()
+//                .addProcessor(tagProcessor)
+//                .setCamera(opmode.hardwareMap.get(WebcamName.class, "webcam"))
+//                .setCameraResolution(new Size(640, 480))
+//                .enableLiveView(true)
+//                .build();
         setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID());
 
 
 
         //drivetrain
-        fL = opmode.hardwareMap.get(DcMotor .class, "fl");
+        imu = opmode.hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        imu.initialize(parameters);
+        fL = opmode.hardwareMap.get(DcMotor.class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
         bR = opmode.hardwareMap.get(DcMotor.class, "br");
         fL.setDirection(DcMotorSimple.Direction.REVERSE);
         bL.setDirection(DcMotorSimple.Direction.REVERSE);
-        imu = opmode.hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(parameters);
-        DcMotor[] motors = new DcMotor[]{fL, bL, fR, bR};
+        motors = new DcMotor[]{fL, bL, fR, bR};
         drive = new FieldMecanum(motors, imu, opmode);
     }
 
