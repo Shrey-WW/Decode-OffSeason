@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 
 import android.util.Size;
-
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -93,7 +91,7 @@ public class Robot {
 
 //    public void drive() {
 //        double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-//        double x = gamepad1.left_stick_x;
+//        double X = gamepad1.left_stick_x;
 //        double rx = gamepad1.right_stick_x;
 //
 //        // This button choice was made so that it is hard to hit on accident,
@@ -106,8 +104,8 @@ public class Robot {
 //        double botHeading = imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 //
 //        // Rotate the movement direction counter to the bot's rotation
-//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+//        double rotX = X * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+//        double rotY = X * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 //
 //        rotX = rotX * 1.1;  // Counteract imperfect strafing
 //
