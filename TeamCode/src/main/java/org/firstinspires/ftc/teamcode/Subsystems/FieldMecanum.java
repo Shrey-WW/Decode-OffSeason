@@ -33,7 +33,7 @@ public class FieldMecanum extends DriverControlledCommand {
         if (opmode.gamepad1.dpad_up) {
             imu.resetYaw();
         }
-
+        rx *= 1.2;
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Rotate the movement direction counter to the bot's rotation
