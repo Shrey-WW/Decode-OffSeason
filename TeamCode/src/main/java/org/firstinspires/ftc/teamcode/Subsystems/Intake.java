@@ -15,8 +15,6 @@ public class Intake implements Subsystem {
     public Command SpinIn(double pwr){
         return new InstantCommand(() -> motor.setPower(-pwr));
     }
-    public void PwrOff(){
-        motor.setPower(0);
-    }
+    public void PwrOff(){ motor.setPower(0); }
 
 }
