@@ -18,7 +18,7 @@ public class velSquidMotor implements Subsystem {
     private final MotorEx motor = new MotorEx("bl");
     public static double p,i,d;
 
-    private PIDCoefficients PIDGains = new PIDCoefficients(.00001,0.000000000005,10);
+    private final PIDCoefficients PIDGains = new PIDCoefficients(.00001,0.000000000005,10);
 
     private ControlSystem controlSystem = ControlSystem.builder()
             .velSquID(PIDGains)
