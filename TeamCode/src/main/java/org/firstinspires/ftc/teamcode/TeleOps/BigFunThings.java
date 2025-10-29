@@ -18,7 +18,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @TeleOp(name = "bigfun")
 public class BigFunThings extends NextFTCOpMode {
     Robot bot;
-    Button rTrigger, lTrigger, a, b;
+    Button rTrigger, lTrigger, x, circle, square;
     @Override
     public void onInit() {
         addComponents(
@@ -29,20 +29,21 @@ public class BigFunThings extends NextFTCOpMode {
         bot = new Robot(this);
         rTrigger = button(() -> gamepad1.right_trigger > 0.1);
         lTrigger = button(() -> gamepad1.left_trigger > 0.1);
-        a = button(() -> gamepad1.a);
-        b = button(() -> gamepad1.b);
-
+        x = button(() -> gamepad1.a);
+        circle = button(() -> gamepad1.b);
+        square = button(() -> gamepad1.x);
     }
 
     @Override
     public void onStartButtonPressed(){
         bot.drive.schedule();
         rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger).schedule())
-                .whenBecomesFalse(() -> Intake.X.PwrOff());
+                .whenBecomesFalse(Intake.X::PwrOff);
         lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
-                .whenBecomesFalse(() -> Intake.X.PwrOff());
-        a.whenBecomesTrue(TransferServo.X.open);
-        b.whenBecomesTrue(TransferServo.X.close);
+                .whenBecomesFalse(Intake.X::PwrOff);
+        x.whenBecomesTrue(TransferServo.X.open);
+        circle.whenBecomesTrue(TransferServo.X.close);
+        square.whenBecomesTrue(TransferServo.X.switchCMD);
     }
 
     @Override

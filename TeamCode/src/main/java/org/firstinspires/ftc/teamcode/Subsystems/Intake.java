@@ -7,7 +7,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 public class Intake implements Subsystem {
     public static final Intake X = new Intake();
-    private MotorEx motor = new MotorEx("intake");
+    private final MotorEx motor = new MotorEx("intake");
     private Intake(){}
     public Command SpinOut(double pwr){
         return new InstantCommand(() -> motor.setPower(pwr));
@@ -15,6 +15,7 @@ public class Intake implements Subsystem {
     public Command SpinIn(double pwr){
         return new InstantCommand(() -> motor.setPower(-pwr));
     }
-    public void PwrOff(){ motor.setPower(0); }
-
+    public void PwrOff(){
+        motor.setPower(0);
+    }
 }
