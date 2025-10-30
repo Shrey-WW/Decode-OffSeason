@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.TeleOps;
 
 import static dev.nextftc.bindings.Bindings.button;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -15,10 +14,10 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp(name = "bigfun")
+@TeleOp(name = "Main TeleOp")
 public class BigFunThings extends NextFTCOpMode {
     Robot bot;
-    Button rTrigger, lTrigger, x, circle, square;
+    Button rTrigger, lTrigger, a;
     @Override
     public void onInit() {
         addComponents(
@@ -29,21 +28,17 @@ public class BigFunThings extends NextFTCOpMode {
         bot = new Robot(this);
         rTrigger = button(() -> gamepad1.right_trigger > 0.1);
         lTrigger = button(() -> gamepad1.left_trigger > 0.1);
-        x = button(() -> gamepad1.a);
-        circle = button(() -> gamepad1.b);
-        square = button(() -> gamepad1.x);
+        a = button(() -> gamepad1.a);
     }
 
     @Override
     public void onStartButtonPressed(){
         bot.drive.schedule();
-        rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger).schedule())
+        rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger))
                 .whenBecomesFalse(Intake.X::PwrOff);
-        lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
+        lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger))
                 .whenBecomesFalse(Intake.X::PwrOff);
-        x.whenBecomesTrue(TransferServo.X.open);
-        circle.whenBecomesTrue(TransferServo.X.close);
-        square.whenBecomesTrue(TransferServo.X.switchCMD);
+        a.whenBecomesTrue(TransferServo.X::transfer);
     }
 
     @Override
