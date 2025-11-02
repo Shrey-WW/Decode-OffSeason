@@ -1,8 +1,9 @@
 
 # **SOME_BALL_STUFF**
 
-70 =< θ =< 90
-tan^-1(θ)
+DEFAULT SHOT ANGLE 80
+60 =< θ =< 80
+
 vball = d * sqrt(-9.8 / (2cos^2(θ)(d * tan((θ)) - (.6952))))
 
 # **INERTIA CALCULATION**
