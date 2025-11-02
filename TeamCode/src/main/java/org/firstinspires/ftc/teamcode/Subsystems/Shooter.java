@@ -13,40 +13,35 @@ public class Shooter extends SubsystemGroup {
     private Shooter() {
         super(
                 ShootMotor.X,
-                AngleServo.X
+                HoodServo.X
         );
     }
 
-    private MotorEx motor = new MotorEx("br");
-    private ServoEx servo = new ServoEx("arm1");
-
     public void speed(double h){
-        motor.setPower((318.31*Math.sqrt(19.6*h))/6000);
+        ShootMotor.X.motor.setPower((Math.sqrt(19.6 * h)/Math.PI * .192) / 6000);
     }
-    public void angle(double h)
-    {
-        servo.setPosition(Math.asin(1/h));
-    }
-
 }
 
 class ShootMotor implements Subsystem {
     public static final ShootMotor X = new ShootMotor();
     private ShootMotor() {}
 
-    private MotorEx motor = new MotorEx("br");
+    public MotorEx motor = new MotorEx("br");
+    public MotorEx motor2 = new MotorEx("fr");
     private ControlSystem controlSystem = ControlSystem.builder()
             .velSquID(.00573, .000000000001, 0.00000033)
             .build();
+
     @Override
     public void periodic(){
+        motor2.setPower(controlSystem.calculate(motor.getState()));
         motor.setPower(controlSystem.calculate(motor.getState()));
     }
 }
 
-class AngleServo implements Subsystem {
-    public static final AngleServo X = new AngleServo();
-    private AngleServo(){}
+class HoodServo implements Subsystem {
+    public static final HoodServo X = new HoodServo();
+    private HoodServo(){}
     private ServoEx servo = new ServoEx("arm1");
 
     public Command tiltTo(double pos){

@@ -42,7 +42,7 @@ public class Robot {
 //                .setCameraResolution(new Size(640, 480))
 //                .enableLiveView(true)
 //                .build();
-        setVelPID = new InstantCommand(velSquidMotor.X::velPID);
+        setVelPID = new InstantCommand(TurretMotor.X::velPID);
 
 
 
@@ -69,21 +69,21 @@ public class Robot {
             AprilTagDetection tag = detections.get(0);
             if (tag.id == 20) {
                 Bearing = tag.ftcPose.bearing;
-                if (Math.abs(Bearing) <= 1) { velSquidMotor.X.resetPwr(); }
-                else { velSquidMotor.X.FollowCam(Bearing).schedule(); }
+                if (Math.abs(Bearing) <= 1) { TurretMotor.X.resetPwr(); }
+                else { TurretMotor.X.FollowCam(Bearing).schedule(); }
             }
         }
-        cPos = velSquidMotor.X.getPos();
+        cPos = TurretMotor.X.getPos();
         if (cPos >= 1700){
-            velSquidMotor.X.posPID();
+            TurretMotor.X.posPID();
             double target = cPos - ((int) (cPos / TPR)) * TPR;
-            velSquidMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.SpinTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
         else if (cPos <= -1700){
-            velSquidMotor.X.posPID();
+            TurretMotor.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
-            velSquidMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.SpinTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
     }

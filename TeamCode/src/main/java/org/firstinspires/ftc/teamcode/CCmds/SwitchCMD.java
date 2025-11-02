@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import dev.nextftc.core.commands.Command;
 
@@ -13,7 +12,6 @@ public class SwitchCMD extends Command {
     private final int numCMDs;
     private int currentCMD;
 
-    @SafeVarargs
     public SwitchCMD(Command... Cmds) {
         cmdsList = new ArrayList<>();
         Collections.addAll(cmdsList, Cmds);

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretMotor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -14,7 +14,6 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.conditionals.IfElseCommand;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -35,7 +34,7 @@ public class AtagOpmode extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(velSquidMotor.X),
+                new SubsystemComponent(TurretMotor.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -49,18 +48,18 @@ public class AtagOpmode extends NextFTCOpMode {
                 .setCameraResolution(new Size(640, 480))
                 .enableLiveView(true)
                 .build();
-        setVelPID = new InstantCommand(() -> velSquidMotor.X.velPID());
+        setVelPID = new InstantCommand(() -> TurretMotor.X.velPID());
     }
 
     @Override
     public void onWaitForStart(){
-        velSquidMotor.X.resetPwr();
-        velSquidMotor.X.PIDReset();
+        TurretMotor.X.resetPwr();
+        TurretMotor.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed(){
-        velSquidMotor.X.velPID();
+        TurretMotor.X.velPID();
     }
 
     @Override
@@ -68,8 +67,8 @@ public class AtagOpmode extends NextFTCOpMode {
         long start = System.nanoTime();
         TrackTag();
         if (timer.milliseconds() > 100) {
-            telemetry.addData("Current motor pos", velSquidMotor.X.getPos());
-            telemetry.addData("Current motor vel", velSquidMotor.X.getVelo());
+            telemetry.addData("Current motor pos", TurretMotor.X.getPos());
+            telemetry.addData("Current motor vel", TurretMotor.X.getVelo());
             RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
             telemetry.update();
             timer.reset();
@@ -82,21 +81,21 @@ public class AtagOpmode extends NextFTCOpMode {
             AprilTagDetection tag = detections.get(0);
             if (tag.id == 20) {
                 Bearing = tag.ftcPose.bearing;
-                if (Math.abs(Bearing) <= 1) { velSquidMotor.X.resetPwr(); }
-                else { velSquidMotor.X.FollowCam(Bearing).schedule(); }
+                if (Math.abs(Bearing) <= 1) { TurretMotor.X.resetPwr(); }
+                else { TurretMotor.X.FollowCam(Bearing).schedule(); }
             }
         }
-        cPos = velSquidMotor.X.getPos();
+        cPos = TurretMotor.X.getPos();
         if (cPos >= 1700){
-            velSquidMotor.X.posPID();
+            TurretMotor.X.posPID();
             double target = cPos - ((int) (cPos / TPR)) * TPR;
-            velSquidMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.SpinTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
         else if (cPos <= -1700){
-            velSquidMotor.X.posPID();
+            TurretMotor.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
-            velSquidMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.SpinTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
     }

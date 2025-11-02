@@ -18,11 +18,11 @@ public class flywheelTest extends OpMode {
     @Override
     public void loop(){
         if (lastinput.equals("none") && gamepad1.dpad_up){
-            pwr += .05;
+            pwr += .02;
             lastinput = "up";
         }
         if (lastinput.equals("none") && gamepad1.dpad_down){
-            pwr -= .05;
+            pwr -= .02;
             lastinput = "down";
         }
         if (!gamepad1.dpad_down && !gamepad1.dpad_up){

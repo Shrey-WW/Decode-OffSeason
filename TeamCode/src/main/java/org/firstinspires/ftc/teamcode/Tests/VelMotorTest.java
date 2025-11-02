@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems.velSquidMotor;
+import org.firstinspires.ftc.teamcode.Subsystems.TurretMotor;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -22,7 +22,7 @@ public class VelMotorTest extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(velSquidMotor.X),
+                new SubsystemComponent(TurretMotor.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -31,15 +31,16 @@ public class VelMotorTest extends NextFTCOpMode {
 
     @Override
     public void onUpdate(){
-        if(velSquidMotor.X.getPIDGains().kP != velSquidMotor.X.p
-                || velSquidMotor.X.getPIDGains().kD != velSquidMotor.X.d
-                || velSquidMotor.X.getPIDGains().kI != velSquidMotor.X.i)
-        {velSquidMotor.X.velPID();}
+        if(TurretMotor.X.getPIDGains().kP != TurretMotor.X.p
+                || TurretMotor.X.getPIDGains().kD != TurretMotor.X.d
+                || TurretMotor.X.getPIDGains().kI != TurretMotor.X.i)
+        {
+            TurretMotor.X.velPID();}
 
-        velSquidMotor.X.runTo(target).schedule();
+        TurretMotor.X.runTo(target).schedule();
         telemetry.addData("target", target);
-        telemetry.addData("current velo", velSquidMotor.X.getVelo());
-        telemetry.addData("current pos", velSquidMotor.X.getPos());
+        telemetry.addData("current velo", TurretMotor.X.getVelo());
+        telemetry.addData("current pos", TurretMotor.X.getPos());
         telemetry.update();
     }
 }
