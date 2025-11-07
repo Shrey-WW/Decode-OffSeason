@@ -36,14 +36,16 @@ public class TurretMotor implements Subsystem {
         motor.setPower(pwr);
     }
     );
-
-    /*@Override
+    public void setPwr(double p){
+        motor.setPower(p);
+    }
+    @Override
     public void periodic(){
         motor.setPower(controlSystem.calculate(motor.getState()));
-    }*/
+    }
 
     public Command runTo(double goal){
-        return new RunToVelocity(controlSystem, goal).requires(this);
+        return new RunToVelocity(controlSystem, goal/10).requires(this);
     }
 
     public Command SpinTo(double goal){
@@ -67,8 +69,8 @@ public class TurretMotor implements Subsystem {
 
     public void velPID(){
         controlSystem = ControlSystem.builder()
-                .velSquID(PIDGains)
-                .basicFF(0,0,.091)
+                .velSquID(p,i,d)
+                .basicFF(0,0,.1)
                 .build();
     }
 

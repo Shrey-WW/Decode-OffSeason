@@ -27,14 +27,14 @@ public class VelMotorTest extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
         telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+        TurretMotor.X.velPID();
     }
 
     @Override
-    public void onUpdate(){
-        if(TurretMotor.X.getPIDGains().kP != TurretMotor.X.p
+    public void onUpdate() {
+        if (TurretMotor.X.getPIDGains().kP != TurretMotor.X.p
                 || TurretMotor.X.getPIDGains().kD != TurretMotor.X.d
-                || TurretMotor.X.getPIDGains().kI != TurretMotor.X.i)
-        {
+                || TurretMotor.X.getPIDGains().kI != TurretMotor.X.i){
             TurretMotor.X.velPID();}
 
         TurretMotor.X.runTo(target).schedule();
