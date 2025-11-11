@@ -10,11 +10,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+//WORKS AS OF NOV 10 PRETTY GOOD WOULD RAT LIKE 6/7
 @TeleOp
 public class limelight extends OpMode {
     private Limelight3A limelight;
     private IMU imu;
-    private final double scale = 4579.242;
+    private final double scale = 72.6571;
     @Override
     public void init() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -46,8 +47,7 @@ public class limelight extends OpMode {
     }
 
     public double getDistanceFromTag(double ta){
-        double distance = Math.sqrt(scale/ta);
+        double distance = scale * Math.pow(ta, -0.506577);
         return distance;
     }
-
 }

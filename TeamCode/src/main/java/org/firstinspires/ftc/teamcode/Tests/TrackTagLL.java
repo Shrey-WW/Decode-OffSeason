@@ -10,9 +10,6 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.TurretMotor;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-
-import java.util.List;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -29,7 +26,7 @@ public class TrackTagLL extends NextFTCOpMode {
     private double cPos;
     private double Bearing;
     private Command setVelPID;
-    private final double TPR = 1680.312;
+    private final double TPD = (384.5 * 100 / 16) / 360;
     private LLResult llresult;
 
     @Override
@@ -39,7 +36,6 @@ public class TrackTagLL extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
-        setVelPID = new InstantCommand(() -> TurretMotor.X.velPID());
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         imu = hardwareMap.get(IMU.class, "imu");
@@ -49,14 +45,14 @@ public class TrackTagLL extends NextFTCOpMode {
     }
 
     @Override
-    public void onWaitForStart(){
+    public void onWaitForStart() {
         TurretMotor.X.resetPwr();
         TurretMotor.X.PIDReset();
     }
 
     @Override
-    public void onStartButtonPressed(){
-//        setVelPID.schedule();
+    public void onStartButtonPressed() {
+        TurretMotor.X.posPID();
         limelight.start();
     }
 
@@ -70,7 +66,7 @@ public class TrackTagLL extends NextFTCOpMode {
             double tx = llresult.getTx();
             TrackTag(tx);
         }
-        if (timer.milliseconds() > 100){
+        if (timer.milliseconds() > 100) {
             telemetry.addData("Tx", llresult.getTx());
             telemetry.addData("Current motor pos", TurretMotor.X.getPos());
             telemetry.addData("Current motor vel", TurretMotor.X.getVelo());
@@ -80,21 +76,8 @@ public class TrackTagLL extends NextFTCOpMode {
         }
     }
 
-    public void TrackTag(double Tx){
-                if (Tx <= 1) { TurretMotor.X.resetPwr(); }
-                else { TurretMotor.X.FollowCam(Tx).schedule(); }
-        if (cPos >= 1700){
-            TurretMotor.X.posPID();
-            double target = cPos - ((int) (cPos / TPR)) * TPR;
-            TurretMotor.X.SpinTo(target).schedule();
-            setVelPID.afterTime(.7).schedule();
-        }
-        else if (cPos <= -1700){
-            TurretMotor.X.posPID();
-            double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
-            TurretMotor.X.SpinTo(target).schedule();
-            setVelPID.afterTime(.7).schedule();
-        }
+    public void TrackTag(double Tx) {
+        double ticks2turn = Tx * TPD;
+        TurretMotor.X.SpinTo(TurretMotor.X.getPos()-ticks2turn);
     }
-
 }

@@ -16,7 +16,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
 @TeleOp(name = "Vel Motor Test")
-public class VelMotorTest extends NextFTCOpMode {
+public class TurretMotorTest extends NextFTCOpMode {
     public static int target;
 
     @Override
@@ -27,7 +27,6 @@ public class VelMotorTest extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
         telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
-        TurretMotor.X.velPID();
     }
 
     @Override
@@ -35,9 +34,8 @@ public class VelMotorTest extends NextFTCOpMode {
         if (TurretMotor.X.getPIDGains().kP != TurretMotor.X.p
                 || TurretMotor.X.getPIDGains().kD != TurretMotor.X.d
                 || TurretMotor.X.getPIDGains().kI != TurretMotor.X.i){
-            TurretMotor.X.velPID();}
-
-        TurretMotor.X.runTo(target).schedule();
+            TurretMotor.X.posPID();}
+        TurretMotor.X.SpinTo(target).schedule();
         telemetry.addData("target", target);
         telemetry.addData("current velo", TurretMotor.X.getVelo());
         telemetry.addData("current pos", TurretMotor.X.getPos());

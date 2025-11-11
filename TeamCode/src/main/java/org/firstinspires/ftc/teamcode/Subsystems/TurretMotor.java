@@ -17,15 +17,9 @@ public class TurretMotor implements Subsystem {
     private TurretMotor() { }
 
     private final MotorEx motor = new MotorEx("turret");
-    public static double p,i,d;
+    public static double p = .0015,i = 0,d = .0043;
     private double pwr = 0;
 
-    private final PIDCoefficients PIDGains = new PIDCoefficients(.00001,0.000000000005,10);
-
-    private ControlSystem controlSystem = ControlSystem.builder()
-            .velSquID(PIDGains)
-            .basicFF(0,0,.091)
-            .build();
     public Command SpeedUp = new InstantCommand(() -> {
         pwr += .04;
         motor.setPower(pwr);
@@ -36,9 +30,13 @@ public class TurretMotor implements Subsystem {
         motor.setPower(pwr);
     }
     );
-    public void setPwr(double p){
-        motor.setPower(p);
-    }
+
+    private PIDCoefficients PIDGains = new PIDCoefficients(.0015,0,.0043);
+
+    private ControlSystem controlSystem = ControlSystem.builder()
+            .posSquID(PIDGains)
+            .basicFF(0,0,.14)
+            .build();
     @Override
     public void periodic(){
         motor.setPower(controlSystem.calculate(motor.getState()));
@@ -52,12 +50,12 @@ public class TurretMotor implements Subsystem {
         return new RunToPosition(controlSystem, goal).requires(this);
     }
 
-    public double getPos(){
-        return motor.getCurrentPosition();
+    public void resetPwr(){
+        motor.setPower(0);
     }
 
-    public PIDCoefficients getPIDGains(){
-        return PIDGains;
+    public Command FollowCam(double bearing){
+        return new RunToVelocity(controlSystem, bearing * -20);
     }
 
     public void PIDReset(){
@@ -68,32 +66,31 @@ public class TurretMotor implements Subsystem {
     }
 
     public void velPID(){
+        PIDGains = new PIDCoefficients(p, i, d);
         controlSystem = ControlSystem.builder()
-                .velSquID(p,i,d)
-                .basicFF(0,0,.1)
+                .velSquID(PIDGains)
+                .basicFF(0,0,.12)
                 .build();
     }
 
     public void posPID(){
+        PIDGains = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
-                .posSquid(.00573, .000000000001, 0.00000033)
+                .posSquID(PIDGains)
+                .basicFF(0,0,.14)
                 .build();
     }
 
-    public double getGoal(double bearing){
-        return motor.getCurrentPosition() - bearing * 4.53;
+    public double getPos(){
+        return motor.getCurrentPosition();
     }
 
-    public void resetPwr(){
-        motor.setPower(0);
+    public PIDCoefficients getPIDGains(){
+        return PIDGains;
     }
 
     public double getVelo(){
         return motor.getVelocity();
-    }
-
-    public Command FollowCam(double bearing){
-        return new RunToVelocity(controlSystem, bearing * -20);
     }
 
 }
