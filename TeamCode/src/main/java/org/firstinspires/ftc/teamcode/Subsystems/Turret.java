@@ -12,9 +12,9 @@ import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
 
 @Config
-public class TurretMotor implements Subsystem {
-    public static final TurretMotor X = new TurretMotor();
-    private TurretMotor() { }
+public class Turret implements Subsystem {
+    public static final Turret X = new Turret();
+    private Turret() { }
 
     private final MotorEx motor = new MotorEx("turret");
     // pos: p = .0015 i = 0 d = 0

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Subsystems.TurretMotor;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
@@ -30,7 +30,7 @@ public class TrackTagLL extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(TurretMotor.X),
+                new SubsystemComponent(Turret.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -44,13 +44,13 @@ public class TrackTagLL extends NextFTCOpMode {
 
     @Override
     public void onWaitForStart() {
-        TurretMotor.X.resetPwr();
-        TurretMotor.X.PIDReset();
+        Turret.X.resetPwr();
+        Turret.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed() {
-        TurretMotor.X.posPID();
+        Turret.X.posPID();
         limelight.start();
     }
 
@@ -66,8 +66,8 @@ public class TrackTagLL extends NextFTCOpMode {
         }
         if (timer.milliseconds() > 100) {
             telemetry.addData("Tx", llresult.getTx());
-            telemetry.addData("Current motor pos", TurretMotor.X.getPos());
-            telemetry.addData("Current motor vel", TurretMotor.X.getVelo());
+            telemetry.addData("Current motor pos", Turret.X.getPos());
+            telemetry.addData("Current motor vel", Turret.X.getVelo());
 //            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
             telemetry.update();
             timer.reset();
@@ -76,6 +76,6 @@ public class TrackTagLL extends NextFTCOpMode {
 
     public void TrackTag(double Tx) {
         double ticks2turn = Tx * TPD;
-        TurretMotor.X.TurnTo(TurretMotor.X.getPos()-ticks2turn);
+        Turret.X.TurnTo(Turret.X.getPos()-ticks2turn);
     }
 }

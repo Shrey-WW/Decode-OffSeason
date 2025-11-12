@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.CCmds.FieldMecanum;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -23,10 +24,9 @@ public class Robot {
     public DriverControlledCommand drive;
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
-    double cPos, Bearing;
-    Command setVelPID;
-    final double TPR = 1680.312;
+    private final Command setVelPID;
     DcMotor fL, fR, bL, bR;
+    public Servo hoodservo;
 
     public IMU imu;
 
@@ -43,7 +43,7 @@ public class Robot {
 //                .setCameraResolution(new Size(640, 480))
 //                .enableLiveView(true)
 //                .build();
-        setVelPID = new InstantCommand(TurretMotor.X::velPID);
+        setVelPID = new InstantCommand(Turret.X::velPID);
 
 
 
@@ -57,6 +57,7 @@ public class Robot {
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
         bR = opmode.hardwareMap.get(DcMotor.class, "br");
+        hoodservo = opmode.hardwareMap.get(Servo.class, "hood");
         fL.setDirection(DcMotorSimple.Direction.REVERSE);
         bL.setDirection(DcMotorSimple.Direction.REVERSE);
         motors = new DcMotor[]{fL, bL, fR, bR};
@@ -69,22 +70,23 @@ public class Robot {
         if (!detections.isEmpty()) {
             AprilTagDetection tag = detections.get(0);
             if (tag.id == 20) {
-                Bearing = tag.ftcPose.bearing;
-                if (Math.abs(Bearing) <= 1) { TurretMotor.X.resetPwr(); }
-                else { TurretMotor.X.FollowCam(Bearing).schedule(); }
+                double bearing = tag.ftcPose.bearing;
+                if (Math.abs(bearing) <= 1) { Turret.X.resetPwr(); }
+                else { Turret.X.FollowCam(bearing).schedule(); }
             }
         }
-        cPos = TurretMotor.X.getPos();
+        double cPos = Turret.X.getPos();
+        double TPR = 1680.312;
         if (cPos >= 1700){
-            TurretMotor.X.posPID();
+            Turret.X.posPID();
             double target = cPos - ((int) (cPos / TPR)) * TPR;
-            TurretMotor.X.TurnTo(target).schedule();
+            Turret.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
         else if (cPos <= -1700){
-            TurretMotor.X.posPID();
+            Turret.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
-            TurretMotor.X.TurnTo(target).schedule();
+            Turret.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
     }
