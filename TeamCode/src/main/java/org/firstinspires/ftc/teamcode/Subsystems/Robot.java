@@ -78,13 +78,13 @@ public class Robot {
         if (cPos >= 1700){
             TurretMotor.X.posPID();
             double target = cPos - ((int) (cPos / TPR)) * TPR;
-            TurretMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
         else if (cPos <= -1700){
             TurretMotor.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / TPR) * TPR;
-            TurretMotor.X.SpinTo(target).schedule();
+            TurretMotor.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
     }

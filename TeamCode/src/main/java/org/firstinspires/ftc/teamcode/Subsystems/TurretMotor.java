@@ -17,7 +17,10 @@ public class TurretMotor implements Subsystem {
     private TurretMotor() { }
 
     private final MotorEx motor = new MotorEx("turret");
-    public static double p = .0015,i = 0,d = .0043;
+    // pos: p = .0015 i = 0 d = 0
+    // velo:  p =  i =  d =
+
+    public static double p ,i, d;
     private double pwr = 0;
 
     public Command SpeedUp = new InstantCommand(() -> {
@@ -31,10 +34,10 @@ public class TurretMotor implements Subsystem {
     }
     );
 
-    private PIDCoefficients PIDGains = new PIDCoefficients(.0015,0,.0043);
+    private PIDCoefficients PIDGains = new PIDCoefficients(p,i,d);
 
     private ControlSystem controlSystem = ControlSystem.builder()
-            .posSquID(PIDGains)
+            .posSquid(p, i, d)
             .basicFF(0,0,.14)
             .build();
     @Override
@@ -43,10 +46,10 @@ public class TurretMotor implements Subsystem {
     }
 
     public Command runTo(double goal){
-        return new RunToVelocity(controlSystem, goal/10).requires(this);
+        return new RunToVelocity(controlSystem, goal).requires(this);
     }
 
-    public Command SpinTo(double goal){
+    public Command TurnTo(double goal){
         return new RunToPosition(controlSystem, goal).requires(this);
     }
 
@@ -60,24 +63,22 @@ public class TurretMotor implements Subsystem {
 
     public void PIDReset(){
         controlSystem = ControlSystem.builder()
-                .velSquID(0,0,0)
+                .posSquid(0,0,0)
                 .basicFF(0,0,0)
                 .build();
     }
 
     public void velPID(){
-        PIDGains = new PIDCoefficients(p, i, d);
         controlSystem = ControlSystem.builder()
-                .velSquID(PIDGains)
-                .basicFF(0,0,.12)
+                .velSquID(p,i,d)
+                .basicFF(0,0,.13)
                 .build();
     }
 
     public void posPID(){
-        PIDGains = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
-                .posSquID(PIDGains)
-                .basicFF(0,0,.14)
+                .posSquid(.0015)
+                .basicFF(0,0,.13)
                 .build();
     }
 

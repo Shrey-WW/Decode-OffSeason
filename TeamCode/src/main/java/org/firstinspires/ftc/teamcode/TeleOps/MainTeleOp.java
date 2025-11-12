@@ -4,7 +4,6 @@ import static dev.nextftc.bindings.Bindings.button;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,7 +22,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @TeleOp(name = "Main TeleOp")
-public class BigFunThings extends NextFTCOpMode {
+public class MainTeleOp extends NextFTCOpMode {
     boolean lastButtonStateUp = false;
     boolean lastButtonStateDown = false;
     Servo hoodservo;
@@ -41,18 +40,12 @@ public class BigFunThings extends NextFTCOpMode {
                 new SubsystemComponent(Intake.X, TransferServo.X, Shootmotor.X, TurretMotor.X)
         );
         bot = new Robot(this);
-        rTrigger = button(() -> gamepad1.right_trigger > 0.1);
-        lTrigger = button(() -> gamepad1.left_trigger > 0.1);
-        x = button(() -> gamepad1.a);
-        PadUp = button(() -> gamepad1.dpad_up);
-        PadDown = button(() -> gamepad1.dpad_down);
+        initButtons();
         Goodrumble = new Gamepad.RumbleEffect.Builder()
                 .addStep(0, .5, 200).build();
         badrumble = new Gamepad.RumbleEffect.Builder()
                 .addStep(.5, 0, 200).build();
         hoodservo = hardwareMap.get(Servo.class, "hood");
-        triangle = button(() -> gamepad1.y);
-        square = button(() -> gamepad1.x);
         FullPwrShot = new InstantCommand(() -> pwr = 1);
         HalfPwrShot = new InstantCommand(() -> pwr = .84);
     }
@@ -61,15 +54,7 @@ public class BigFunThings extends NextFTCOpMode {
     public void onStartButtonPressed(){
         hoodservo.setPosition(.5);
         bot.drive.schedule();
-        rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger).schedule()              )
-                .whenBecomesFalse(Intake.X::PwrOff);
-        lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
-                .whenBecomesFalse(Intake.X::PwrOff);
-        x.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
-        PadDown.whenBecomesTrue(() -> TurretMotor.X.SlowDown.schedule());
-        PadUp.whenBecomesTrue(() -> TurretMotor.X.SpeedUp.schedule());
-        triangle.whenBecomesTrue(() -> FullPwrShot.schedule());
-        square.whenBecomesTrue(() -> HalfPwrShot.schedule());
+        assignButtons();
     }
 
     @Override
@@ -94,8 +79,30 @@ public class BigFunThings extends NextFTCOpMode {
             gamepad1.runRumbleEffect(badrumble);
         }
 
-        telemetry.addData("pwr", pwr);
+        telemetry.addData("Shooting power", pwr);
         telemetry.update();
 
+    }
+
+    private void initButtons(){
+        rTrigger = button(() -> gamepad1.right_trigger > 0.1);
+        lTrigger = button(() -> gamepad1.left_trigger > 0.1);
+        x = button(() -> gamepad1.a);
+        PadUp = button(() -> gamepad1.dpad_up);
+        PadDown = button(() -> gamepad1.dpad_down);
+        triangle = button(() -> gamepad1.y);
+        square = button(() -> gamepad1.x);
+    }
+
+    private void assignButtons(){
+        rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger).schedule()              )
+                .whenBecomesFalse(Intake.X::PwrOff);
+        lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
+                .whenBecomesFalse(Intake.X::PwrOff);
+        x.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
+        PadDown.whenBecomesTrue(() -> TurretMotor.X.SlowDown.schedule());
+        PadUp.whenBecomesTrue(() -> TurretMotor.X.SpeedUp.schedule());
+        triangle.whenBecomesTrue(() -> FullPwrShot.schedule());
+        square.whenBecomesTrue(() -> HalfPwrShot.schedule());
     }
 }

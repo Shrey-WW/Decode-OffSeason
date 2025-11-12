@@ -15,7 +15,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
-@TeleOp
+@TeleOp (group = "tests")
 public class motortest extends OpMode {
     public static double pwr;
     private DcMotor motor;

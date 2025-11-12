@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 //WORKS AS OF NOV 10 PRETTY GOOD WOULD RAT LIKE 6/7
-@TeleOp
+@TeleOp (group = "tests")
 public class limelight extends OpMode {
     private Limelight3A limelight;
     private IMU imu;

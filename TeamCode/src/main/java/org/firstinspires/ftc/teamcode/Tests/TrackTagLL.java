@@ -6,19 +6,17 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.TurretMotor;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp
+@TeleOp (group = "tests")
 public class TrackTagLL extends NextFTCOpMode {
     private Limelight3A limelight;
     private IMU imu;
@@ -78,6 +76,6 @@ public class TrackTagLL extends NextFTCOpMode {
 
     public void TrackTag(double Tx) {
         double ticks2turn = Tx * TPD;
-        TurretMotor.X.SpinTo(TurretMotor.X.getPos()-ticks2turn);
+        TurretMotor.X.TurnTo(TurretMotor.X.getPos()-ticks2turn);
     }
 }

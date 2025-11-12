@@ -14,7 +14,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp
+@TeleOp (group = "tuning")
 public class flywheelTest extends NextFTCOpMode {
 
     boolean lastButtonStateUp = false;
