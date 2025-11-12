@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tests;
+package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -24,7 +24,7 @@ public class TrackTagLL extends NextFTCOpMode {
     private double cPos;
     private double Bearing;
     private Command setVelPID;
-    private final double TPD = (384.5 * 100 / 16) / 360;
+    private final double TICKS_PER_DEGREES = (384.5 * 100 / 16) / 360;
     private LLResult llresult;
 
     @Override
@@ -68,14 +68,13 @@ public class TrackTagLL extends NextFTCOpMode {
             telemetry.addData("Tx", llresult.getTx());
             telemetry.addData("Current motor pos", Turret.X.getPos());
             telemetry.addData("Current motor vel", Turret.X.getVelo());
-//            RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));
             telemetry.update();
             timer.reset();
         }
     }
 
     public void TrackTag(double Tx) {
-        double ticks2turn = Tx * TPD;
+        double ticks2turn = Tx * TICKS_PER_DEGREES;
         Turret.X.TurnTo(Turret.X.getPos()-ticks2turn);
     }
 }

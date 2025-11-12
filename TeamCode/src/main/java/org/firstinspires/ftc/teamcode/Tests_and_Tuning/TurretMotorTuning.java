@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tests;
+package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -31,7 +31,7 @@ public class TurretMotorTuning extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
-        if (Turret.X.getPIDGains().kP != Turret.X.p || Turret.X.getPIDGains().kD != Turret.X.d || Turret.X.getPIDGains().kI != Turret.X.i)
+        if (Turret.X.getPIDGains().kP != Turret.p || Turret.X.getPIDGains().kD != Turret.d || Turret.X.getPIDGains().kI != Turret.i)
         {
             Turret.X.velPID();
         }

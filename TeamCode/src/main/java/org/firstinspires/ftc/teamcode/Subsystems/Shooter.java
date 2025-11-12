@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDCoefficients;
@@ -15,7 +14,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Config
 public class Shooter implements Subsystem {
     private Shooter(){}
-    //smotor 2 HAS ENCODER
+    //motor 2 HAS ENCODER
     public static final Shooter X = new Shooter();
 
     public static double p,i,d;
@@ -42,6 +41,10 @@ public class Shooter implements Subsystem {
         return new RunToVelocity(controlSystem, goal).requires(this);
     }
 
+    public void setPwr(double pwr){
+        ShootingMotors.setPower(pwr);
+    }
+
     public void updatePID(){
         PIDGains = new PIDCoefficients(p, i, d);
         controlSystem = ControlSystem.builder()
@@ -57,11 +60,13 @@ public class Shooter implements Subsystem {
     public double getVelo(){
         return ShootingMotors.getVelocity();
     }
-    public void setPwr(double pwr){
-        ShootingMotors.setPower(pwr);
+
+    public double getPos(){
+        return ShootingMotors.getCurrentPosition();
     }
 
     public double getPwr(){
         return ShootingMotors.getPower();
     }
+
 }
