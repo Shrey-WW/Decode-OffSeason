@@ -33,8 +33,10 @@ public class FlywheelTuning extends NextFTCOpMode {
         if (gains.kP != Shooter.p || gains.kD != Shooter.d || gains.kI != Shooter.i){
             Shooter.X.updatePID();
         }
-        Shooter.X.setVelocity(target);
+        Shooter.X.setVelocity(target).schedule();
         telemetry.addData("Velocity", Shooter.X.getVelo());
+        telemetry.addData("target", target);
         telemetry.addData("Position", Shooter.X.getPos());
+        telemetry.update();
     }
 }

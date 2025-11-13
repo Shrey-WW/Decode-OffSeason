@@ -37,8 +37,8 @@ public class Turret implements Subsystem {
     private PIDCoefficients PIDGains = new PIDCoefficients(p,i,d);
 
     private ControlSystem controlSystem = ControlSystem.builder()
-            .posSquid(p, i, d)
-            .basicFF(0,0,.14)
+            .posSquid(.00001, 0.000000000005, 10)
+            .basicFF(0,0,.12)
             .build();
     @Override
     public void periodic(){
@@ -69,16 +69,17 @@ public class Turret implements Subsystem {
     }
 
     public void velPID(){
+        PIDGains = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
-                .velSquID(p,i,d)
-                .basicFF(0,0,.13)
+                .velSquID(.000001, 0.000000000005, 11-1)
+                .basicFF(0,0,.11)
                 .build();
     }
 
     public void posPID(){
         controlSystem = ControlSystem.builder()
                 .posSquid(.0015)
-                .basicFF(0,0,.13)
+                .basicFF(0,0,.11)
                 .build();
     }
 

@@ -20,12 +20,12 @@ import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public class Robot {
-    DcMotor[] motors;
+    public DcMotor[] motors;
     public DriverControlledCommand drive;
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
     private final Command setVelPID;
-    DcMotor fL, fR, bL, bR;
+    public DcMotor fL, fR, bL, bR;
     public Servo hoodservo;
 
     public IMU imu;

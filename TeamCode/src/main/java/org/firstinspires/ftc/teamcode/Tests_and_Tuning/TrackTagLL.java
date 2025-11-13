@@ -25,7 +25,6 @@ public class TrackTagLL extends NextFTCOpMode {
     private double Bearing;
     private Command setVelPID;
     private final double TICKS_PER_DEGREES = (384.5 * 100 / 16) / 360;
-    private LLResult llresult;
 
     @Override
     public void onInit() {
@@ -50,22 +49,21 @@ public class TrackTagLL extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        Turret.X.posPID();
+        Turret.X.velPID();
         limelight.start();
     }
 
     @Override
     public void onUpdate() {
-        long start = System.nanoTime();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
-        llresult = limelight.getLatestResult();
+        LLResult llresult = limelight.getLatestResult();
         if (llresult != null && llresult.isValid()) {
             double tx = llresult.getTx();
+            if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
             TrackTag(tx);
         }
         if (timer.milliseconds() > 100) {
-            telemetry.addData("Tx", llresult.getTx());
             telemetry.addData("Current motor pos", Turret.X.getPos());
             telemetry.addData("Current motor vel", Turret.X.getVelo());
             telemetry.update();
@@ -74,7 +72,9 @@ public class TrackTagLL extends NextFTCOpMode {
     }
 
     public void TrackTag(double Tx) {
-        double ticks2turn = Tx * TICKS_PER_DEGREES;
-        Turret.X.TurnTo(Turret.X.getPos()-ticks2turn);
+        double k = .013;
+        double target = 600/(1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
+        if (Tx < 0) {target = -target;}
+        Turret.X.runTo(target * 6.7).schedule();
     }
 }

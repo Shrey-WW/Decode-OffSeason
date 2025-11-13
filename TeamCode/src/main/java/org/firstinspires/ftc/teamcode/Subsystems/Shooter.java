@@ -15,6 +15,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class Shooter implements Subsystem {
     private Shooter(){}
     //motor 2 HAS ENCODER
+    //HOOD SERVO CAN GO BETWEEN .7 and .4
     public static final Shooter X = new Shooter();
 
     public static double p,i,d;
@@ -28,8 +29,8 @@ public class Shooter implements Subsystem {
 
     private PIDCoefficients PIDGains = new PIDCoefficients(p, i, d);
     private ControlSystem controlSystem = ControlSystem.builder()
-            .velSquID(PIDGains)
-            .basicFF(0,0,0)
+            .velPid(PIDGains)
+            .basicFF(0,0,.58)
             .build();
 
     @Override
@@ -48,8 +49,8 @@ public class Shooter implements Subsystem {
     public void updatePID(){
         PIDGains = new PIDCoefficients(p, i, d);
         controlSystem = ControlSystem.builder()
-            .velSquID(PIDGains)
-            .basicFF(0,0,0)
+            .velPid(PIDGains)
+            .basicFF(0,0,.58)
             .build();
     }
 

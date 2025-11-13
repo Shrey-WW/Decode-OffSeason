@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOps;
 import static dev.nextftc.bindings.Bindings.button;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -18,11 +19,13 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
+@Config
 @TeleOp(name = "Main TeleOp")
 public class MainTeleOp extends NextFTCOpMode {
     Gamepad.RumbleEffect GoodRumble, BadRumble;
     Robot bot;
     Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square;
+    public static double z;
 
     @Override
     public void onInit() {
@@ -33,18 +36,19 @@ public class MainTeleOp extends NextFTCOpMode {
         );
         bot = new Robot(this);
         initButtons();
+        Turret.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed(){
-        bot.hoodservo.setPosition(.5);
+        Turret.X.posPID();
         bot.drive.schedule();
         assignButtons();
     }
 
     @Override
     public void onUpdate(){
-
+        bot.hoodservo.setPosition(z);
         if (Shooter.X.getVelo() >= 1500){
             gamepad1.runRumbleEffect(BadRumble);
         }
