@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.core.commands.Command;
@@ -21,10 +22,7 @@ public class TrackTagLL extends NextFTCOpMode {
     private Limelight3A limelight;
     private IMU imu;
     ElapsedTime timer = new ElapsedTime();
-    private double cPos;
-    private double Bearing;
-    private Command setVelPID;
-    private final double TICKS_PER_DEGREES = (384.5 * 100 / 16) / 360;
+    Robot bot;
 
     @Override
     public void onInit() {
@@ -36,9 +34,11 @@ public class TrackTagLL extends NextFTCOpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         imu = hardwareMap.get(IMU.class, "imu");
-        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP);
-        imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        imu.initialize(parameters);
+        bot = new Robot(this);
     }
 
     @Override
@@ -49,26 +49,28 @@ public class TrackTagLL extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+        bot.drive.schedule();
         Turret.X.velPID();
         limelight.start();
     }
 
     @Override
     public void onUpdate() {
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
-        LLResult llresult = limelight.getLatestResult();
-        if (llresult != null && llresult.isValid()) {
-            double tx = llresult.getTx();
-            if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
-            TrackTag(tx);
-        }
-        if (timer.milliseconds() > 100) {
-            telemetry.addData("Current motor pos", Turret.X.getPos());
-            telemetry.addData("Current motor vel", Turret.X.getVelo());
-            telemetry.update();
-            timer.reset();
-        }
+        bot.TrackTagLL();
+//        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+//        limelight.updateRobotOrientation(orientation.getYaw());
+//        LLResult llresult = limelight.getLatestResult();
+//        if (llresult != null && llresult.isValid()) {
+//            double tx = llresult.getTx();
+//            if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
+//            TrackTag(tx);
+//        }
+//        if (timer.milliseconds() > 100) {
+//            telemetry.addData("Current motor pos", Turret.X.getPos());
+//            telemetry.addData("Current motor vel", Turret.X.getVelo());
+//            telemetry.update();
+//            timer.reset();
+//        }
     }
 
     public void TrackTag(double Tx) {

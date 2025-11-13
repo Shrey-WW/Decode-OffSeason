@@ -18,10 +18,10 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous (group = "auto")
-public class BlindCodeAuto extends NextFTCOpMode {
+public class FarAuto extends NextFTCOpMode {
 
     Robot bot;
-    Command GoBackwards, shoot, spamTransfer;
+    Command shoot, spamTransfer;
 
     @Override
     public void onInit(){
@@ -39,31 +39,16 @@ public class BlindCodeAuto extends NextFTCOpMode {
         new SequentialGroup(
                 new ParallelGroup(
                         TransferServo.X.open,
-                        Shooter.X.HighHood,
-                        GoBackwards
-                ).endAfter(.75),
+                        Shooter.X.HighHood
+                ),
                 shoot,
                 spamTransfer
         );
     }
 
     public void MakeCommands(){
-        GoBackwards = new InstantCommand(() -> {
-            bot.motors[0].setPower(-.7);
-            bot.motors[1].setPower(-.7);
-            bot.motors[2].setPower(-.7);
-            bot.motors[3].setPower(-.7);
-        });
-
         shoot = new ParallelGroup(
-                new InstantCommand(() -> {
-                    bot.motors[0].setPower(0);
-                    bot.motors[1].setPower(0);
-                    bot.motors[2].setPower(0);
-                    bot.motors[3].setPower(0);
-                })
-                ,
-                Shooter.X.ShortPowerShot,
+                Shooter.X.FullPowerShot,
                 new InstantCommand(Intake.X.SpinIn(1)).afterTime(2.5)
         ).endAfter(6.7);
 

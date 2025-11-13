@@ -40,6 +40,7 @@ public class Turret implements Subsystem {
             .posSquid(.00001, 0.000000000005, 10)
             .basicFF(0,0,.12)
             .build();
+
     @Override
     public void periodic(){
         motor.setPower(controlSystem.calculate(motor.getState()));
@@ -71,7 +72,7 @@ public class Turret implements Subsystem {
     public void velPID(){
         PIDGains = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
-                .velSquID(.000001, 0.000000000005, 11-1)
+                .velSquID(.000001, 0.000000000005, 10)
                 .basicFF(0,0,.11)
                 .build();
     }

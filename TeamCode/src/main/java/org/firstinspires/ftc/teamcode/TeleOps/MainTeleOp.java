@@ -24,8 +24,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class MainTeleOp extends NextFTCOpMode {
     Gamepad.RumbleEffect GoodRumble, BadRumble;
     Robot bot;
-    Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square;
-    public static double z;
+    Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square, circle;
 
     @Override
     public void onInit() {
@@ -41,14 +40,16 @@ public class MainTeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed(){
-        Turret.X.posPID();
+        TransferServo.X.open.schedule();
+        Shooter.X.HighHood.schedule();
+        Turret.X.velPID();
         bot.drive.schedule();
         assignButtons();
     }
 
     @Override
     public void onUpdate(){
-        bot.hoodservo.setPosition(z);
+        bot.TrackTagLL();
         if (Shooter.X.getVelo() >= 1500){
             gamepad1.runRumbleEffect(BadRumble);
         }
@@ -69,6 +70,7 @@ public class MainTeleOp extends NextFTCOpMode {
         square = button(() -> gamepad1.x);
         rBumper = button(() -> gamepad1.right_bumper);
         lBumper = button(() -> gamepad1.left_bumper);
+        circle = button(() -> gamepad1.b);
 
         GoodRumble = new Gamepad.RumbleEffect.Builder()
                 .addStep(.2, .2, 1).build();
@@ -86,5 +88,6 @@ public class MainTeleOp extends NextFTCOpMode {
         square.whenBecomesTrue(() -> Shooter.X.ShortPowerShot.schedule());
         rBumper.whenBecomesTrue(() -> Shooter.X.IncPower.schedule());
         lBumper.whenBecomesTrue(() -> Shooter.X.DecPower.schedule());
+        circle.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
     }
 }

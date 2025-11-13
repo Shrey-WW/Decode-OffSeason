@@ -11,7 +11,7 @@ public class TransferServo implements Subsystem {
     public static final TransferServo X = new TransferServo();
     public TransferServo(){}
     ServoEx servo = new ServoEx("transfer");
-    private final Command close = new InstantCommand(() -> servo.setPosition(0.92));
-    private final Command open = new InstantCommand(() -> servo.setPosition(1));
+    public final Command close = new InstantCommand(() -> servo.setPosition(0.92));
+    public final Command open = new InstantCommand(() -> servo.setPosition(1));
     public final SwitchCMD transfer = new SwitchCMD(open, close);
 }
