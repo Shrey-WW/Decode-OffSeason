@@ -99,13 +99,13 @@ public class Robot {
     public void TrackTagLL() {
         double Ticks_Per_Revolution = 2403.125;
         double cPos = Turret.X.getPos();
-        if (cPos >= 2300){
+        if (cPos >= 1700){
             Turret.X.posPID();
             double target = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
             Turret.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
-        else if (cPos <= -2300){
+        else if (cPos <= -1700){
             Turret.X.posPID();
             double target = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
             Turret.X.TurnTo(target).schedule();
@@ -118,7 +118,7 @@ public class Robot {
             double Tx = llresult.getTx();
             double k = .013;
             double target = 600/(1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
-            if (Tx < 0) { target = -target;}
+            if (Tx < 0) {target = -target;}
             Turret.X.runTo(target * 6.7).schedule();
         }
 

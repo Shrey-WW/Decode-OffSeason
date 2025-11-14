@@ -66,7 +66,7 @@ public class AtagOpmode extends NextFTCOpMode {
     public void onUpdate() {
         long start = System.nanoTime();
         TrackTag();
-        if (timer.milliseconds() > 100) {
+        if (timer.milliseconds() > 50) {
             telemetry.addData("Current motor pos", Turret.X.getPos());
             telemetry.addData("Current motor vel", Turret.X.getVelo());
             RobotLog.dd("TeamCode", String.valueOf((System.nanoTime() - start)/ 1e6));

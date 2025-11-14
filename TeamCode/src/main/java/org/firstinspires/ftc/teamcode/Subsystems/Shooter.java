@@ -26,12 +26,13 @@ public class Shooter implements Subsystem {
     ServoEx Hood = new ServoEx("hood");
     private final MotorGroup ShootingMotors = new MotorGroup(motor2, motor);
     public Command FullPowerShot = new InstantCommand(() -> setPwr(1));
-    public Command ShortPowerShot = new InstantCommand(() -> setPwr(.84));
+    public Command ShortPowerShot = new InstantCommand(() -> setPwr(.75));
+    public Command MinPower = new InstantCommand(() -> setPwr(.3));
     public Command IncPower = new InstantCommand(() -> setPwr(getPwr() + .02));
     public Command DecPower = new InstantCommand(() -> setPwr(getPwr() - .02));
-    public Command HighHood = new InstantCommand(() -> Hood.setPosition(.4));
-    public Command LowHood = new InstantCommand(() -> Hood.setPosition(.6));
-    public SwitchCMD SwitchHood = new SwitchCMD(HighHood, LowHood);
+    public final Command HighHood = new InstantCommand(() -> Hood.setPosition(.55));
+    public final Command LowHood = new InstantCommand(() -> Hood.setPosition(.7));
+    public final SwitchCMD SwitchHood = new SwitchCMD(HighHood, LowHood);
 
 
     private PIDCoefficients PIDGains = new PIDCoefficients(p, i, d);
@@ -40,10 +41,8 @@ public class Shooter implements Subsystem {
             .basicFF(0.0075,.00006,.09)
             .build();
 
-    @Override
-    public void periodic(){
-        ShootingMotors.setPower(controlSystem.calculate(motor.getState()));
-    }
+
+    //                  {***_FLYWHEELS_***}
 
     public Command setVelocity(double goal){
         return new RunToVelocity(controlSystem, goal).requires(this);
@@ -75,6 +74,12 @@ public class Shooter implements Subsystem {
 
     public double getPwr(){
         return ShootingMotors.getPower();
+    }
+
+    //                  {***_HOOD_***}
+
+    public Command setHood(double pos){
+        return new InstantCommand(() -> Hood.setPosition(pos));
     }
 
 }

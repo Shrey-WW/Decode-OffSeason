@@ -6,7 +6,9 @@ import static dev.nextftc.bindings.Bindings.button;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -24,7 +26,8 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class MainTeleOp extends NextFTCOpMode {
     Gamepad.RumbleEffect GoodRumble, BadRumble;
     Robot bot;
-    Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square, circle;
+    Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square, circle, dpadUp, dpadDown;
+    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void onInit() {
@@ -42,24 +45,25 @@ public class MainTeleOp extends NextFTCOpMode {
     public void onStartButtonPressed(){
         TransferServo.X.open.schedule();
         Shooter.X.HighHood.schedule();
-        Turret.X.velPID();
+        Turret.X.posPID();
         bot.drive.schedule();
         assignButtons();
     }
 
     @Override
     public void onUpdate(){
-        bot.TrackTagLL();
-        if (Shooter.X.getVelo() >= 1500){
-            gamepad1.runRumbleEffect(BadRumble);
+        if (timer.milliseconds() > 50) {
+            telemetry.addData("Shooting velocity", Shooter.X.getVelo());
+            telemetry.addData("Shooting power", Shooter.X.getPwr());
+            telemetry.update();
+            timer.reset();
         }
-        else if (Shooter.X.getVelo() >= 1380){
-            gamepad1.runRumbleEffect(GoodRumble);
-        }
-
-        telemetry.addData("Shooting velocity", Shooter.X.getVelo());
-        telemetry.addData("Shooting power", Shooter.X.getPwr());
-        telemetry.update();
+//        if (Shooter.X.getVelo() >= 1500){
+//            gamepad1.runRumbleEffect(BadRumble);
+//        }
+//        else if (Shooter.X.getVelo() >= 1380){
+//            gamepad1.runRumbleEffect(GoodRumble);
+//        }
     }
 
     private void initButtons(){
@@ -71,11 +75,13 @@ public class MainTeleOp extends NextFTCOpMode {
         rBumper = button(() -> gamepad1.right_bumper);
         lBumper = button(() -> gamepad1.left_bumper);
         circle = button(() -> gamepad1.b);
+        dpadUp = button(() -> gamepad1.dpad_up);
+        dpadDown = button(() -> gamepad1.dpad_down);
 
-        GoodRumble = new Gamepad.RumbleEffect.Builder()
-                .addStep(.2, .2, 1).build();
-        BadRumble = new Gamepad.RumbleEffect.Builder()
-                .addStep(.5, 0, 1).build();
+//        GoodRumble = new Gamepad.RumbleEffect.Builder()
+//                .addStep(.2, .2, 1).build();
+//        BadRumble = new Gamepad.RumbleEffect.Builder()
+//                .addStep(.5, 0, 1).build();
     }
 
     private void assignButtons(){
@@ -86,8 +92,10 @@ public class MainTeleOp extends NextFTCOpMode {
         x.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
         triangle.whenBecomesTrue(() -> Shooter.X.FullPowerShot.schedule());
         square.whenBecomesTrue(() -> Shooter.X.ShortPowerShot.schedule());
+        circle.whenBecomesTrue(() -> Shooter.X.MinPower.schedule());
         rBumper.whenBecomesTrue(() -> Shooter.X.IncPower.schedule());
         lBumper.whenBecomesTrue(() -> Shooter.X.DecPower.schedule());
-        circle.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
+        dpadUp.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
+        dpadDown.whenBecomesTrue(() -> Turret.X.TurnToGoal(bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)));
     }
 }

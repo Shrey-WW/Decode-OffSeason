@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -19,9 +21,8 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous (group = "auto")
 public class FarAuto extends NextFTCOpMode {
-
+    private double cVelo;
     Robot bot;
-    Command shoot, spamTransfer;
 
     @Override
     public void onInit(){
@@ -30,49 +31,65 @@ public class FarAuto extends NextFTCOpMode {
                 BindingsComponent.INSTANCE,
                 new SubsystemComponent(Intake.X, TransferServo.X, Shooter.X, Turret.X)
         );
-        MakeCommands();
+        TransferServo.X.open.schedule();
+        TransferServo.X.open.schedule();
+        TransferServo.X.open.schedule();
         Turret.X.PIDReset();
+        bot = new Robot(this);
     }
 
     @Override
     public void onStartButtonPressed(){
-        new SequentialGroup(
-                new ParallelGroup(
-                        TransferServo.X.open,
-                        Shooter.X.HighHood
-                ),
-                shoot,
-                spamTransfer
-        );
+        Turret.X.posPID();
+        AutoRoutine().schedule();
+
     }
 
-    public void MakeCommands(){
-        shoot = new ParallelGroup(
-                Shooter.X.FullPowerShot,
-                new InstantCommand(Intake.X.SpinIn(1)).afterTime(2.5)
-        ).endAfter(6.7);
-
-        spamTransfer = new SequentialGroup(
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75),
-                TransferServo.X.transfer.afterTime(.5),
-                TransferServo.X.transfer.afterTime(.75)
+    private Command AutoRoutine(){
+        return new SequentialGroup(
+                new ParallelGroup(
+                        TransferServo.X.open,
+                        Shooter.X.setHood(.55),
+                        Turret.X.TurnTo((2403.125/360) * 20)
+                ),
+                new InstantCommand(() -> Shooter.X.setPwr(.9)),
+                new Delay(4.5),
+                new InstantCommand(() -> cVelo = Shooter.X.getVelo()),
+                Intake.X.SpinIn(1),
+                new WaitUntil(() -> cVelo - Shooter.X.getVelo() > 100),
+                Intake.X.SpinIn(.65),
+                new Delay(3.5),
+                new InstantCommand(() -> cVelo = Shooter.X.getVelo()),
+                Intake.X.SpinIn(1),
+                new WaitUntil(() -> cVelo - Shooter.X.getVelo() > 100),
+                new Delay(3.5),
+                TransferServo.X.close,
+                new Delay(2),
+                TransferServo.X.open,
+                new Delay(1.5),
+                TransferServo.X.close,
+                new Delay(2),
+                TransferServo.X.open,
+                new Delay(1.5),
+                TransferServo.X.close,
+                new Delay(2),
+                TransferServo.X.open,
+                new Delay(1.5),
+                TransferServo.X.close,
+                new InstantCommand(() -> { Shooter.X.setPwr(0); Intake.X.PwrOff(); }),
+                new InstantCommand(() -> {
+                    bot.motors[0].setPower(.7);
+                    bot.motors[1].setPower(.7);
+                    bot.motors[2].setPower(.7);
+                    bot.motors[3].setPower(.7);
+                }),
+                new Delay(2),
+                new InstantCommand(() -> {
+                    bot.motors[0].setPower(0);
+                    bot.motors[1].setPower(0);
+                    bot.motors[2].setPower(0);
+                    bot.motors[3].setPower(0);
+                })
         );
-
-
     }
 }

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
@@ -23,6 +24,7 @@ public class TrackTagLL extends NextFTCOpMode {
     private IMU imu;
     ElapsedTime timer = new ElapsedTime();
     Robot bot;
+    private Command setVelPID;
 
     @Override
     public void onInit() {
@@ -52,31 +54,69 @@ public class TrackTagLL extends NextFTCOpMode {
         bot.drive.schedule();
         Turret.X.velPID();
         limelight.start();
+        setVelPID = new InstantCommand(Turret.X::velPID);
     }
 
     @Override
     public void onUpdate() {
-        bot.TrackTagLL();
-//        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-//        limelight.updateRobotOrientation(orientation.getYaw());
-//        LLResult llresult = limelight.getLatestResult();
-//        if (llresult != null && llresult.isValid()) {
-//            double tx = llresult.getTx();
-//            if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
-//            TrackTag(tx);
-//        }
-//        if (timer.milliseconds() > 100) {
-//            telemetry.addData("Current motor pos", Turret.X.getPos());
-//            telemetry.addData("Current motor vel", Turret.X.getVelo());
-//            telemetry.update();
-//            timer.reset();
-//        }
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        limelight.updateRobotOrientation(orientation.getYaw());
+        LLResult llresult = limelight.getLatestResult();
+        if (llresult != null && llresult.isValid()) {
+            double tx = llresult.getTx();
+            if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
+            TrackTag(tx);
+        }
+        if (timer.milliseconds() > 100) {
+            telemetry.addData("Current motor pos", Turret.X.getPos());
+            telemetry.addData("Current motor vel", Turret.X.getVelo());
+            telemetry.update();
+            timer.reset();
+        }
     }
 
-    public void TrackTag(double Tx) {
-        double k = .013;
-        double target = 600/(1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
-        if (Tx < 0) {target = -target;}
-        Turret.X.runTo(target * 6.7).schedule();
+    public void TrackingLL() {
+        double Ticks_Per_Revolution = 2403.125;
+        double cPos = Turret.X.getPos();
+        if (cPos >= 1700) {
+            Turret.X.posPID();
+            double target = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
+            Turret.X.TurnTo(target).schedule();
+            setVelPID.afterTime(.7).schedule();
+        } else if (cPos <= -1700) {
+            Turret.X.posPID();
+            double target = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
+            Turret.X.TurnTo(target).schedule();
+            setVelPID.afterTime(.7).schedule();
+        }
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        limelight.updateRobotOrientation(orientation.getYaw());
+        LLResult llresult = limelight.getLatestResult();
+        if (llresult != null && llresult.isValid()) {
+            double multi = 1;
+            double bearing;
+            double Tx = llresult.getTx();
+            if (Tx > 0){
+                bearing = Tx + 4;
+            }
+            else{
+                bearing = Math.abs(Tx) - 4;
+                multi = -1;
+            }
+            double target = 600 / (1 + Math.pow(Math.E, -.013 * (bearing * 10 - 300))) - 11.90418;
+            target *= multi;
+            if (bearing >= 3) {
+                Turret.X.runTo(target * (1 / (.05 * (bearing + 1)) + .75)).schedule();
+            }
+        }
     }
-}
+
+        public void TrackTag(double Tx) {
+            double k = .013;
+            double target = 600/(1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
+            if (Tx < 0) {target = -target;}
+            Turret.X.runTo(target * 6.7).schedule();
+        }
+
+    }
+
