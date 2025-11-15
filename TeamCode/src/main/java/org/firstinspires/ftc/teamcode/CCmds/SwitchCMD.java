@@ -24,6 +24,14 @@ public class SwitchCMD extends Command {
         return cmdsList.get(currentCMD);
     }
 
+    public Command getCurrentCommand(){
+        int temp = currentCMD;
+        if (temp == -1){
+            temp = 0;
+        }
+        return cmdsList.get(temp);
+    }
+
 
     @Override
     public boolean isDone() {

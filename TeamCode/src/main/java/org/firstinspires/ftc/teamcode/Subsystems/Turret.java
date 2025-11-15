@@ -22,6 +22,7 @@ public class Turret implements Subsystem {
 
     public static double p ,i, d;
     private double pwr = 0;
+    private double cPos = 0;
 
     public Command SpeedUp = new InstantCommand(() -> {
         pwr += .04;
@@ -60,12 +61,26 @@ public class Turret implements Subsystem {
         return new RunToPosition(controlSystem, TargetTicks).requires(this);
     }
 
+    public Command TurnRight(){
+        cPos += 2403.125/360 * 5;
+        return new RunToPosition(controlSystem, cPos).requires(this);
+    }
+
+    public Command TurnLeft(){
+        cPos -= 2403.125/360 * 5;
+        return new RunToPosition(controlSystem, cPos).requires(this);
+    }
+
     public void resetPwr(){
         motor.setPower(0);
     }
 
     public Command FollowCam(double bearing){
         return new RunToVelocity(controlSystem, bearing * -20);
+    }
+
+    public Command resetTicks(){
+        return new InstantCommand(() -> motor.setCurrentPosition(0));
     }
 
     public void PIDReset(){

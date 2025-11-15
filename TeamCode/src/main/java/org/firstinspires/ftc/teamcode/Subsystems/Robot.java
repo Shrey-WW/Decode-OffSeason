@@ -22,13 +22,13 @@ import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.hardware.driving.DriverControlledCommand;
 
 public class Robot {
-    public DcMotor[] motors;
+    DcMotor[] motors;
     public DriverControlledCommand drive;
     AprilTagProcessor tagProcessor;
     VisionPortal visionPortal;
     private final Command setVelPID;
     public Limelight3A limelight;
-    public DcMotor fL, fR, bL, bR;
+    DcMotor fL, fR, bL, bR;
 
     public IMU imu;
 

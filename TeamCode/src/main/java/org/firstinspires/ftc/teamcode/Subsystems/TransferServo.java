@@ -12,7 +12,10 @@ public class TransferServo implements Subsystem {
     public TransferServo(){}
     ServoEx servo = new ServoEx("transfer");
 
-    public final Command close = new InstantCommand(() -> servo.setPosition(0.92));
+    public final Command close = new InstantCommand(() -> servo.setPosition(0.91));
     public final Command open = new InstantCommand(() -> servo.setPosition(1));
     public final SwitchCMD transfer = new SwitchCMD(open, close);
+    public boolean getStatus(){
+        return (servo.getPosition() > .95);
+    }
 }

@@ -24,9 +24,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Config
 @TeleOp(name = "Main TeleOp")
 public class MainTeleOp extends NextFTCOpMode {
-    Gamepad.RumbleEffect GoodRumble, BadRumble;
+    Gamepad.RumbleEffect ClosedRumble, BadRumble;
     Robot bot;
-    Button rTrigger, lTrigger, x, rBumper, lBumper, triangle, square, circle, dpadUp, dpadDown;
+    Button rTrigger, lTrigger, x2, x, rBumper, lBumper, rBumper2, lBumper2, triangle, square, circle, dpadUp, dpadDown;
     ElapsedTime timer = new ElapsedTime();
 
     @Override
@@ -52,34 +52,33 @@ public class MainTeleOp extends NextFTCOpMode {
 
     @Override
     public void onUpdate(){
+        String ServoStatus = "closed";
+        if (TransferServo.X.transfer.getCurrentCommand() == TransferServo.X.open)
+        {
+            ServoStatus = "open";
+        }
         if (timer.milliseconds() > 50) {
             telemetry.addData("Shooting velocity", Shooter.X.getVelo());
             telemetry.addData("Shooting power", Shooter.X.getPwr());
+            telemetry.addData("Transfer Servo Status", ServoStatus);
             telemetry.update();
             timer.reset();
         }
-//        if (Shooter.X.getVelo() >= 1500){
-//            gamepad1.runRumbleEffect(BadRumble);
-//        }
-//        else if (Shooter.X.getVelo() >= 1380){
-//            gamepad1.runRumbleEffect(GoodRumble);
-//        }
     }
 
     private void initButtons(){
         rTrigger = button(() -> gamepad1.right_trigger > 0.1);
         lTrigger = button(() -> gamepad1.left_trigger > 0.1);
+        x2 = button(() -> gamepad2.a);
         x = button(() -> gamepad1.a);
         triangle = button(() -> gamepad1.y);
         square = button(() -> gamepad1.x);
         rBumper = button(() -> gamepad1.right_bumper);
         lBumper = button(() -> gamepad1.left_bumper);
+        rBumper2 = button(() -> gamepad2.right_bumper);
+        lBumper2 = button(() -> gamepad2.left_bumper);
         circle = button(() -> gamepad1.b);
         dpadUp = button(() -> gamepad1.dpad_up);
-        dpadDown = button(() -> gamepad1.dpad_down);
-
-//        GoodRumble = new Gamepad.RumbleEffect.Builder()
-//                .addStep(.2, .2, 1).build();
 //        BadRumble = new Gamepad.RumbleEffect.Builder()
 //                .addStep(.5, 0, 1).build();
     }
@@ -89,13 +88,14 @@ public class MainTeleOp extends NextFTCOpMode {
                 .whenBecomesFalse(Intake.X::PwrOff);
         lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
                 .whenBecomesFalse(Intake.X::PwrOff);
-        x.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
+        x2.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
         triangle.whenBecomesTrue(() -> Shooter.X.FullPowerShot.schedule());
         square.whenBecomesTrue(() -> Shooter.X.ShortPowerShot.schedule());
-        circle.whenBecomesTrue(() -> Shooter.X.MinPower.schedule());
+        x.whenBecomesTrue(() -> Shooter.X.MinPower.schedule());
         rBumper.whenBecomesTrue(() -> Shooter.X.IncPower.schedule());
         lBumper.whenBecomesTrue(() -> Shooter.X.DecPower.schedule());
         dpadUp.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
-        dpadDown.whenBecomesTrue(() -> Turret.X.TurnToGoal(bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)));
+        rBumper2.whenBecomesTrue(() -> Turret.X.TurnRight().schedule());
+        lBumper2.whenBecomesTrue(() -> Turret.X.TurnLeft().schedule());
     }
 }

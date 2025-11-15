@@ -30,7 +30,7 @@ public class Shooter implements Subsystem {
     public Command MinPower = new InstantCommand(() -> setPwr(.3));
     public Command IncPower = new InstantCommand(() -> setPwr(getPwr() + .02));
     public Command DecPower = new InstantCommand(() -> setPwr(getPwr() - .02));
-    public final Command HighHood = new InstantCommand(() -> Hood.setPosition(.55));
+    public final Command HighHood = new InstantCommand(() -> Hood.setPosition(.5));
     public final Command LowHood = new InstantCommand(() -> Hood.setPosition(.7));
     public final SwitchCMD SwitchHood = new SwitchCMD(HighHood, LowHood);
 
