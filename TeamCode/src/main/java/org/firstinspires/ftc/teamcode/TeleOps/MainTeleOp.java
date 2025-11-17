@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -24,7 +23,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Config
 @TeleOp(name = "Main TeleOp")
 public class MainTeleOp extends NextFTCOpMode {
-    Gamepad.RumbleEffect ClosedRumble, BadRumble;
     Robot bot;
     Button rTrigger, lTrigger, x2, x, rBumper, lBumper, rBumper2, lBumper2, triangle, square, circle, dpadUp, dpadDown;
     ElapsedTime timer = new ElapsedTime();
@@ -79,8 +77,6 @@ public class MainTeleOp extends NextFTCOpMode {
         lBumper2 = button(() -> gamepad2.left_bumper);
         circle = button(() -> gamepad1.b);
         dpadUp = button(() -> gamepad1.dpad_up);
-//        BadRumble = new Gamepad.RumbleEffect.Builder()
-//                .addStep(.5, 0, 1).build();
     }
 
     private void assignButtons(){

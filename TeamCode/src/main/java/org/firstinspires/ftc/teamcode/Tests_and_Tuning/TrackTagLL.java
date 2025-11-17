@@ -64,8 +64,8 @@ public class TrackTagLL extends NextFTCOpMode {
         LLResult llresult = limelight.getLatestResult();
         if (llresult != null && llresult.isValid()) {
             double tx = llresult.getTx();
+            TrackingLL(tx);
             if (timer.milliseconds() > 100) { telemetry.addData("Tx", llresult.getTx()); }
-            TrackTag(tx);
         }
         if (timer.milliseconds() > 100) {
             telemetry.addData("Current motor pos", Turret.X.getPos());
@@ -75,39 +75,32 @@ public class TrackTagLL extends NextFTCOpMode {
         }
     }
 
-    public void TrackingLL() {
-        double Ticks_Per_Revolution = 2403.125;
+    public void TrackingLL(double Tx) {
+        double Ticks_Per_HalfRevolution = 2403.125 / 2;
         double cPos = Turret.X.getPos();
-        if (cPos >= 1700) {
+        if (cPos >= Ticks_Per_HalfRevolution) {
             Turret.X.posPID();
-            double target = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
+            double target = cPos - ((int) (cPos / Ticks_Per_HalfRevolution)) * Ticks_Per_HalfRevolution - Ticks_Per_HalfRevolution;
             Turret.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
-        } else if (cPos <= -1700) {
+        } else if (cPos <= -Ticks_Per_HalfRevolution) {
             Turret.X.posPID();
-            double target = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
+            double target = cPos + ((int) Math.abs(cPos) / Ticks_Per_HalfRevolution) * Ticks_Per_HalfRevolution + Ticks_Per_HalfRevolution;
             Turret.X.TurnTo(target).schedule();
             setVelPID.afterTime(.7).schedule();
         }
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
-        LLResult llresult = limelight.getLatestResult();
-        if (llresult != null && llresult.isValid()) {
-            double multi = 1;
-            double bearing;
-            double Tx = llresult.getTx();
-            if (Tx > 0){
-                bearing = Tx + 4;
-            }
-            else{
-                bearing = Math.abs(Tx) - 4;
-                multi = -1;
-            }
-            double target = 600 / (1 + Math.pow(Math.E, -.013 * (bearing * 10 - 300))) - 11.90418;
-            target *= multi;
-            if (bearing >= 3) {
-                Turret.X.runTo(target * (1 / (.05 * (bearing + 1)) + .75)).schedule();
-            }
+        double multi = 1;
+        double bearing;
+        if (Tx > 0) {
+            bearing = Tx + 4;
+        } else {
+            bearing = Math.abs(Tx) - 4;
+            multi = -1;
+        }
+        double target = 600 / (1 + Math.pow(Math.E, -.013 * (bearing * 10 - 300))) - 11.90418;
+        target *= multi;
+        if (bearing >= 3) {
+            Turret.X.runTo(target * (1 / (.05 * (bearing + 1)) + .75)).schedule();
         }
     }
 
@@ -118,5 +111,5 @@ public class TrackTagLL extends NextFTCOpMode {
             Turret.X.runTo(target * 6.7).schedule();
         }
 
-    }
+}
 

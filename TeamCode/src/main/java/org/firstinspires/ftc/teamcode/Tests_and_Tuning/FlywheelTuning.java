@@ -30,7 +30,7 @@ public class FlywheelTuning extends NextFTCOpMode {
     @Override
     public void onUpdate(){
         PIDCoefficients gains = Shooter.X.getPIDCoefficients();
-        if (gains.kP != Shooter.p || gains.kD != Shooter.d || gains.kI != Shooter.i){
+        if (gains.kP != Shooter.kP || Shooter.kV != Shooter.X.kV){
             Shooter.X.updatePID();
         }
         Shooter.X.setVelocity(target).schedule();
