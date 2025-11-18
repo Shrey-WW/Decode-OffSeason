@@ -126,13 +126,16 @@ public class MainTeleOp extends NextFTCOpMode {
         double cPos = Turret.X.getPos();
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
-            double k = .013;
-            double target = 600 / (1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
-            telemetry.addData("Tx", llresult.getTx());
-            if (Tx < 0) {
-                target = -target;
+            if (Math.abs(Tx) > 1.5){
+                double multi = 1;
+                double k = .013;
+                double target = 600 / (1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
+                telemetry.addData("Tx", llresult.getTx());
+                if (Tx < 0) {
+                    multi = -1;
+                }
+                Turret.X.runTo(multi * ((target * 6.7) * 1 / (.06 * Math.sqrt(Tx)))).schedule();
             }
-            Turret.X.runTo(target * 6.7).schedule();
         }
         if (cPos >= 2200){
             Turret.X.posPID();

@@ -55,12 +55,6 @@ public class Turret implements Subsystem {
         return new RunToPosition(controlSystem, goal).requires(this);
     }
 
-    public Command TurnToGoal(double botHeading){
-        double TurretTarget = 62.5 - botHeading;
-        double TargetTicks = (2403.125 / 360) * TurretTarget;
-        return new RunToPosition(controlSystem, TargetTicks).requires(this);
-    }
-
     public Command TurnRight(){
         cPos += 2403.125/360 * 5;
         return new RunToPosition(controlSystem, cPos).requires(this);
