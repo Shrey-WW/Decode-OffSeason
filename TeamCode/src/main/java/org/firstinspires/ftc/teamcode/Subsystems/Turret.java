@@ -35,10 +35,10 @@ public class Turret implements Subsystem {
     }
     );
 
-    private PIDCoefficients PIDGains = new PIDCoefficients(p,i,d);
+    public PIDCoefficients PIDGains = new PIDCoefficients(p,i,d);
 
     private ControlSystem controlSystem = ControlSystem.builder()
-            .posSquid(.00001, 0.000000000005, 10)
+            .posSquid(.00001, 0.000000000005, 1)
             .basicFF(0,0,.12)
             .build();
 
@@ -99,9 +99,10 @@ public class Turret implements Subsystem {
     }
 
     public void posPID(){
+        PIDGains = new PIDCoefficients(p,i,d);
         controlSystem = ControlSystem.builder()
                 .posSquid(.0015)
-                .basicFF(0,0,.11)
+                .basicFF(0,0,0)
                 .build();
     }
 

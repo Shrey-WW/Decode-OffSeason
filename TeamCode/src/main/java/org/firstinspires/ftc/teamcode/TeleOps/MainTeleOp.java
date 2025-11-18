@@ -4,10 +4,14 @@ import static dev.nextftc.bindings.Bindings.button;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -15,6 +19,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.bindings.Button;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
@@ -24,38 +30,59 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @TeleOp(name = "Main TeleOp")
 public class MainTeleOp extends NextFTCOpMode {
     Robot bot;
-    Button rTrigger, lTrigger, x2, x, rBumper, lBumper, rBumper2, lBumper2, triangle, square, circle, dpadUp, dpadDown;
+    Button rTrigger, lTrigger, x2, x, rBumper, lBumper, triangle, square, circle, dpadUp;
     ElapsedTime timer = new ElapsedTime();
+    private Limelight3A limelight;
+    private IMU imu;
+    private Command setVelPID;
 
     @Override
     public void onInit() {
         addComponents(
+                new SubsystemComponent(Intake.X, TransferServo.X, Shooter.X, Turret.X),
                 BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE,
-                new SubsystemComponent(Intake.X, TransferServo.X, Shooter.X, Turret.X)
+                BindingsComponent.INSTANCE
         );
         bot = new Robot(this);
         initButtons();
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        imu.initialize(parameters);
+        bot = new Robot(this);
+    }
+
+    @Override
+    public void onWaitForStart() {
+        Turret.X.resetPwr();
         Turret.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed(){
-        TransferServo.X.open.schedule();
-        Shooter.X.HighHood.schedule();
-        Turret.X.posPID();
+        Turret.X.velPID();
+        limelight.start();
+        TransferServo.X.transfer.getCommand().schedule();
+        Shooter.X.SwitchHood.getCommand().schedule();
         bot.drive.schedule();
+        setVelPID = new InstantCommand(Turret.X::velPID);
         assignButtons();
     }
 
     @Override
     public void onUpdate(){
+        TrackTag();
         String ServoStatus = "closed";
         if (TransferServo.X.transfer.getCurrentCommand() == TransferServo.X.open)
         {
             ServoStatus = "open";
         }
-        if (timer.milliseconds() > 50) {
+        if (timer.milliseconds() > 100) {
+            telemetry.addData("Current motor pos", Turret.X.getPos());
+            telemetry.addData("Current motor vel", Turret.X.getVelo());
             telemetry.addData("Shooting velocity", Shooter.X.getVelo());
             telemetry.addData("Shooting power", Shooter.X.getPwr());
             telemetry.addData("Transfer Servo Status", ServoStatus);
@@ -73,8 +100,6 @@ public class MainTeleOp extends NextFTCOpMode {
         square = button(() -> gamepad1.x);
         rBumper = button(() -> gamepad1.right_bumper);
         lBumper = button(() -> gamepad1.left_bumper);
-        rBumper2 = button(() -> gamepad2.right_bumper);
-        lBumper2 = button(() -> gamepad2.left_bumper);
         circle = button(() -> gamepad1.b);
         dpadUp = button(() -> gamepad1.dpad_up);
     }
@@ -91,7 +116,35 @@ public class MainTeleOp extends NextFTCOpMode {
         rBumper.whenBecomesTrue(() -> Shooter.X.IncPower.schedule());
         lBumper.whenBecomesTrue(() -> Shooter.X.DecPower.schedule());
         dpadUp.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
-        rBumper2.whenBecomesTrue(() -> Turret.X.TurnRight().schedule());
-        lBumper2.whenBecomesTrue(() -> Turret.X.TurnLeft().schedule());
+    }
+
+    public void TrackTag() {
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        limelight.updateRobotOrientation(orientation.getYaw());
+        LLResult llresult = limelight.getLatestResult();
+        double Ticks_Per_Revolution = 2403.125;
+        double cPos = Turret.X.getPos();
+        if (llresult != null && llresult.isValid()) {
+            double Tx = llresult.getTx();
+            double k = .013;
+            double target = 600 / (1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
+            telemetry.addData("Tx", llresult.getTx());
+            if (Tx < 0) {
+                target = -target;
+            }
+            Turret.X.runTo(target * 6.7).schedule();
+        }
+        if (cPos >= 2200){
+            Turret.X.posPID();
+            double pos = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
+            Turret.X.TurnTo(pos).schedule();
+            setVelPID.afterTime(1.5).schedule();
+        }
+        else if (cPos <= -2200){
+            Turret.X.posPID();
+            double pos = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
+            Turret.X.TurnTo(pos).schedule();
+            setVelPID.afterTime(1.5).schedule();
+        }
     }
 }
