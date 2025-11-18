@@ -35,6 +35,7 @@ public class MainTeleOp extends NextFTCOpMode {
     private Limelight3A limelight;
     private IMU imu;
     private Command setVelPID;
+    private double lastHeading;
 
     @Override
     public void onInit() {
@@ -130,24 +131,25 @@ public class MainTeleOp extends NextFTCOpMode {
                 double multi = 1;
                 double k = .013;
                 double target = 600 / (1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
-                telemetry.addData("Tx", llresult.getTx());
                 if (Tx < 0) {
                     multi = -1;
                 }
-                Turret.X.runTo(multi * ((target * 6.7) * 1 / (.06 * Math.sqrt(Tx)))).schedule();
+                double TpsOffset = (orientation.getYaw() - lastHeading) * Ticks_Per_Revolution / 360;
+                Turret.X.runTo(multi * ((target * 6.7) + Math.abs(TpsOffset))).schedule();
             }
         }
         if (cPos >= 2200){
             Turret.X.posPID();
             double pos = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
             Turret.X.TurnTo(pos).schedule();
-            setVelPID.afterTime(1.5).schedule();
+            setVelPID.afterTime(1.2).schedule();
         }
         else if (cPos <= -2200){
             Turret.X.posPID();
             double pos = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
             Turret.X.TurnTo(pos).schedule();
-            setVelPID.afterTime(1.5).schedule();
+            setVelPID.afterTime(1.2).schedule();
         }
+        lastHeading = orientation.getYaw();
     }
 }
