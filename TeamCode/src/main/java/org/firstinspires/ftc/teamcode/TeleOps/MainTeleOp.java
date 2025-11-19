@@ -82,11 +82,12 @@ public class MainTeleOp extends NextFTCOpMode {
             ServoStatus = "open";
         }
         if (timer.milliseconds() > 100) {
-            telemetry.addData("Current motor pos", Turret.X.getPos());
-            telemetry.addData("Current motor vel", Turret.X.getVelo());
+            telemetry.addData("turret pos", Turret.X.getPos());
             telemetry.addData("Shooting velocity", Shooter.X.getVelo());
             telemetry.addData("Shooting power", Shooter.X.getPwr());
             telemetry.addData("Transfer Servo Status", ServoStatus);
+            telemetry.addData("last heading", lastHeading);
+
             telemetry.update();
             timer.reset();
         }
@@ -120,6 +121,7 @@ public class MainTeleOp extends NextFTCOpMode {
     }
 
     public void TrackTag() {
+        long startTime = System.nanoTime();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
@@ -134,8 +136,14 @@ public class MainTeleOp extends NextFTCOpMode {
                 if (Tx < 0) {
                     multi = -1;
                 }
-                double TpsOffset = (orientation.getYaw() - lastHeading) * Ticks_Per_Revolution / 360;
-                Turret.X.runTo(multi * ((target * 6.7) + Math.abs(TpsOffset))).schedule();
+                long currentTime = System.nanoTime();
+                double TpsOffset = ((orientation.getYaw() - lastHeading) * Ticks_Per_Revolution / 360) * 1000000000/(currentTime - startTime);
+                Turret.X.runTo(multi * ((target * 6.7) + TpsOffset)).schedule();
+
+                if (timer.milliseconds() > 100){
+                    telemetry.addData("sys time", currentTime - startTime);
+                    telemetry.addData("TPS Offset", TpsOffset);
+                }
             }
         }
         if (cPos >= 2200){
