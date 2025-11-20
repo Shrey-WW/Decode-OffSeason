@@ -31,9 +31,9 @@ public class TurretMotorTuning extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
-        if (Turret.X.getPIDGains().kP != Turret.p || Turret.X.getPIDGains().kD != Turret.d || Turret.X.getPIDGains().kI != Turret.i)
+        if (Turret.X.getPIDGains().kP != Turret.kP || Turret.X.getPIDGains().kD != Turret.Kd || Turret.X.getPIDGains().kI != Turret.Ki)
         {
-            Turret.X.posPID();
+            Turret.X.velPID();
         }
         Turret.X.runTo(target).schedule();
         telemetry.addData("target", target);

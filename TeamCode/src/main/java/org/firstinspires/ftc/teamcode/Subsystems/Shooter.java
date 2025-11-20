@@ -20,8 +20,8 @@ public class Shooter implements Subsystem {
     //HOOD SERVO CAN GO BETWEEN .7 and .4
     public static final Shooter X = new Shooter();
 
-    public static double kP, kV;
-    public double kv;
+    public static double kP, kV, Ks, kD;
+    public double kv, ks;
     MotorEx motor = new MotorEx("shooter1");
     MotorEx motor2 = new MotorEx("shooter2");
     ServoEx Hood = new ServoEx("hood");
@@ -38,17 +38,17 @@ public class Shooter implements Subsystem {
 
     private PIDCoefficients PIDGains = new PIDCoefficients(kP);
     private ControlSystem controlSystem = ControlSystem.builder()
-            .velPid(kP)
-            .basicFF(kV)
+            .velPid(0.00009)
+            .basicFF(.00044)
             .build();
 
 
     //                  {***_FLYWHEELS_***}
 
-//    @Override
-//    public void periodic(){
-//        ShootingMotors.setPower(controlSystem.calculate(motor.getState()));
-//    }
+    @Override
+    public void periodic(){
+        ShootingMotors.setPower(controlSystem.calculate(motor.getState()));
+    }
 
     public Command setVelocity(double goal){
         return new RunToVelocity(controlSystem, goal).requires(this);
@@ -60,10 +60,11 @@ public class Shooter implements Subsystem {
 
     public void updatePID(){
         kv = kV;
-        PIDGains = new PIDCoefficients(kP);
+        ks = Ks;
+        PIDGains = new PIDCoefficients(kP,0,kD);
         controlSystem = ControlSystem.builder()
             .velPid(PIDGains)
-            .basicFF(kv)
+            .basicFF(kv, 0, ks)
             .build();
     }
 

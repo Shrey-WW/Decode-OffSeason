@@ -20,7 +20,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous (name = "April tag follower")
+@Autonomous (group = "tests", name = "April tag follower")
 public class AtagOpmode extends NextFTCOpMode {
 
     AprilTagProcessor tagProcessor;

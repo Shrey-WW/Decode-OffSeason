@@ -17,10 +17,10 @@ public class Turret implements Subsystem {
     private Turret() { }
 
     private final MotorEx motor = new MotorEx("turret");
-    // pos: p = .0015 i = 0 d = 0
-    // velo:  p =  i =  d =
+    // pos: kP = .0015 Ki = 0 Kd = 0
+    // velo:  kP = .000001  Ki = 0.000000000005  Kd = 10
 
-    public static double p ,i, d;
+    public static double kP, Ki, Kd, Ks;
     private double pwr = 0;
     private double cPos = 0;
 
@@ -35,7 +35,7 @@ public class Turret implements Subsystem {
     }
     );
 
-    public PIDCoefficients PIDGains = new PIDCoefficients(p,i,d);
+    public PIDCoefficients PIDGains = new PIDCoefficients(kP, Ki, Kd);
 
     private ControlSystem controlSystem = ControlSystem.builder()
             .posSquid(.00001, 0.000000000005, 1)
@@ -85,15 +85,15 @@ public class Turret implements Subsystem {
     }
 
     public void velPID(){
-        PIDGains = new PIDCoefficients(p,i,d);
+        PIDGains = new PIDCoefficients(kP, Ki, Kd);
         controlSystem = ControlSystem.builder()
-                .velSquID(.000001, 0.000000000005, 10)
-                .basicFF(0,0,.11)
+                .velSquID(kP, Ki, Kd)
+                .basicFF(0,0, Ks)
                 .build();
     }
 
     public void posPID(){
-        PIDGains = new PIDCoefficients(p,i,d);
+        PIDGains = new PIDCoefficients(kP, Ki, Kd);
         controlSystem = ControlSystem.builder()
                 .posSquid(.0015)
                 .basicFF(0,0,0)
