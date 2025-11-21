@@ -24,7 +24,7 @@ public class Constants {
             .hardwareMapName("otos")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.RADIANS)
-            .offset(new SparkFunOTOS.Pose2D(1/8,-13/8, -Math.PI/2))
+            .offset(new SparkFunOTOS.Pose2D(1.605,-2.567, -Math.PI/2))
             .linearScalar(1.03)
             .angularScalar(.9741);
 

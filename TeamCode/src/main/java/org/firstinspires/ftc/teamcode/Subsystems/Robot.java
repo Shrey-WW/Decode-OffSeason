@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -36,6 +37,8 @@ public class Robot {
     DcMotor fL, fR, bL, bR;
 
     public IMU imu;
+    public SparkFunOTOS otos;
+
 
     //CONSTANTS
     private final Command setVelPID;
@@ -79,6 +82,7 @@ public class Robot {
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
         bR = opmode.hardwareMap.get(DcMotor.class, "br");
+        otos = opmode.hardwareMap.get(SparkFunOTOS.class, "otos");
         fL.setDirection(DcMotorSimple.Direction.REVERSE);
         bL.setDirection(DcMotorSimple.Direction.REVERSE);
         motors = new DcMotor[]{fL, bL, fR, bR};

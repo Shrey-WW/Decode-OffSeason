@@ -52,7 +52,6 @@ public class Distance2VelTest extends NextFTCOpMode {
         bot.drive.schedule();
         limelight.start();
         Intake.X.SpinIn(1).schedule();
-
     }
 
     @Override
@@ -71,11 +70,6 @@ public class Distance2VelTest extends NextFTCOpMode {
         }
         telemetry.update();
 
-        if (Shooter.X.getVelo() < calcVelocity(Ta)){
-            Intake.X.SpinIn(.5).schedule();
-        }
-        else Intake.X.SpinIn(1).schedule();
-
         Shooter.X.setVelocity(calcVelocity(Ta)).schedule();
     }
 
@@ -86,6 +80,6 @@ public class Distance2VelTest extends NextFTCOpMode {
     }
 
     public double calcVelocity(double Ta){
-        return 1480 * Math.pow(Ta, -.141712);
+        return 1470 * Math.pow(Ta, -.141712);
     }
 }

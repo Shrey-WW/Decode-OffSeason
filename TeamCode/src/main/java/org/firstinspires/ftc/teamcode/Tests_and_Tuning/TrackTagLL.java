@@ -25,6 +25,8 @@ public class TrackTagLL extends NextFTCOpMode {
     //pipeline 0 BLUE
     //PIPELINE 1 RED
     //PIPELINE 2 MOTIF
+    private static final double TICKS_PER_REV = 2403.125;
+    private static final double UnwindThreshold = 2200;
     private Limelight3A limelight;
     private IMU imu;
     ElapsedTime timer = new ElapsedTime();
@@ -78,31 +80,39 @@ public class TrackTagLL extends NextFTCOpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
-        double Ticks_Per_Revolution = 2403.125;
         double cPos = Turret.X.getPos();
+        if (Math.abs(cPos) >= UnwindThreshold) {
+            Turret.X.posPID();
+            double direction = Math.signum(cPos);
+            double unwrapPos = cPos - (direction * TICKS_PER_REV);
+            Turret.X.TurnTo(unwrapPos).then(setVelPID.afterTime(1.2)).schedule();
+            return;
+        }
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
-            double k = .013;
-            double target = 600 / (1 + Math.pow(Math.E, -k * (Math.abs(Tx) * 10 - 300))) - 11.90418;
-            telemetry.addData("Tx", llresult.getTx());
-            if (Tx < 0) {
-                target = -target;
-            }
-            Turret.X.runTo(target * 6.7).schedule();
-        }
-        if (cPos >= 2200){
-            Turret.X.posPID();
-            double pos = cPos - ((int) (cPos / Ticks_Per_Revolution)) * Ticks_Per_Revolution;
-            Turret.X.TurnTo(pos).schedule();
-            setVelPID.afterTime(1.5).schedule();
-        }
-        else if (cPos <= -2200){
-            Turret.X.posPID();
-            double pos = cPos + ((int) Math.abs(cPos) / Ticks_Per_Revolution) * Ticks_Per_Revolution;
-            Turret.X.TurnTo(pos).schedule();
-            setVelPID.afterTime(1.5).schedule();
-        }
-    }
 
+            if (Math.abs(Tx) <= 1.5) Turret.X.runTo(0);
+
+            else {
+                double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
+                double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
+                double targetVel = Math.copySign(t, Tx);
+                Turret.X.runTo(targetVel * 6.7).schedule();
+            }
+        }
+
+//        if (cPos >= UnwindThreshold){
+//            Turret.X.posPID();
+//            double pos = cPos - ((int) (cPos / TICKS_PER_REV)) * TICKS_PER_REV;
+//            Turret.X.TurnTo(pos).schedule();
+//            setVelPID.afterTime(1.5).schedule();
+//        }
+//        else if (cPos <= -UnwindThreshold){
+//            Turret.X.posPID();
+//            double pos = cPos + ((int) Math.abs(cPos) / TICKS_PER_REV) * TICKS_PER_REV;
+//            Turret.X.TurnTo(pos).schedule();
+//            setVelPID.afterTime(1.5).schedule();
+//        }
+    }
 }
 
