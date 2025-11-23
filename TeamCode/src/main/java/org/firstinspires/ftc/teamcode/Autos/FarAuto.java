@@ -4,16 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.delays.WaitUntil;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
@@ -32,7 +29,7 @@ public class FarAuto extends NextFTCOpMode {
         addComponents(
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE,
-                new SubsystemComponent(Intake.X, TransferServo.X, Shooter.X)
+                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X)
         );
         TransferServo.X.open.schedule();
         bot = new Robot(this);
@@ -54,16 +51,16 @@ public class FarAuto extends NextFTCOpMode {
                 Shooter.X.setHood(.42),
                 new InstantCommand(() -> Shooter.X.setPwr(.85)),
                 new Delay(2.5),
-                Intake.X.SpinIn(1),
+                Old_Intake.X.SpinIn(1),
                 new Delay(1.5),
-                Intake.X.SpinIn(.3),
+                Old_Intake.X.SpinIn(.3),
                 new Delay(2),
-                Intake.X.SpinIn(1),
+                Old_Intake.X.SpinIn(1),
                 new Delay(5),
-                Intake.X.SpinOut(1),
+                Old_Intake.X.SpinOut(1),
                 new Delay(1),
                 TransferServo.X.close,
-                new InstantCommand(() -> { Shooter.X.setPwr(0); Intake.X.PwrOff(); }),
+                new InstantCommand(() -> { Shooter.X.setPwr(0); Old_Intake.X.PwrOff(); }),
                 new Delay(.5),
                 new InstantCommand(() ->
                 {

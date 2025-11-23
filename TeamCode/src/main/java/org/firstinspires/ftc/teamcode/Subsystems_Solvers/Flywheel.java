@@ -15,7 +15,10 @@ public class Flywheel extends SubsystemBase {
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
         ShootingMotors.setVeloCoefficients(0.00009, 0, 0);
         ShootingMotors.setFeedforwardCoefficients(0, .00044);
-        ShootingMotors.set();
+    }
+
+    public void setPwr(double input){
+        ShootingMotors.set(input);
     }
 
 

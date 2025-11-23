@@ -9,9 +9,8 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
@@ -32,7 +31,7 @@ public class Distance2VelTest extends NextFTCOpMode {
     @Override
     public void onInit(){
         addComponents(
-                new SubsystemComponent(Shooter.X, Intake.X),
+                new SubsystemComponent(Shooter.X, Old_Intake.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -51,7 +50,7 @@ public class Distance2VelTest extends NextFTCOpMode {
     public void onStartButtonPressed(){
         bot.drive.schedule();
         limelight.start();
-        Intake.X.SpinIn(1).schedule();
+        Old_Intake.X.SpinIn(1).schedule();
     }
 
     @Override
@@ -69,8 +68,7 @@ public class Distance2VelTest extends NextFTCOpMode {
             telemetry.addData("target velo", calcVelocity(Ta));
         }
         telemetry.update();
-
-        Shooter.X.setVelocity(calcVelocity(Ta)).schedule();
+        Shooter.X.setVelocity(targetVel).schedule();
     }
 
 

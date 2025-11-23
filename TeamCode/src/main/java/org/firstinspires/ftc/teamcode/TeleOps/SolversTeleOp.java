@@ -1,64 +1,52 @@
 package org.firstinspires.ftc.teamcode.TeleOps;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.button.Button;
+import com.seattlesolvers.solverslib.command.button.GamepadButton;
+import com.seattlesolvers.solverslib.command.button.Trigger;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.gamepad.TriggerReader;
+
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Rusty2;
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Transfer;
 
 
-public class SolversTeleOp extends OpMode {
-    public static ElapsedTime timer = new ElapsedTime();
+@TeleOp
+        (name = "newTele", group = "teleop")
+public class SolversTeleOp extends CommandOpMode {
 
-    Robot bot;
-
-    private GamepadEx driver;
-
-    private Limelight3A limelight;
-    private IMU imu;
-    private static final double TICKS_PER_REV = 2403.125;
-    private static final double unwrapThreshold = 2200;
-    private static final double bearingMin = 1.5;
-
-    private long lastLoop = System.nanoTime();
-    private double lastHeading = 0;
-
-    private boolean isUnwrapping = false;
-
+    private GamepadEx m_driverOp;
+    private Intake intake;
+    private InstantCommand SpinIn, PwrOff;
+    private Button buttonA;
+    private Trigger rTrigger;
+    double rTriggerVal = 0;
+    TriggerReader triggerReader;
+    Transfer transfer;
     @Override
-    public void init(){
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0);
-        imu = hardwareMap.get(IMU.class, "imu");
-        bot = new Robot(this);
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
+    public void initialize(){
+        m_driverOp = new GamepadEx(gamepad1);
+        transfer = new Transfer(hardwareMap);
+        intake = new Intake(hardwareMap);
+        SpinIn = new InstantCommand(()->intake.SpinIn(1));
+        PwrOff = new InstantCommand(() -> intake.PwrOff());
 
-        driver = new GamepadEx(gamepad1);
+        buttonA = (new GamepadButton(m_driverOp, GamepadKeys.Button.A))
+                .whenPressed((transfer.transferCMD));
 
-        // Bind commands:
-        new GamepadButton(driver, GamepadKeys.Button.right_trigger)
-                .whenPressed(new IntakeCommand(robot.Intake));
+        GamepadEx gamepadEx = new GamepadEx(gamepad1);
 
-        new GamepadButton(driver, GamepadKeys.Button.X)
-                .toggleWhenPressed(new SlowModeCommand(robot.drive));
+        new Trigger(() -> gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5).whenActive(
+                new InstantCommand(() -> intake.SpinIn(1)));
+
+
     }
 
-    @Override
-    public void onStartButtonPressed(){
-        Turret.X.velPID();
-        limelight.start();
-        bot.drive.schedule();
-    }
 
-    @Override
-    public void onWaitForStart() {
-        Turret.X.resetPwr();
-        Turret.X.PIDReset();
-    }
 
-    @Override
-    public void loop(){
-        driver.readButtons();
-        button.readValue();
-        toggle.readValue();
-    }
 }

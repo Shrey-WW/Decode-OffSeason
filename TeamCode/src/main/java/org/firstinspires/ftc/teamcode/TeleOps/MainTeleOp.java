@@ -4,6 +4,8 @@ import static dev.nextftc.bindings.Bindings.button;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -12,11 +14,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
@@ -45,14 +48,17 @@ public class MainTeleOp extends NextFTCOpMode {
     private double lastHeading = 0;
 
     private boolean isUnwrapping = false;
+    public static Follower follower;
 
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(Intake.X, TransferServo.X, Shooter.X, Turret.X),
+                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X, Turret.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose());
         bot = new Robot(this);
         initButtons();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -99,6 +105,12 @@ public class MainTeleOp extends NextFTCOpMode {
             telemetry.update();
             timer.reset();
         }
+        telemetry.addData("X:", follower.getPose().getX());
+        telemetry.addData("y:", follower.getPose().getY());
+        telemetry.addData("heading:", follower.getPose().getHeading());
+        telemetry.addData("total heading:", follower.getTotalHeading());
+        telemetry.update();
+        follower.update();
     }
 
     private void initButtons(){
@@ -115,10 +127,10 @@ public class MainTeleOp extends NextFTCOpMode {
     }
 
     private void assignButtons(){
-        rTrigger.whenTrue(() -> Intake.X.SpinIn(gamepad1.right_trigger).schedule())
-                .whenBecomesFalse(Intake.X::PwrOff);
-        lTrigger.whenTrue(() -> Intake.X.SpinOut(gamepad1.left_trigger).schedule())
-                .whenBecomesFalse(Intake.X::PwrOff);
+        rTrigger.whenTrue(() -> Old_Intake.X.SpinIn(gamepad1.right_trigger).schedule())
+                .whenBecomesFalse(Old_Intake.X::PwrOff);
+        lTrigger.whenTrue(() -> Old_Intake.X.SpinOut(gamepad1.left_trigger).schedule())
+                .whenBecomesFalse(Old_Intake.X::PwrOff);
         x2.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
         triangle.whenBecomesTrue(() -> Shooter.X.FullPowerShot.schedule());
         square.whenBecomesTrue(() -> Shooter.X.ShortPowerShot.schedule());

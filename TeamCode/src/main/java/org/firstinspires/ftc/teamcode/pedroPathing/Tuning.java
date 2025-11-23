@@ -23,6 +23,8 @@ import com.pedropathing.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Robot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,8 +125,11 @@ public class Tuning extends SelectableOpMode {
  * @version 1.0, 5/6/2024
  */
 class LocalizationTest extends OpMode {
+    Robot bot;
     @Override
-    public void init() {}
+    public void init() {
+        bot = new Robot(this);
+    }
 
     /** This initializes the PoseUpdater, the mecanum drive motors, and the Panels telemetry. */
     @Override
@@ -138,8 +143,9 @@ class LocalizationTest extends OpMode {
 
     @Override
     public void start() {
-        follower.startTeleopDrive();
-        follower.update();
+        bot.drive.schedule();
+//        follower.startTeleopDrive();
+//        follower.update();
     }
 
     /**
@@ -148,7 +154,7 @@ class LocalizationTest extends OpMode {
      */
     @Override
     public void loop() {
-        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+//        follower.setTeleOpDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
         follower.update();
 
         telemetryM.debug("X:" + follower.getPose().getX());
