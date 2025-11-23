@@ -3,39 +3,41 @@ package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-
-import dev.nextftc.control.feedback.PIDCoefficients;
-import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Flywheel;
 
 @Config
 @TeleOp (group = "tuning")
-public class FlywheelTuning extends NextFTCOpMode {
+public class FlywheelTuning extends CommandOpMode {
 
     public static double target;
-    @Override
-    public void onInit(){
-        addComponents(
-                BulkReadComponent.INSTANCE,
-                new SubsystemComponent(Shooter.X)
-        );
-        telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
+    Flywheel flywheel;
 
+    @Override
+    public void initialize(){
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        flywheel = new Flywheel(hardwareMap);
     }
 
     @Override
-    public void onUpdate(){
-        if (Shooter.X.getPIDCoefficients().kP != Shooter.kP || Shooter.kV != Shooter.X.kv || Shooter.Ks != Shooter.X.kv || Shooter.X.getPIDCoefficients().kD != Shooter.kD){
-            Shooter.X.updatePID();
+    public void run(){
+        double[] Gains = flywheel.getPIDs();
+        double[] ff = flywheel.getFF();
+        if (Gains[0] != Flywheel.Kp || ff[1] != Flywheel.Kv) {
+            flywheel.setPIDs();
+            flywheel.tune(target);
         }
-        Shooter.X.setVelocity(target).schedule();
-        telemetry.addData("Velocity", Shooter.X.getVelo());
+
+        if (flywheel.t != target)
+            flywheel.tune(target);
+
+        telemetry.addData("Velocity", flywheel.getVelo());
         telemetry.addData("target", target);
-        telemetry.addData("Position", Shooter.X.getPos());
         telemetry.update();
+        CommandScheduler.getInstance().run();
     }
 }

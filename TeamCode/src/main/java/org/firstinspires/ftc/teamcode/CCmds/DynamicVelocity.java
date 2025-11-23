@@ -14,9 +14,6 @@ public class DynamicVelocity extends CommandBase {
 
     }
 
-    @Override
-    public void initialize(){
-        subsystem.setPwr(0);
-    }
+
 
 }

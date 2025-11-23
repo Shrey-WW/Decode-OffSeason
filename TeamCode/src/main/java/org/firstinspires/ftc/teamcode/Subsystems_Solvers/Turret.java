@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 public class Turret extends SubsystemBase {
-    private final Motor motor;
+    private final MotorEx motor;
 
     public static double kP, Ki, Kd, Ks;
     private double pwr = 0;
@@ -16,7 +17,8 @@ public class Turret extends SubsystemBase {
     public PIDController pid = new PIDController(kP, Ki, Kd);
 
     public Turret(final HardwareMap hw){
-        motor = new Motor(hw, "turret");
+        motor = new MotorEx(hw, "turret");
+        motor.setRunMode(Motor.RunMode.VelocityControl);
     }
     // pos: kP = .0015 Ki = 0 Kd = 0
     // velo:  kP = .000001  Ki = 0.000000000005  Kd = 10

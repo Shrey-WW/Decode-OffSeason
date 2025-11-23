@@ -9,10 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Turret;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -36,7 +35,7 @@ public class TrackTagLL extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(Turret.X),
+                new SubsystemComponent(Old_Turret.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -52,24 +51,24 @@ public class TrackTagLL extends NextFTCOpMode {
 
     @Override
     public void onWaitForStart() {
-        Turret.X.resetPwr();
-        Turret.X.PIDReset();
+        Old_Turret.X.resetPwr();
+        Old_Turret.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed() {
         bot.drive.schedule();
-        Turret.X.velPID();
+        Old_Turret.X.velPID();
         limelight.start();
-        setVelPID = new InstantCommand(Turret.X::velPID);
+        setVelPID = new InstantCommand(Old_Turret.X::velPID);
     }
 
     @Override
     public void onUpdate() {
         TrackTag();
         if (timer.milliseconds() > 100) {
-            telemetry.addData("Current motor pos", Turret.X.getPos());
-            telemetry.addData("Current motor vel", Turret.X.getVelo());
+            telemetry.addData("Current motor pos", Old_Turret.X.getPos());
+            telemetry.addData("Current motor vel", Old_Turret.X.getVelo());
             telemetry.update();
             timer.reset();
         }
@@ -80,24 +79,24 @@ public class TrackTagLL extends NextFTCOpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
-        double cPos = Turret.X.getPos();
+        double cPos = Old_Turret.X.getPos();
         if (Math.abs(cPos) >= UnwindThreshold) {
-            Turret.X.posPID();
+            Old_Turret.X.posPID();
             double direction = Math.signum(cPos);
             double unwrapPos = cPos - (direction * TICKS_PER_REV);
-            Turret.X.TurnTo(unwrapPos).then(setVelPID.afterTime(1.2)).schedule();
+            Old_Turret.X.TurnTo(unwrapPos).then(setVelPID.afterTime(1.2)).schedule();
             return;
         }
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
 
-            if (Math.abs(Tx) <= 1.5) Turret.X.runTo(0);
+            if (Math.abs(Tx) <= 1.5) Old_Turret.X.runTo(0);
 
             else {
                 double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
                 double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
                 double targetVel = Math.copySign(t, Tx);
-                Turret.X.runTo(targetVel * 6.7).schedule();
+                Old_Turret.X.runTo(targetVel * 6.7).schedule();
             }
         }
 

@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import dev.nextftc.bindings.Button;
@@ -53,7 +53,7 @@ public class MainTeleOp extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X, Turret.X),
+                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X, Old_Turret.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -73,18 +73,18 @@ public class MainTeleOp extends NextFTCOpMode {
 
     @Override
     public void onWaitForStart() {
-        Turret.X.resetPwr();
-        Turret.X.PIDReset();
+        Old_Turret.X.resetPwr();
+        Old_Turret.X.PIDReset();
     }
 
     @Override
     public void onStartButtonPressed(){
-        Turret.X.velPID();
+        Old_Turret.X.velPID();
         limelight.start();
         TransferServo.X.transfer.getCommand().schedule();
         Shooter.X.SwitchHood.getCommand().schedule();
         bot.drive.schedule();
-        setVelPID = new InstantCommand(Turret.X::velPID);
+        setVelPID = new InstantCommand(Old_Turret.X::velPID);
         assignButtons();
     }
 
@@ -97,7 +97,7 @@ public class MainTeleOp extends NextFTCOpMode {
             ServoStatus = "open";
         }
         if (timer.milliseconds() > 100) {
-            telemetry.addData("turret pos", Turret.X.getPos());
+            telemetry.addData("turret pos", Old_Turret.X.getPos());
             telemetry.addData("Shooting velocity", Shooter.X.getVelo());
             telemetry.addData("Shooting power", Shooter.X.getPwr());
             telemetry.addData("Transfer Servo Status", ServoStatus);
@@ -141,7 +141,7 @@ public class MainTeleOp extends NextFTCOpMode {
     }
 
     private void TrackTag() {
-        double cPos = Turret.X.getPos();
+        double cPos = Old_Turret.X.getPos();
         long currentTime = System.nanoTime();
 
         if (isUnwrapping) {
@@ -156,10 +156,10 @@ public class MainTeleOp extends NextFTCOpMode {
 
         if (Math.abs(cPos) >= unwrapThreshold){
             isUnwrapping = true;
-            Turret.X.posPID();
+            Old_Turret.X.posPID();
             double direction = Math.signum(cPos);
             double unwrapPos = cPos - (direction * TICKS_PER_REV);
-            Turret.X.TurnTo(unwrapPos).schedule();
+            Old_Turret.X.TurnTo(unwrapPos).schedule();
             setVelPID.afterTime(1.2).schedule();
             lastLoop = currentTime;
             lastHeading = imu.getRobotYawPitchRollAngles().getYaw();
@@ -194,7 +194,7 @@ public class MainTeleOp extends NextFTCOpMode {
             }
 
         }
-        Turret.X.runTo((targetVel)).schedule();
+        Old_Turret.X.runTo((targetVel)).schedule();
 
         if (timer.milliseconds() > 100) {
             telemetry.addData("change in time", dt);
