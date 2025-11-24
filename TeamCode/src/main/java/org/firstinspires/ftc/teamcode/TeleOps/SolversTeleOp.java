@@ -29,6 +29,7 @@ import java.util.Arrays;
 @TeleOp
         (name = "newTele", group = "teleop")
 public class SolversTeleOp extends CommandOpMode {
+    Rusty2 rusty;
     public static double target;
     private GamepadEx m_driverOp;
     private InstantCommand s_pwr, f_pwr, o_pwr;
@@ -39,51 +40,51 @@ public class SolversTeleOp extends CommandOpMode {
     @Override
     public void initialize(){
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        m_driverOp = new GamepadEx(gamepad1);
-        transfer = new Transfer(hardwareMap);
-        flywheel = new Flywheel(hardwareMap);
-
-        buttonA = (new GamepadButton(m_driverOp, GamepadKeys.Button.A))
-                .whenPressed((transfer.transferCMD));
-        buttonY = (new GamepadButton(m_driverOp, GamepadKeys.Button.Y))
-                .whenPressed(() -> {
-                    flywheel.setTo(.7);
-                    flywheel.setPIDs();
-                });
-        buttonB = (new GamepadButton(m_driverOp, GamepadKeys.Button.B))
-                .whenPressed(() -> {
-                    flywheel.setTo(.5);
-                    flywheel.setPIDs();
-                });
-        buttonX = (new GamepadButton(m_driverOp, GamepadKeys.Button.X))
-                .whenPressed(() -> {
-                    flywheel.setTo(.3);
-                    flywheel.setPIDs();
-                });
-
-        buttonstart = (new GamepadButton(m_driverOp, GamepadKeys.Button.START))
-                .whenPressed(() -> {
-                    flywheel.setTo(0);
-                    flywheel.setPIDs();
-                });
-
-        schedule(transfer.transferCMD);
+        rusty = new Rusty2(Rusty2.OpModeType.TELEOP, this);
+        rusty.init();
+//        m_driverOp = new GamepadEx(gamepad1);
+//        transfer = new Transfer(hardwareMap);
+//        flywheel = new Flywheel(hardwareMap);
+//
+//        buttonA = (new GamepadButton(m_driverOp, GamepadKeys.Button.A))
+//                .whenPressed((transfer.transferCMD));
+//        buttonY = (new GamepadButton(m_driverOp, GamepadKeys.Button.Y))
+//                .whenPressed(() -> {
+//                    flywheel.setTo(.7);
+//                    flywheel.setPIDs();
+//                });
+//        buttonB = (new GamepadButton(m_driverOp, GamepadKeys.Button.B))
+//                .whenPressed(() -> {
+//                    flywheel.setTo(.5);
+//                    flywheel.setPIDs();
+//                });
+//        buttonX = (new GamepadButton(m_driverOp, GamepadKeys.Button.X))
+//                .whenPressed(() -> {
+//                    flywheel.setTo(.3);
+//                    flywheel.setPIDs();
+//                });
+//
+//        buttonstart = (new GamepadButton(m_driverOp, GamepadKeys.Button.START))
+//                .whenPressed(() -> {
+//                    flywheel.setTo(0);
+//                    flywheel.setPIDs();
+//                });
+//
+//        schedule(transfer.transferCMD);
     }
 
     @Override
     public void run(){
-        if (flywheel.kp != Flywheel.Kp || flywheel.kv != Flywheel.Kv) {
-            flywheel.setPIDs();
-        }
+//        if (flywheel.kp != Flywheel.Kp || flywheel.kv != Flywheel.Kv) {
+//            flywheel.setPIDs();
+//        }
 
-        telemetry.addData("Velocity", flywheel.getVelo());
-        telemetry.addData("target", target);
-        telemetry.addData("kp", flywheel.kp);
-        telemetry.addData("kv", flywheel.kv);
-        telemetry.update();
-        CommandScheduler.getInstance().run();
-
-
+//        telemetry.addData("Velocity", flywheel.getVelo());
+//        telemetry.addData("target", target);
+//        telemetry.addData("kp", flywheel.kp);
+//        telemetry.addData("kv", flywheel.kv);
+//        telemetry.update();
+        rusty.run();
 
 //        double[] Gains = flywheel.getPIDs();
 //        double[] ff = flywheel.getFF();

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -25,6 +26,7 @@ public class Flywheel extends SubsystemBase {
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
         ShootingMotors.setVeloCoefficients(5,0,0);
         ShootingMotors.setFeedforwardCoefficients(0, 1);
+        ShootingMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
     }
 
     public InstantCommand runTo(double input){

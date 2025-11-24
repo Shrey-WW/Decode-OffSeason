@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -7,39 +8,50 @@ import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
+@Config
 public class Turret extends SubsystemBase {
     private final MotorEx motor;
 
-    public static double kP, Ki, Kd, Ks;
+    public static double Kp, Ki, Kd, Ks;
+    public double kp, ki, kd, ks;
     private double pwr = 0;
     private double cPos = 0;
 
-    public PIDController pid = new PIDController(kP, Ki, Kd);
-
     public Turret(final HardwareMap hw){
-        motor = new MotorEx(hw, "turret");
+        motor = new MotorEx(hw, "turret", Motor.GoBILDA.RPM_435);
+        motor.setRunMode(Motor.RunMode.PositionControl);
+        motor.setPositionCoefficient(kp);
+        motor.setFeedforwardCoefficients(ks, 0);
+    }
+    // velo:  kP = .00028 Ks = 310
+    //pos:
+    public void setVelocity(double input){
+        motor.set(input);
+    }
+
+    public void goToPos(int input){
+        motor.setTargetPosition(input);
+        motor.set(2);
+    }
+
+    public void VelocityControl(){
         motor.setRunMode(Motor.RunMode.VelocityControl);
-    }
-    // pos: kP = .0015 Ki = 0 Kd = 0
-    // velo:  kP = .000001  Ki = 0.000000000005  Kd = 10
-
-    public void SpeedUp(){
-        pwr += .04;
-        motor.set(pwr);
+        motor.setVeloCoefficients(.00028, 0, 0);
+        motor.setFeedforwardCoefficients(310, 0);
     }
 
-    public void SlowDown(){
-        pwr -= .04;
-        motor.set(pwr);
+    public void PosControl(){
+        motor.setRunMode(Motor.RunMode.PositionControl);
+        motor.setPositionCoefficient(.0018);
     }
 
-    @Override
-    public void periodic(){
-        pid.setTolerance(5, 10);
-        double output = pid.calculate(
-            motor.getCurrentPosition()
-        );
-        motor.setVelocity(output);
+    public void updatePID(){
+        kp = Kp;
+        ki = Ki;
+        kd = Kd;
+        ks = Ks;
+        motor.setPositionCoefficient(kp);
+        motor.setFeedforwardCoefficients(ks, 0);
     }
 
     public double getPos(){
@@ -48,9 +60,5 @@ public class Turret extends SubsystemBase {
 
     public double getVelo(){
         return motor.getVelocity();
-    }
-
-    public void setPID(double kp, double ki, double kd){
-        pid.setPID(kp, ki, kd);
     }
 }

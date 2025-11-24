@@ -22,6 +22,10 @@ public class AdvancingCommand extends CommandBase {;
         currentCMD = -1;
     }
 
+    public int getCurrentCMD(){
+        return currentCMD;
+    }
+
     @Override
     public void initialize() {
         currentCMD = (currentCMD + 1) % numCMDs;
