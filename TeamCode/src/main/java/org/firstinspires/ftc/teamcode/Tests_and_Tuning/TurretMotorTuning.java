@@ -23,11 +23,10 @@ public class TurretMotorTuning extends CommandOpMode {
 
     @Override
     public void run() {
-        if (Turret.Kp != turret.kp || Turret.Ki != turret.ki || Turret.Kd != turret.kd || Turret.Ks != turret.ks)
-            turret.updatePID();
+            if (Turret.Kp != turret.kp || Turret.Ki != turret.ki || Turret.Kd != turret.kd || Turret.Ks != turret.ks)
+                turret.updatePID();
 
         turret.goToPos((int) posTarget);
-        turret.setVelocity(target);
         telemetry.addData("target", target);
         telemetry.addData("current velo", turret.getVelo());
         telemetry.addData("current pos", turret.getPos());

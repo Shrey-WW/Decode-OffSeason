@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
@@ -19,14 +17,14 @@ public class Turret extends SubsystemBase {
 
     public Turret(final HardwareMap hw){
         motor = new MotorEx(hw, "turret", Motor.GoBILDA.RPM_435);
-        motor.setRunMode(Motor.RunMode.PositionControl);
-        motor.setPositionCoefficient(kp);
+        motor.setRunMode(Motor.RunMode.VelocityControl);
+        motor.setVeloCoefficients(kp, 0, 0);
         motor.setFeedforwardCoefficients(ks, 0);
     }
     // velo:  kP = .00028 Ks = 310
-    //pos:
+    //pos: kP = .0018
     public void setVelocity(double input){
-        motor.set(input);
+        motor.setVelocity(input);
     }
 
     public void goToPos(int input){
@@ -34,13 +32,13 @@ public class Turret extends SubsystemBase {
         motor.set(2);
     }
 
-    public void VelocityControl(){
+    public void setVelocityControl(){
         motor.setRunMode(Motor.RunMode.VelocityControl);
         motor.setVeloCoefficients(.00028, 0, 0);
         motor.setFeedforwardCoefficients(310, 0);
     }
 
-    public void PosControl(){
+    public void setPositionControl(){
         motor.setRunMode(Motor.RunMode.PositionControl);
         motor.setPositionCoefficient(.0018);
     }

@@ -2,18 +2,11 @@ package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.controller.SquIDFController;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
-import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
-
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-
-import java.time.Instant;
 
 @Config
 public class Flywheel extends SubsystemBase {
@@ -31,6 +24,11 @@ public class Flywheel extends SubsystemBase {
 
     public InstantCommand runTo(double input){
         return new InstantCommand(() -> ShootingMotors.set(input));
+    }
+
+    @Override
+    public void periodic(){
+        ShootingMotors.set(updateVeloPwr());
     }
 
     public void setTo(double input){
@@ -59,6 +57,12 @@ public class Flywheel extends SubsystemBase {
 
     public double[] getFF(){
         return ShootingMotors.getFeedforwardCoefficients();
+    }
+
+    public double updateVeloPwr(){
+        double velo = 1470 * Math.pow(Rusty2.Ta, -.141712);
+        double pwr = 0.2057298 * Math.pow(1.000755, velo);
+        return pwr;
     }
 
 
