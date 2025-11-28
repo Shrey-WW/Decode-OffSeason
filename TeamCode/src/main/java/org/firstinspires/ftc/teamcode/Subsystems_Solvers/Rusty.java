@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.CCmds.MecanumDT;
 import org.firstinspires.ftc.teamcode.CCmds.TrackTag;
 
-public class Rusty2 extends Robot {
+public class Rusty extends Robot {
 
     private final OpModeType optype;
     private final Limelight3A limelight;
@@ -33,7 +33,7 @@ public class Rusty2 extends Robot {
      */
     private Intake intake;
     private Transfer transfer;
-    private Flywheel flywheel;
+    private Shooter shooter;
     private Turret turret;
     IMU imu;
     TrackTag T_Default;
@@ -52,7 +52,7 @@ public class Rusty2 extends Robot {
         TELEOP, AUTO
     }
 
-    public Rusty2(OpModeType type, OpMode op) {
+    public Rusty(OpModeType type, OpMode op) {
         opmode = op;
         optype = type;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
@@ -73,14 +73,14 @@ public class Rusty2 extends Robot {
     public void initTele() {
         initSubsystems();
         initBinds();
-        register(intake, transfer, flywheel);
+        register(intake, transfer, shooter);
         schedule(transfer.transferCMD);
     }
 
     private void initSubsystems() {
         intake = new Intake(opmode.hardwareMap);
         transfer = new Transfer(opmode.hardwareMap);
-        flywheel = new Flywheel(opmode.hardwareMap);
+        shooter = new Shooter(opmode.hardwareMap);
         turret = new Turret(opmode.hardwareMap);
 
         fL = opmode.hardwareMap.get(DcMotor.class, "fl");
@@ -114,11 +114,11 @@ public class Rusty2 extends Robot {
 
 
         Button triangle = (new GamepadButton(driver, GamepadKeys.Button.Y))
-                .whenPressed(() -> flywheel.setTo(.7));
+                .whenPressed(() -> shooter.setTo(.7));
         Button circle = (new GamepadButton(driver, GamepadKeys.Button.B))
-                .whenPressed(() -> flywheel.setTo(.5));
+                .whenPressed(() -> shooter.setTo(.5));
         Button square = (new GamepadButton(driver, GamepadKeys.Button.X))
-                .whenPressed(() -> flywheel.setTo(.3));
+                .whenPressed(() -> shooter.setTo(.3));
         Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
                 .whenPressed(() -> imu.resetYaw());
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)).whenPressed(
@@ -137,7 +137,7 @@ public class Rusty2 extends Robot {
     }
 
     public double getVelo(){
-        return flywheel.getVelo();
+        return shooter.getVelo();
     }
 
     @Override
@@ -152,7 +152,7 @@ public class Rusty2 extends Robot {
             Tx = llresult.getTx();
             opmode.telemetry.addData("ta", Ta);
         }
-        opmode.telemetry.addData("flywheel velo", flywheel.getVelo());
+        opmode.telemetry.addData("flywheel velo", shooter.getVelo());
         opmode.telemetry.update();
         CommandScheduler.getInstance().run();
     }

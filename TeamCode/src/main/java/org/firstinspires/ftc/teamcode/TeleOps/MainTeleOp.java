@@ -16,8 +16,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Transfer;
 import org.firstinspires.ftc.teamcode.Subsystems.Old_Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -53,7 +53,7 @@ public class MainTeleOp extends NextFTCOpMode {
     @Override
     public void onInit() {
         addComponents(
-                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X, Old_Turret.X),
+                new SubsystemComponent(Old_Intake.X, Old_Transfer.X, Old_Shooter.X, Old_Turret.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -81,8 +81,8 @@ public class MainTeleOp extends NextFTCOpMode {
     public void onStartButtonPressed(){
         Old_Turret.X.velPID();
         limelight.start();
-        TransferServo.X.transfer.getCommand().schedule();
-        Shooter.X.SwitchHood.getCommand().schedule();
+        Old_Transfer.X.transfer.getCommand().schedule();
+        Old_Shooter.X.SwitchHood.getCommand().schedule();
         bot.drive.schedule();
         setVelPID = new InstantCommand(Old_Turret.X::velPID);
         assignButtons();
@@ -92,14 +92,14 @@ public class MainTeleOp extends NextFTCOpMode {
     public void onUpdate(){
         TrackTag();
         String ServoStatus = "closed";
-        if (TransferServo.X.transfer.getCurrentCommand() == TransferServo.X.open)
+        if (Old_Transfer.X.transfer.getCurrentCommand() == Old_Transfer.X.open)
         {
             ServoStatus = "open";
         }
         if (timer.milliseconds() > 100) {
             telemetry.addData("turret pos", Old_Turret.X.getPos());
-            telemetry.addData("Shooting velocity", Shooter.X.getVelo());
-            telemetry.addData("Shooting power", Shooter.X.getPwr());
+            telemetry.addData("Shooting velocity", Old_Shooter.X.getVelo());
+            telemetry.addData("Shooting power", Old_Shooter.X.getPwr());
             telemetry.addData("Transfer Servo Status", ServoStatus);
             telemetry.addData("last heading", lastHeading);
             telemetry.update();
@@ -131,13 +131,13 @@ public class MainTeleOp extends NextFTCOpMode {
                 .whenBecomesFalse(Old_Intake.X::PwrOff);
         lTrigger.whenTrue(() -> Old_Intake.X.SpinOut(gamepad1.left_trigger).schedule())
                 .whenBecomesFalse(Old_Intake.X::PwrOff);
-        x2.whenBecomesTrue(() -> TransferServo.X.transfer.getCommand().schedule());
-        triangle.whenBecomesTrue(() -> Shooter.X.FullPowerShot.schedule());
-        square.whenBecomesTrue(() -> Shooter.X.ShortPowerShot.schedule());
-        x.whenBecomesTrue(() -> Shooter.X.MinPower.schedule());
-        rBumper.whenBecomesTrue(() -> Shooter.X.IncPower.schedule());
-        lBumper.whenBecomesTrue(() -> Shooter.X.DecPower.schedule());
-        dpadUp.whenBecomesTrue(() -> Shooter.X.SwitchHood.getCommand().schedule());
+        x2.whenBecomesTrue(() -> Old_Transfer.X.transfer.getCommand().schedule());
+        triangle.whenBecomesTrue(() -> Old_Shooter.X.FullPowerShot.schedule());
+        square.whenBecomesTrue(() -> Old_Shooter.X.ShortPowerShot.schedule());
+        x.whenBecomesTrue(() -> Old_Shooter.X.MinPower.schedule());
+        rBumper.whenBecomesTrue(() -> Old_Shooter.X.IncPower.schedule());
+        lBumper.whenBecomesTrue(() -> Old_Shooter.X.DecPower.schedule());
+        dpadUp.whenBecomesTrue(() -> Old_Shooter.X.SwitchHood.getCommand().schedule());
     }
 
     private void TrackTag() {

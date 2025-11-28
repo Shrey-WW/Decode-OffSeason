@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Shooter;
 
 @Config
 @TeleOp (group = "tests")
@@ -26,7 +26,7 @@ public class motortest extends OpMode {
     public void loop(){
         motor.setPower(pwr);
         motor2.setPower(pwr);
-        telemetry.addData("velo", Shooter.X.getVelo());
+        telemetry.addData("velo", Old_Shooter.X.getVelo());
         telemetry.update();
     }
 

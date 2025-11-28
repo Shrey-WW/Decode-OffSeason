@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Shooter;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -31,7 +31,7 @@ public class Distance2VelTest extends NextFTCOpMode {
     @Override
     public void onInit(){
         addComponents(
-                new SubsystemComponent(Shooter.X, Old_Intake.X),
+                new SubsystemComponent(Old_Shooter.X, Old_Intake.X),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -59,16 +59,16 @@ public class Distance2VelTest extends NextFTCOpMode {
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
         double Ta = llresult.getTa();
-        Shooter.X.setHood(hoodPos).schedule();
+        Old_Shooter.X.setHood(hoodPos).schedule();
         if (llresult != null && llresult.isValid()) {
             telemetry.addData("distance", getDistanceFromTag(llresult.getTa()));
             telemetry.addData("Tx", llresult.getTx());
             telemetry.addData("Ta", Ta);
-            telemetry.addData("vel", Shooter.X.getVelo());
+            telemetry.addData("vel", Old_Shooter.X.getVelo());
             telemetry.addData("target velo", calcVelocity(Ta));
         }
         telemetry.update();
-        Shooter.X.setVelocity(targetVel).schedule();
+        Old_Shooter.X.setVelocity(targetVel).schedule();
     }
 
 

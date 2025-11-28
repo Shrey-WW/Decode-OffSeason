@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
-import static org.firstinspires.ftc.teamcode.Subsystems_Solvers.Rusty2.Tx;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;

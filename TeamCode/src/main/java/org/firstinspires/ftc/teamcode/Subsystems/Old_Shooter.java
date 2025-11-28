@@ -14,11 +14,11 @@ import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 @Config
-public class Shooter implements Subsystem {
-    private Shooter(){}
+public class Old_Shooter implements Subsystem {
+    private Old_Shooter(){}
     //motor 2 HAS ENCODER
     //HOOD SERVO CAN GO BETWEEN .7 and .4
-    public static final Shooter X = new Shooter();
+    public static final Old_Shooter X = new Old_Shooter();
 
     public static double kP, kV, Ks, kD;
     public double kv, ks;

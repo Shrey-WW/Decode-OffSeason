@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Old_Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.TransferServo;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Old_Transfer;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -29,9 +29,9 @@ public class FarAuto extends NextFTCOpMode {
         addComponents(
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE,
-                new SubsystemComponent(Old_Intake.X, TransferServo.X, Shooter.X)
+                new SubsystemComponent(Old_Intake.X, Old_Transfer.X, Old_Shooter.X)
         );
-        TransferServo.X.open.schedule();
+        Old_Transfer.X.open.schedule();
         bot = new Robot(this);
         fl = hardwareMap.get(DcMotor.class, "fl");
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -48,8 +48,8 @@ public class FarAuto extends NextFTCOpMode {
 
     private Command AutoRoutine(){
         return new SequentialGroup(
-                Shooter.X.setHood(.42),
-                new InstantCommand(() -> Shooter.X.setPwr(.85)),
+                Old_Shooter.X.setHood(.42),
+                new InstantCommand(() -> Old_Shooter.X.setPwr(.85)),
                 new Delay(2.5),
                 Old_Intake.X.SpinIn(1),
                 new Delay(1.5),
@@ -59,8 +59,8 @@ public class FarAuto extends NextFTCOpMode {
                 new Delay(5),
                 Old_Intake.X.SpinOut(1),
                 new Delay(1),
-                TransferServo.X.close,
-                new InstantCommand(() -> { Shooter.X.setPwr(0); Old_Intake.X.PwrOff(); }),
+                Old_Transfer.X.close,
+                new InstantCommand(() -> { Old_Shooter.X.setPwr(0); Old_Intake.X.PwrOff(); }),
                 new Delay(.5),
                 new InstantCommand(() ->
                 {
@@ -82,7 +82,7 @@ public class FarAuto extends NextFTCOpMode {
     @Override
     public void onUpdate(){
         telemetry.addData("last velo", cVelo);
-        telemetry.addData("current velo", Shooter.X.getVelo());
+        telemetry.addData("current velo", Old_Shooter.X.getVelo());
         telemetry.update();
     }
 }

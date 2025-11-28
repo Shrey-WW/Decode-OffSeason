@@ -9,12 +9,12 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 
 @Config
-public class Flywheel extends SubsystemBase {
+public class Shooter extends SubsystemBase {
     private final MotorGroup ShootingMotors;
     public static double Kp, Kv;
     public double kp, kv;
     public double t;
-    public Flywheel(final HardwareMap hw){
+    public Shooter(final HardwareMap hw){
         ShootingMotors = new MotorGroup(new Motor(hw, "shooter2", Motor.GoBILDA.BARE), new Motor(hw, "shooter1", Motor.GoBILDA.BARE));
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
         ShootingMotors.setVeloCoefficients(5,0,0);
@@ -65,7 +65,7 @@ public class Flywheel extends SubsystemBase {
     }
 
     public double updateVeloPwr(){
-        double velo = 1470 * Math.pow(Rusty2.Ta, -.141712);
+        double velo = 1470 * Math.pow(Rusty.Ta, -.141712);
         double pwr = 0.2057298 * Math.pow(1.000755, velo);
         return pwr;
     }
