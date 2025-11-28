@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
+import static org.firstinspires.ftc.teamcode.Subsystems_Solvers.Rusty2.Tx;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -14,15 +16,19 @@ public class Turret extends SubsystemBase {
     public double kp, ki, kd, ks;
     private double pwr = 0;
     private double cPos = 0;
+    private static final double TICKS_PER_REV = 2403.125;
+    private static final double UnwindThreshold = 1400;
 
+    // velo:  kP = .00028 Ks = 310
+    //pos: kP = .0018
     public Turret(final HardwareMap hw){
         motor = new MotorEx(hw, "turret", Motor.GoBILDA.RPM_435);
         motor.setRunMode(Motor.RunMode.VelocityControl);
         motor.setVeloCoefficients(kp, 0, 0);
         motor.setFeedforwardCoefficients(ks, 0);
     }
-    // velo:  kP = .00028 Ks = 310
-    //pos: kP = .0018
+
+
     public void setVelocity(double input){
         motor.setVelocity(input);
     }
@@ -35,7 +41,11 @@ public class Turret extends SubsystemBase {
     public void setVelocityControl(){
         motor.setRunMode(Motor.RunMode.VelocityControl);
         motor.setVeloCoefficients(.00028, 0, 0);
-        motor.setFeedforwardCoefficients(310, 0);
+        motor.setFeedforwardCoefficients(425, 0);
+    }
+
+    public void increaseFriction(){
+        motor.setFeedforwardCoefficients(1000, 0);
     }
 
     public void setPositionControl(){
@@ -59,4 +69,6 @@ public class Turret extends SubsystemBase {
     public double getVelo(){
         return motor.getVelocity();
     }
+
+
 }

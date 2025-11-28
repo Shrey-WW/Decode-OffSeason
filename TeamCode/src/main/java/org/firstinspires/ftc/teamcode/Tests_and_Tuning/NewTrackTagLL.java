@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -25,8 +26,9 @@ public class NewTrackTagLL extends CommandOpMode {
     private Limelight3A limelight;
     private IMU imu;
     ElapsedTime timer = new ElapsedTime();
-    private double Tx, Ta;
+    ElapsedTime timer2 = new ElapsedTime();
     Turret turret;
+    double targetVel;
 
     @Override
     public void initialize(){
@@ -44,8 +46,6 @@ public class NewTrackTagLL extends CommandOpMode {
 
     @Override
     public void run(){
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
         double cPos = turret.getPos();
         if (Math.abs(cPos) >= UnwindThreshold) {
@@ -53,21 +53,20 @@ public class NewTrackTagLL extends CommandOpMode {
             double direction = Math.signum(cPos);
             int unwrapPos = (int) (cPos - (direction * TICKS_PER_REV));
             turret.goToPos(unwrapPos);
-            new WaitCommand(1200).andThen(new InstantCommand(() -> turret.setVelocityControl()));
+            turret.setVelocityControl();
         }
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
 
-            if (Math.abs(Tx) <= 1.5) turret.setVelocity(0);
+            if (Math.abs(Tx) <= 2) turret.setVelocity(0);
             else {
+                turret.setVelocityControl();
                 double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
                 double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
-                double targetVel = Math.copySign(t, Tx) * 6.7;
-                turret.setVelocity(targetVel);
-                if (timer.milliseconds() > 100)  {
-                    telemetry.addData("tx", Tx);
-                    telemetry.addData("targetVel", targetVel);
-                    telemetry.addData("targetpwr", .003359583 * targetVel);
+                targetVel = Math.copySign(t, Tx);
+                turret.setVelocity(targetVel * 150);
+                if(Math.abs(targetVel) - Math.abs(turret.getVelo()) > 50){
+                    turret.increaseFriction();
                 }
             }
         }
@@ -75,8 +74,15 @@ public class NewTrackTagLL extends CommandOpMode {
             telemetry.addData("Current motor pos", turret.getPos());
             telemetry.addData("Current motor vel", turret.getVelo());
             telemetry.addData("tx", llresult.getTx());
+            telemetry.addData("targetVel", targetVel * 150);
             telemetry.update();
             timer.reset();
+        }
+        if (timer2.milliseconds() > 500)
+        {
+            RobotLog.dd("TeamCode", String.valueOf(targetVel));
+            RobotLog.aa("TeamCode", String.valueOf(llresult.getTx()));
+            timer2.reset();
         }
         CommandScheduler.getInstance().run();
     }

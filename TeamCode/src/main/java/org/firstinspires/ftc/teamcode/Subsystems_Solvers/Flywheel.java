@@ -26,11 +26,16 @@ public class Flywheel extends SubsystemBase {
         return new InstantCommand(() -> ShootingMotors.set(input));
     }
 
-    @Override
-    public void periodic(){
-        ShootingMotors.set(updateVeloPwr());
-    }
+//    @Override
+//    public void periodic(){
+//        ShootingMotors.set(updateVeloPwr());
+//    }
 
+    /*  .3 pwr : 700 velo
+        .5 pwr : 1200 velo
+        .7 pwr : 1680 velo
+        1 pwr : 2160 velo
+     */
     public void setTo(double input){
         ShootingMotors.set(input);
     }

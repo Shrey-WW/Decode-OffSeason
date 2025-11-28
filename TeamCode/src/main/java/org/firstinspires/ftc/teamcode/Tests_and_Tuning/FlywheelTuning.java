@@ -25,15 +25,8 @@ public class FlywheelTuning extends CommandOpMode {
 
     @Override
     public void run(){
-        double[] Gains = flywheel.getPIDs();
-        double[] ff = flywheel.getFF();
-        if (Gains[0] != Flywheel.Kp || ff[1] != Flywheel.Kv) {
-            flywheel.setPIDs();
-            flywheel.tune(target);
-        }
 
-        if (flywheel.t != target)
-            flywheel.tune(target);
+        flywheel.setTo(target);
 
         telemetry.addData("Velocity", flywheel.getVelo());
         telemetry.addData("target", target);
