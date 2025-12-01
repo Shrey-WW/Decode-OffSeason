@@ -6,112 +6,94 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
+import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
 
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems.Old_Turret;
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Turret;
 
-import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp (group = "tests")
-public class TrackTagLL extends NextFTCOpMode {
+@TeleOp
+public class TrackTagLL extends CommandOpMode {
 
-    //pipeline 0 BLUE
-    //PIPELINE 1 RED
-    //PIPELINE 2 MOTIF
     private static final double TICKS_PER_REV = 2403.125;
-    private static final double UnwindThreshold = 2200;
+    private static final double UnwindThreshold = 1400;
     private Limelight3A limelight;
     private IMU imu;
     ElapsedTime timer = new ElapsedTime();
-    Robot bot;
-    private Command setVelPID;
+    ElapsedTime timer2 = new ElapsedTime();
+    Turret turret;
+    double targetVel;
 
     @Override
-    public void onInit() {
-        addComponents(
-                new SubsystemComponent(Old_Turret.X),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-        );
+    public void initialize(){
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
-        bot = new Robot(this);
-    }
-
-    @Override
-    public void onWaitForStart() {
-        Old_Turret.X.resetPwr();
-        Old_Turret.X.PIDReset();
-    }
-
-    @Override
-    public void onStartButtonPressed() {
-        bot.drive.schedule();
-        Old_Turret.X.velPID();
+        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
+        imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
+        turret = new Turret(hardwareMap);
+        register(turret);
         limelight.start();
-        setVelPID = new InstantCommand(Old_Turret.X::velPID);
+        turret.setVelocityControl();
     }
 
     @Override
-    public void onUpdate() {
-        TrackTag();
-        if (timer.milliseconds() > 100) {
-            telemetry.addData("Current motor pos", Old_Turret.X.getPos());
-            telemetry.addData("Current motor vel", Old_Turret.X.getVelo());
-            telemetry.update();
-            timer.reset();
-        }
-    }
-
-
-    public void TrackTag() {
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
+    public void run(){
         LLResult llresult = limelight.getLatestResult();
-        double cPos = Old_Turret.X.getPos();
+        double cPos = turret.getPos();
         if (Math.abs(cPos) >= UnwindThreshold) {
-            Old_Turret.X.posPID();
+            turret.setPositionControl();
             double direction = Math.signum(cPos);
-            double unwrapPos = cPos - (direction * TICKS_PER_REV);
-            Old_Turret.X.TurnTo(unwrapPos).then(setVelPID.afterTime(1.2)).schedule();
-            return;
+            int unwrapPos = (int) (cPos - (direction * TICKS_PER_REV));
+            turret.goToPos(unwrapPos);
+            turret.setVelocityControl();
         }
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
 
-            if (Math.abs(Tx) <= 1.5) Old_Turret.X.runTo(0);
-
+            if (Math.abs(Tx) <= 2) turret.setVelocity(0);
             else {
+                turret.setVelocityControl();
                 double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
                 double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
-                double targetVel = Math.copySign(t, Tx);
-                Old_Turret.X.runTo(targetVel * 6.7).schedule();
+                targetVel = Math.copySign(t, Tx);
+                turret.setVelocity(targetVel * 150);
+                if(Math.abs(targetVel) - Math.abs(turret.getVelo()) > 50){
+                    turret.increaseFriction();
+                }
             }
         }
-
-//        if (cPos >= UnwindThreshold){
-//            Turret.X.posPID();
-//            double pos = cPos - ((int) (cPos / TICKS_PER_REV)) * TICKS_PER_REV;
-//            Turret.X.TurnTo(pos).schedule();
-//            setVelPID.afterTime(1.5).schedule();
-//        }
-//        else if (cPos <= -UnwindThreshold){
-//            Turret.X.posPID();
-//            double pos = cPos + ((int) Math.abs(cPos) / TICKS_PER_REV) * TICKS_PER_REV;
-//            Turret.X.TurnTo(pos).schedule();
-//            setVelPID.afterTime(1.5).schedule();
-//        }
+        if (timer.milliseconds() > 100) {
+            telemetry.addData("Current motor pos", turret.getPos());
+            telemetry.addData("Current motor vel", turret.getVelo());
+            telemetry.addData("tx", llresult.getTx());
+            telemetry.addData("targetVel", targetVel * 150);
+            telemetry.update();
+            timer.reset();
+        }
+        if (timer2.milliseconds() > 500)
+        {
+            RobotLog.dd("TeamCode", String.valueOf(targetVel));
+            RobotLog.aa("TeamCode", String.valueOf(llresult.getTx()));
+            timer2.reset();
+        }
+        CommandScheduler.getInstance().run();
     }
-}
 
+
+
+
+
+
+
+    public void TrackTag() {
+
+    }
+
+    public double velo2Pwr(double velo){
+        return 0.2057298 * Math.pow(1.000755, velo);
+    }
+
+}

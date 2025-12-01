@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.ArchiveFiles.Subsystems;
 
-import org.firstinspires.ftc.teamcode.CCmds.SwitchCMD;
+import org.firstinspires.ftc.teamcode.ArchiveFiles.CCmds.SwitchCMD;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;

@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode.CCmds;
+package org.firstinspires.ftc.teamcode.CustomCMDs;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
-import com.seattlesolvers.solverslib.command.SubsystemBase;
-
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Transfer;
 
 import java.util.ArrayList;
 import java.util.Collections;

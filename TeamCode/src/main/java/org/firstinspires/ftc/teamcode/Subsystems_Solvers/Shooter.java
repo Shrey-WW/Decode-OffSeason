@@ -7,23 +7,26 @@ import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
+import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
+
+import org.firstinspires.ftc.teamcode.CustomCMDs.AdvancingCommand;
 
 @Config
 public class Shooter extends SubsystemBase {
     private final MotorGroup ShootingMotors;
+    private final ServoEx servo;
     public static double Kp, Kv;
     public double kp, kv;
     public double t;
+    public AdvancingCommand HoodCMD = new AdvancingCommand(new InstantCommand(() -> moveServo(.42)), new InstantCommand(() -> moveServo(.7)));
     public Shooter(final HardwareMap hw){
         ShootingMotors = new MotorGroup(new Motor(hw, "shooter2", Motor.GoBILDA.BARE), new Motor(hw, "shooter1", Motor.GoBILDA.BARE));
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
         ShootingMotors.setVeloCoefficients(5,0,0);
         ShootingMotors.setFeedforwardCoefficients(0, 1);
         ShootingMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-    }
+        servo = new ServoEx(hw, "hood");
 
-    public InstantCommand runTo(double input){
-        return new InstantCommand(() -> ShootingMotors.set(input));
     }
 
 //    @Override
@@ -36,8 +39,13 @@ public class Shooter extends SubsystemBase {
         .7 pwr : 1680 velo
         1 pwr : 2160 velo
      */
+
     public void setTo(double input){
         ShootingMotors.set(input);
+    }
+
+    public void moveServo(double pos){
+        servo.set(pos);
     }
 
     public void tune(double input){
@@ -66,9 +74,9 @@ public class Shooter extends SubsystemBase {
 
     public double updateVeloPwr(){
         double velo = 1470 * Math.pow(Rusty.Ta, -.141712);
-        double pwr = 0.2057298 * Math.pow(1.000755, velo);
-        return pwr;
+        return 0.2057298 * Math.pow(1.000755, velo);
     }
+
 
 
 

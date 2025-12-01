@@ -12,10 +12,6 @@ public class Turret extends SubsystemBase {
 
     public static double Kp, Ki, Kd, Ks;
     public double kp, ki, kd, ks;
-    private double pwr = 0;
-    private double cPos = 0;
-    private static final double TICKS_PER_REV = 2403.125;
-    private static final double UnwindThreshold = 1400;
 
     // velo:  kP = .00028 Ks = 310
     //pos: kP = .0018

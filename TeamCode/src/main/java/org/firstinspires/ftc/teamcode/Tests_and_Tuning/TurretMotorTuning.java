@@ -31,7 +31,7 @@ public class TurretMotorTuning extends CommandOpMode {
         telemetry.addData("target", target);
         telemetry.addData("current velo", turret.getVelo());
         telemetry.addData("current pos", turret.getPos());
-        telemetry.addData( "target pos", posTarget);
+        telemetry.addData("target pos", posTarget);
         telemetry.update();
     }
 }

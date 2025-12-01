@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.Command;
-import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
-import org.firstinspires.ftc.teamcode.CCmds.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.CustomCMDs.AdvancingCommand;
 
 public class Transfer extends SubsystemBase {
     private final ServoEx transfer;

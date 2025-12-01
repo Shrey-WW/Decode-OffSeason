@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.ArchiveFiles.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import org.firstinspires.ftc.teamcode.CCmds.SwitchCMD;
+import org.firstinspires.ftc.teamcode.ArchiveFiles.CCmds.SwitchCMD;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDCoefficients;

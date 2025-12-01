@@ -16,8 +16,6 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.CCmds.MecanumDT;
-import org.firstinspires.ftc.teamcode.CCmds.TrackTag;
 
 public class Rusty extends Robot {
 
@@ -36,13 +34,10 @@ public class Rusty extends Robot {
     private Shooter shooter;
     private Turret turret;
     IMU imu;
-    TrackTag T_Default;
     private final OpMode opmode;
 
     DcMotor fL, bL, fR, bR;
     DcMotor[] motors;
-
-    private MecanumDT drive;
 
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
@@ -66,7 +61,7 @@ public class Rusty extends Robot {
             initAuto();
         }
         limelight.start();
-//        flywheel.setDefaultCommand(F_DefaultCMD);
+        schedule(transfer.transferCMD, shooter.HoodCMD);
     }
 
 
@@ -74,7 +69,6 @@ public class Rusty extends Robot {
         initSubsystems();
         initBinds();
         register(intake, transfer, shooter);
-        schedule(transfer.transferCMD);
     }
 
     private void initSubsystems() {
@@ -82,6 +76,7 @@ public class Rusty extends Robot {
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
         turret = new Turret(opmode.hardwareMap);
+
 
         fL = opmode.hardwareMap.get(DcMotor.class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
@@ -97,9 +92,6 @@ public class Rusty extends Robot {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
         turret.setVelocityControl();
-
-        drive = new MecanumDT(motors, opmode);
-
     }
 
 
@@ -112,13 +104,8 @@ public class Rusty extends Robot {
         Button cross = (new GamepadButton(driver, GamepadKeys.Button.A))
                 .whenPressed((transfer.transferCMD));
 
-
         Button triangle = (new GamepadButton(driver, GamepadKeys.Button.Y))
-                .whenPressed(() -> shooter.setTo(.7));
-        Button circle = (new GamepadButton(driver, GamepadKeys.Button.B))
-                .whenPressed(() -> shooter.setTo(.5));
-        Button square = (new GamepadButton(driver, GamepadKeys.Button.X))
-                .whenPressed(() -> shooter.setTo(.3));
+                .whenPressed(() -> shooter.HoodCMD.schedule());
         Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
                 .whenPressed(() -> imu.resetYaw());
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)).whenPressed(
@@ -128,12 +115,11 @@ public class Rusty extends Robot {
     }
 
     private void initAuto() {
-        limelight.start();
+        initSubsystems();
         initPaths();
     }
 
     private void initPaths(){
-
     }
 
     public double getVelo(){
