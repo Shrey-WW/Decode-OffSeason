@@ -46,10 +46,10 @@ public class Old_Shooter implements Subsystem {
 
     //                  {***_FLYWHEELS_***}
 
-    @Override
-    public void periodic(){
-        ShootingMotors.setPower(controlSystem.calculate(motor.getState()));
-    }
+//    @Override
+//    public void periodic(){
+//        ShootingMotors.setPower(controlSystem.calculate(motor.getState()));
+//    }
 
     public Command setVelocity(double goal){
         return new RunToVelocity(controlSystem, goal).requires(this);

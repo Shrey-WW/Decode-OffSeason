@@ -18,6 +18,7 @@ public class SolversTeleOp extends CommandOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         rusty = new Rusty(Rusty.OpModeType.TELEOP, this);
         rusty.init();
+
     }
 
     @Override

@@ -97,8 +97,6 @@ public class Rusty extends Robot {
 
     public void initBinds(){
         driver = new GamepadEx(opmode.gamepad1);
-//
-//        T_Default = new TrackTag(turret);
 
 
         Button cross = (new GamepadButton(driver, GamepadKeys.Button.A))
@@ -120,10 +118,6 @@ public class Rusty extends Robot {
     }
 
     private void initPaths(){
-    }
-
-    public double getVelo(){
-        return shooter.getVelo();
     }
 
     @Override
