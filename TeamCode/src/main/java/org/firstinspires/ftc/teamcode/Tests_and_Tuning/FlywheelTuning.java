@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
 @Config
 @TeleOp (group = "tuning")
@@ -26,7 +26,6 @@ public class FlywheelTuning extends CommandOpMode {
     public void run(){
 
         shooter.setTo(target);
-
         telemetry.addData("Velocity", shooter.getVelo());
         telemetry.addData("target", target);
         telemetry.update();

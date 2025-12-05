@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -19,7 +19,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Rusty extends Robot {
 
-    public final OpModeType optype;
     private final Limelight3A limelight;
     public static double Ta;
     public static double Tx;
@@ -43,23 +42,14 @@ public class Rusty extends Robot {
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
 
-    public enum OpModeType {
-        TELEOP, AUTO
-    }
-
-    public Rusty(OpModeType type, OpMode op) {
+    public Rusty(OpMode op) {
         opmode = op;
-        optype = type;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
     }
 
     public void init(){
-        if (optype == OpModeType.TELEOP) {
-            initTele();
-        } else {
-            initAuto();
-        }
+        initTele();
         limelight.start();
         schedule(transfer.transferCMD, shooter.HoodCMD);
     }
@@ -98,11 +88,9 @@ public class Rusty extends Robot {
     public void initBinds(){
         driver = new GamepadEx(opmode.gamepad1);
 
-
         Button cross = (new GamepadButton(driver, GamepadKeys.Button.A))
                 .whenPressed((transfer.transferCMD));
-
-        Button triangle = (new GamepadButton(driver, GamepadKeys.Button.Y))
+        Button dpadUp = (new GamepadButton(driver, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(() -> shooter.HoodCMD.schedule());
         Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
                 .whenPressed(() -> imu.resetYaw());
@@ -110,14 +98,6 @@ public class Rusty extends Robot {
                 () -> intake.Spin(1)).whenReleased((intake::PwrOff));
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)).whenPressed(
                 () -> intake.Spin(-1)).whenReleased((intake::PwrOff));
-    }
-
-    private void initAuto() {
-        initSubsystems();
-        initPaths();
-    }
-
-    private void initPaths(){
     }
 
     @Override
@@ -170,13 +150,11 @@ public class Rusty extends Robot {
     }
 
     public void TrackTag() {
-
         LLResult llresult = limelight.getLatestResult();
         double cPos = turret.getPos();
         if (Math.abs(cPos) >= UnwindThreshold) {
-            if (isUnwrapping){
-                return;
-            }
+            if (isUnwrapping) return;
+
             turret.setPositionControl();
             isUnwrapping = true;
             double direction = Math.signum(cPos);

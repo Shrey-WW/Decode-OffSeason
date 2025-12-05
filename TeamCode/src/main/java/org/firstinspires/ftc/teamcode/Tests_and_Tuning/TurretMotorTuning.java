@@ -6,11 +6,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 @Config
-@TeleOp(group = "tuning")
+@TeleOp (group = "tuning")
 public class TurretMotorTuning extends CommandOpMode {
     public static double target, posTarget;
     Turret turret;

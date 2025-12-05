@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Turret;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
-@TeleOp
+@TeleOp (group = "tests")
 public class TrackTagLL extends CommandOpMode {
 
     private static final double TICKS_PER_REV = 2403.125;

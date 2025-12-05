@@ -15,11 +15,11 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.util.LUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
 @Config
-@TeleOp
+@TeleOp (group = "tests")
 public class DynamicVeloTest extends CommandOpMode {
 
     Servo servo;

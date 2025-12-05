@@ -23,8 +23,7 @@ import com.pedropathing.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.ArchiveFiles.Subsystems.Robot;
-import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Rusty;
+import org.firstinspires.ftc.teamcode.Subsystems.Rusty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +128,7 @@ class LocalizationTest extends OpMode {
     Rusty rusty;
     @Override
     public void init() {
-        rusty = new Rusty(Rusty.OpModeType.TELEOP, this);
+        rusty = new Rusty(this);
 
     }
 

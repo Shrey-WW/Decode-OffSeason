@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems_Solvers;
+package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -56,7 +56,7 @@ public class Turret extends SubsystemBase {
         motor.setFeedforwardCoefficients(ks, 0);
     }
 
-    public double getPos(){
+    public int getPos(){
         return motor.getCurrentPosition();
     }
 
