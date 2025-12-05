@@ -33,7 +33,7 @@ public class DynamicVeloTest extends CommandOpMode {
     LUT<Double, Double> veloLUT = new LUT<Double, Double>()
     {{
         add(.28, .62);
-        add(.64, .3);
+        add(.5, .3);
         add(1.0,.48);
         add(2.5, .46);
     }};

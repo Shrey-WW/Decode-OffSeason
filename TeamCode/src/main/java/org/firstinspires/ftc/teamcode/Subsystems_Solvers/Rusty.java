@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class Rusty extends Robot {
 
-    private final OpModeType optype;
+    public final OpModeType optype;
     private final Limelight3A limelight;
     public static double Ta;
     public static double Tx;

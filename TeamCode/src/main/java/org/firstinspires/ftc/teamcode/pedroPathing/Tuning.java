@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.ArchiveFiles.Subsystems.Robot;
+import org.firstinspires.ftc.teamcode.Subsystems_Solvers.Rusty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,10 +126,11 @@ public class Tuning extends SelectableOpMode {
  * @version 1.0, 5/6/2024
  */
 class LocalizationTest extends OpMode {
-    Robot bot;
+    Rusty rusty;
     @Override
     public void init() {
-        bot = new Robot(this);
+        rusty = new Rusty(Rusty.OpModeType.TELEOP, this);
+
     }
 
     /** This initializes the PoseUpdater, the mecanum drive motors, and the Panels telemetry. */
@@ -143,7 +145,7 @@ class LocalizationTest extends OpMode {
 
     @Override
     public void start() {
-        bot.drive.schedule();
+        rusty.Drive();
 //        follower.startTeleopDrive();
 //        follower.update();
     }
@@ -155,6 +157,7 @@ class LocalizationTest extends OpMode {
     @Override
     public void loop() {
 //        follower.setTeleOpDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+
         follower.update();
 
         telemetryM.debug("X:" + follower.getPose().getX());

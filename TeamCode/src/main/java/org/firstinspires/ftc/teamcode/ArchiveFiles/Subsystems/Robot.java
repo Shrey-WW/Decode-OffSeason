@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.ArchiveFiles.Subsystems;
 
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -33,6 +34,7 @@ public class Robot {
 
     public IMU imu;
     public SparkFunOTOS otos;
+    public GoBildaPinpointDriver pinpoint;
 
 
     //CONSTANTS
@@ -77,7 +79,7 @@ public class Robot {
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
         bL = opmode.hardwareMap.get(DcMotor.class, "bl");
         bR = opmode.hardwareMap.get(DcMotor.class, "br");
-        otos = opmode.hardwareMap.get(SparkFunOTOS.class, "otos");
+        pinpoint = opmode.hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         fL.setDirection(DcMotorSimple.Direction.REVERSE);
         bL.setDirection(DcMotorSimple.Direction.REVERSE);
         motors = new DcMotor[]{fL, bL, fR, bR};
@@ -153,6 +155,7 @@ public class Robot {
     private double calculateSigmoid(double input){
         return (input / (1.0 + Math.abs(input)));
     }
+
 
 }
 

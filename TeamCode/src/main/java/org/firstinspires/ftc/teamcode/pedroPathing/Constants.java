@@ -8,7 +8,9 @@ import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.pedropathing.ftc.localization.Encoder;
 import com.pedropathing.ftc.localization.constants.DriveEncoderConstants;
 import com.pedropathing.ftc.localization.constants.OTOSConstants;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -22,27 +24,15 @@ public class Constants {
             .mass(12)
             .forwardZeroPowerAcceleration(-54.6846)
             .lateralZeroPowerAcceleration(-30.215);
-//    public static OTOSConstants localizerConstants = new OTOSConstants()
-//            .hardwareMapName("otos")
-//            .linearUnit(DistanceUnit.INCH)
-//            .angleUnit(AngleUnit.RADIANS)
-//            .offset(new SparkFunOTOS.Pose2D(1.605,-2.567, -Math.PI/2))
-//            .linearScalar(1.03)
-//            .angularScalar(.9741);
-    public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
-        .rightFrontMotorName("fr")
-        .rightRearMotorName("br")
-        .leftRearMotorName("bl")
-        .leftFrontMotorName("fl")
-        .leftFrontEncoderDirection(Encoder.REVERSE)
-        .leftRearEncoderDirection(Encoder.REVERSE)
-        .rightFrontEncoderDirection(Encoder.FORWARD)
-        .rightRearEncoderDirection(Encoder.FORWARD)
-        .robotLength(12)
-        .robotWidth(13.5)
-        .forwardTicksToInches(1.1243)
-        .strafeTicksToInches(.103)
-        .turnTicksToInches(1.021);
+
+    public static PinpointConstants localizerConstants = new PinpointConstants()
+            .forwardPodY(5)
+            .strafePodX(-2.75)
+            .distanceUnit(DistanceUnit.INCH)
+            .hardwareMapName("pinpoint")
+            .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -63,7 +53,7 @@ public class Constants {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
-                .driveEncoderLocalizer(localizerConstants)
+                .pinpointLocalizer(localizerConstants)
                 .build();
     }
 }
