@@ -16,6 +16,7 @@ import com.bylazar.field.Style;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.ErrorCalculator;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.*;
 import com.pedropathing.math.*;
@@ -815,6 +816,7 @@ class HeadingTuner extends OpMode {
 
     private Path forwards;
     private Path backwards;
+    public static double p, i, d, f;
 
     @Override
     public void init() {
@@ -853,6 +855,7 @@ class HeadingTuner extends OpMode {
     @Override
     public void loop() {
         follower.update();
+        follower.setHeadingPIDFCoefficients(new PIDFCoefficients(p , i, d, f));
         draw();
 
         if (!follower.isBusy()) {

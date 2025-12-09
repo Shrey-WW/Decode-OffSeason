@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
@@ -19,7 +20,9 @@ public class Constants {
             .mass(12)
             .forwardZeroPowerAcceleration(-44.9)
             .lateralZeroPowerAcceleration(-89.786)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0));
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0,.05, 0.067))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0,0.001,0.6,0.067));
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
