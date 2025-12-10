@@ -42,6 +42,8 @@ public class Rusty extends Robot {
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
 
+    private int ballshot = 0;
+
     public Rusty(OpMode op) {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
@@ -117,6 +119,15 @@ public class Rusty extends Robot {
         CommandScheduler.getInstance().run();
     }
 
+    public void ballshot(){
+        int currentvel = shooter.getVelocity();
+        if ((lastvel - currentvel) > 100)
+        {
+            ballshot += 1;
+        }
+        int lasvel = shooter.getVelocity();
+    }
+
 
     public void Drive(){
         double y = driver.getLeftY(); // Remember, Y stick value is reversed
@@ -179,6 +190,4 @@ public class Rusty extends Robot {
             }
         }
     }
-
-
 }

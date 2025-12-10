@@ -25,5 +25,4 @@ public class MainTeleOp extends CommandOpMode {
     public void run(){
         rusty.run();
     }
-
 }
