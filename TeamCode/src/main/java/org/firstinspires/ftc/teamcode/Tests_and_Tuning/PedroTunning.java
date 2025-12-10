@@ -1,15 +1,9 @@
-package org.firstinspires.ftc.teamcode.TeleOps;
-
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.draw;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.control.FilteredPIDFCoefficients;
-import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +12,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Config
 @TeleOp
-public class HeadingTuner extends OpMode {
+public class PedroTunning extends OpMode {
     public static double DISTANCE = 40;
     private boolean forward = true;
 

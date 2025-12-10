@@ -11,10 +11,11 @@ import org.firstinspires.ftc.teamcode.CustomCMDs.AdvancingCommand;
 public class Transfer extends SubsystemBase {
     private final ServoEx transfer;
     public final Command transferCMD;
+    public Command close, open;
     public Transfer(final HardwareMap hw){
         transfer = new ServoEx(hw, "transfer");
-        Command close = new InstantCommand(() -> transfer.set(.91));
-        Command open = new InstantCommand(() -> transfer.set(1));
+        close = new InstantCommand(() -> transfer.set(.91));
+        open = new InstantCommand(() -> transfer.set(1));
         transferCMD = new AdvancingCommand(open, close);
     }
 }

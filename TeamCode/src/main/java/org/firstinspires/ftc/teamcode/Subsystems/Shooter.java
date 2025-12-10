@@ -18,7 +18,7 @@ public class Shooter extends SubsystemBase {
     public static double Kp, Kv;
     public double kp, kv;
     public double t;
-    public AdvancingCommand HoodCMD = new AdvancingCommand(new InstantCommand(() -> moveServo(.42)), new InstantCommand(() -> moveServo(.7)));
+    public AdvancingCommand HoodCMD = new AdvancingCommand(new InstantCommand(() -> moveServo(.57)), new InstantCommand(() -> moveServo(1)));
     public Shooter(final HardwareMap hw){
         ShootingMotors = new MotorGroup(new Motor(hw, "shooter2", Motor.GoBILDA.BARE), new Motor(hw, "shooter1", Motor.GoBILDA.BARE));
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
@@ -39,6 +39,7 @@ public class Shooter extends SubsystemBase {
         .7 pwr : 1680 velo
         1 pwr : 2160 velo
      */
+
 
     public void setTo(double input){
         ShootingMotors.set(input);

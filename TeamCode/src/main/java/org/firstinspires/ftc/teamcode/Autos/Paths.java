@@ -17,7 +17,9 @@ public class Paths {
 
     public PathChain Intake1, goToScore1, Intake2, goToScore2;
 
-    public PathChain Intake2_;
+    public PathChain Intake2_, Intake1_;
+
+    public PathChain waitForStart;
 
     public enum AutoType {
         FAR_TWELVE, CLOSE_TWELVE, FAR_NINE, CLOSE_NINE, LINEAR_NINE
@@ -38,10 +40,10 @@ public class Paths {
     }
 
     private void buildFarNine(){
-        startPose = new Pose(56, 8.75);
-        endPose = new Pose(56,14);
-        PPGpose = new Pose(16,37);
-        PGPpose = new Pose(16,60);
+        startPose = new Pose(56, 8.75,Math.PI/2);
+        scorePose = new Pose(56,15, Math.PI/2);
+        PPGpose = new Pose(16,37.5, Math.PI);
+        PGPpose = new Pose(16,60, Math.PI);
         Intake1 = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 startPose,
@@ -75,29 +77,47 @@ public class Paths {
     private void buildLinearNine(){
         startPose = new Pose(56, 8.75,Math.PI/2);
         scorePose = new Pose(56,15, Math.PI/2);
-        PPGpose = new Pose(16,37.5, Math.PI);
-        PGPpose = new Pose(16,60, Math.PI);
-        Intake1 = follower.pathBuilder().addPath(
-                new BezierCurve(
-                        startPose,
-                        new Pose(56.000, 37.5),
-                        PPGpose
-                )).setTangentHeadingInterpolation()
+        PPGpose = new Pose(8.75,35, Math.PI);
+        PGPpose = new Pose(8.75,60, Math.PI);
+
+        waitForStart = follower.pathBuilder().addPath(
+                        new BezierLine(
+                                startPose,
+                                startPose
+                        )).setConstantHeadingInterpolation(Math.toRadians(90))
                 .build();
+
+        Intake1 = follower.pathBuilder().addPath(
+                new BezierLine(
+                        startPose,
+                        new Pose(43.000, 35)
+                )).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                .build();
+
+        Intake1_ =  follower.pathBuilder().addPath(
+                        new BezierLine(
+                                new Pose(43.000, 35.000), PPGpose)
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(180))
+                .build();
+
         goToScore1 = follower.pathBuilder().addPath(
                         new BezierLine(PPGpose, scorePose))
                 .setTangentHeadingInterpolation().setReversed()
                 .build();
+
         Intake2 = follower.pathBuilder().addPath(
                 new BezierLine(scorePose, new Pose(56, 60, Math.toRadians(180))))
                 .setHeadingInterpolation(HeadingInterpolator.piecewise(
                         new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.constant(Math.toRadians(90))),
                         new HeadingInterpolator.PiecewiseNode(.7,1, HeadingInterpolator.linear(Math.toRadians(90), Math.toRadians(180))
                 ))).build();
+
         Intake2_ = follower.pathBuilder().addPath(
                         new BezierLine(new Pose(56.000, 60.000, Math.toRadians(180)), PGPpose)
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
+
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierLine(PGPpose, scorePose)
                 ).setTangentHeadingInterpolation().setReversed()
