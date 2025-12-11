@@ -18,7 +18,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp (group = "tests")
+@TeleOp (group = "z-archive")
 public class LimelightTracking extends NextFTCOpMode {
 
     //pipeline 0 BLUE

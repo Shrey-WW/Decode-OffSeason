@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -26,6 +26,7 @@ public class AutoAlignTest extends OpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
         turret = new Turret(hardwareMap);
+        turret.setPositionControl();
     }
 
     @Override
@@ -39,7 +40,7 @@ public class AutoAlignTest extends OpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
-        if (llresult != null && llresult.isValid() & gamepad1.a) {
+        if (llresult != null && llresult.isValid() & gamepad1.left_trigger > .1) {
             autoAlign(llresult.getTx());
         }
     }
@@ -47,6 +48,6 @@ public class AutoAlignTest extends OpMode {
 
     private void autoAlign(double Tx){
         int cPos = turret.getPos();
-        turret.goToPos((int) (cPos - TICKS_PER_REV * Tx/360));
+        turret.goToPos((int) (cPos + TICKS_PER_REV * Tx/360));
     }
 }

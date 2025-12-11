@@ -20,7 +20,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
-@TeleOp (group = "tests")
+@TeleOp (group = "z-archive")
 public class Distance2VelTest extends NextFTCOpMode {
     private Limelight3A limelight;
     private IMU imu;

@@ -30,7 +30,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Config
-@TeleOp(group = "teleop", name = "Old TeleOp")
+@TeleOp(group = "z-archive", name = "Old TeleOp")
 public class OldTeleOp extends NextFTCOpMode {
     public static ElapsedTime timer = new ElapsedTime();
 

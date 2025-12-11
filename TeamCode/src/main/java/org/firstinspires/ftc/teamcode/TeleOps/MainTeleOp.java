@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import org.firstinspires.ftc.teamcode.Subsystems.Rusty;
+import org.firstinspires.ftc.teamcode.Requirements.Rusty;
 
 @Config
 @TeleOp

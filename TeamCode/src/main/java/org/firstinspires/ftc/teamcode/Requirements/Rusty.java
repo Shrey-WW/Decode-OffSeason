@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Requirements;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
@@ -16,33 +17,38 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 public class Rusty extends Robot {
 
+    /// limelight
     private final Limelight3A limelight;
     public static double Ta;
     public static double Tx;
-    GamepadEx driver;
-    /*  I_ - Intake
-        F_ - Flywheel
-        T_ - Turret
-        Ts_ - Transfer
-     */
+
+
+    /// Subsystems
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
     private Turret turret;
-    IMU imu;
+    private GamepadEx driver;
+    private IMU imu;
+
+    /// class Variables
     private final OpMode opmode;
-
-    DcMotor fL, bL, fR, bR;
-    DcMotor[] motors;
-
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
+    DcMotor fL, bL, fR, bR;
+    DcMotor[] motors;
 
-    private int ballshot = 0;
+
+
+
 
     public Rusty(OpMode op) {
         opmode = op;
@@ -53,7 +59,7 @@ public class Rusty extends Robot {
     public void init(){
         initTele();
         limelight.start();
-        schedule(transfer.transferCMD, shooter.HoodCMD);
+        schedule(transfer.open, shooter.HoodCMD);
     }
 
 
@@ -83,30 +89,42 @@ public class Rusty extends Robot {
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-        turret.setVelocityControl();
+        turret.setPositionControl();
     }
 
 
     public void initBinds(){
         driver = new GamepadEx(opmode.gamepad1);
 
-        Button cross = (new GamepadButton(driver, GamepadKeys.Button.A))
-                .whenPressed((transfer.transferCMD));
+
         Button dpadUp = (new GamepadButton(driver, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(() -> shooter.HoodCMD.schedule());
+
         Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
                 .whenPressed(() -> imu.resetYaw());
-        Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)).whenPressed(
-                () -> intake.Spin(1)).whenReleased((intake::PwrOff));
-        Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)).whenPressed(
-                () -> intake.Spin(-1)).whenReleased((intake::PwrOff));
+
+        Button A = (new GamepadButton(driver, GamepadKeys.Button.A))
+                .whenHeld(new InstantCommand(()-> shooter.setTo(.49)));
+
+        Button B = (new GamepadButton(driver, GamepadKeys.Button.B))
+                .whenHeld(new InstantCommand(() -> shooter.setTo(.62)));
+
+        Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
+                .whenPressed(transfer.open)
+                .whenHeld(intake.SpinIn)
+                .whenReleased(transfer.close.alongWith(intake.StopIntake));
+
+
+        Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
+                .whenPressed(transfer.open)
+                .whenHeld(intake.SpinOut)
+                .whenReleased(transfer.close.alongWith(intake.StopIntake));
     }
 
     @Override
     public void run() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         Drive();
-        TrackTag();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
         if (llresult != null && llresult.isValid()){
@@ -114,19 +132,17 @@ public class Rusty extends Robot {
             Tx = llresult.getTx();
             opmode.telemetry.addData("ta", Ta);
         }
+
+        if (opmode.gamepad1.right_trigger > .05){
+            intake.Spin(opmode.gamepad1.right_trigger);
+        }
+
+
         opmode.telemetry.addData("flywheel velo", shooter.getVelo());
         opmode.telemetry.update();
         CommandScheduler.getInstance().run();
     }
 
-    public void ballshot(){
-        int currentvel = shooter.getVelocity();
-        if ((lastvel - currentvel) > 100)
-        {
-            ballshot += 1;
-        }
-        int lasvel = shooter.getVelocity();
-    }
 
 
     public void Drive(){

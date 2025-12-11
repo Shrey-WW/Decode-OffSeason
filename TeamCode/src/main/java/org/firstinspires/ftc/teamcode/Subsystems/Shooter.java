@@ -9,7 +9,8 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
-import org.firstinspires.ftc.teamcode.CustomCMDs.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.Requirements.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.Requirements.Rusty;
 
 @Config
 public class Shooter extends SubsystemBase {
@@ -18,7 +19,13 @@ public class Shooter extends SubsystemBase {
     public static double Kp, Kv;
     public double kp, kv;
     public double t;
-    public AdvancingCommand HoodCMD = new AdvancingCommand(new InstantCommand(() -> moveServo(.57)), new InstantCommand(() -> moveServo(1)));
+
+    public AdvancingCommand HoodCMD = new AdvancingCommand(
+            new InstantCommand(() -> moveServo(.62)),
+            new InstantCommand(() -> moveServo(.85))
+    );
+
+
     public Shooter(final HardwareMap hw){
         ShootingMotors = new MotorGroup(new Motor(hw, "shooter2", Motor.GoBILDA.BARE), new Motor(hw, "shooter1", Motor.GoBILDA.BARE));
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);

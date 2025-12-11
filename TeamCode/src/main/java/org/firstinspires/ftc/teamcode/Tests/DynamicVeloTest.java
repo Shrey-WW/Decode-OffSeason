@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Tests_and_Tuning;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -8,10 +8,8 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.util.LUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -22,11 +20,10 @@ import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 @TeleOp (group = "tests")
 public class DynamicVeloTest extends CommandOpMode {
 
-    Servo servo;
     Shooter shooter;
     Intake intake;
-    public static double pos;
     public static double number;
+    public static double pos;
     private Limelight3A limelight;
     ElapsedTime timer = new ElapsedTime();
     private IMU imu;
@@ -38,9 +35,9 @@ public class DynamicVeloTest extends CommandOpMode {
         add(2.5, .46);
     }};
 
-    //.62 Ta: .28
-    //.48 Ta: .955
-    //.46 Ta: 1.8
+    //.53 Ta: .632
+    //.45 Ta: 1.7976140603423119
+    //.42 Ta: 2.262764237821102
 
     @Override
     public void initialize(){
@@ -59,7 +56,6 @@ public class DynamicVeloTest extends CommandOpMode {
     @Override
     public void run() {
         intake.Spin(1);
-        telemetry.addData("velo", shooter.getVelo());
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
@@ -67,12 +63,12 @@ public class DynamicVeloTest extends CommandOpMode {
         if (llresult != null && llresult.isValid()) {
             double Ta = llresult.getTa();
             telemetry.addData("Ta", Ta);
-            if (timer.milliseconds() > 60) {
-                shooter.setTo(veloLUT.getClosest(Ta));
-                timer.reset();
-            }
         }
+        shooter.moveServo(pos);
+        shooter.setTo(number);
+
+        telemetry.addData("velo", shooter.getVelo());
         telemetry.update();
-        CommandScheduler.getInstance().run();
+        super.run();
     }
 }

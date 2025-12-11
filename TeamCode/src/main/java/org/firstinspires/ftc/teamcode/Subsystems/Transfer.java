@@ -6,7 +6,7 @@ import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
-import org.firstinspires.ftc.teamcode.CustomCMDs.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.Requirements.AdvancingCommand;
 
 public class Transfer extends SubsystemBase {
     private final ServoEx transfer;
@@ -17,5 +17,9 @@ public class Transfer extends SubsystemBase {
         close = new InstantCommand(() -> transfer.set(.91));
         open = new InstantCommand(() -> transfer.set(1));
         transferCMD = new AdvancingCommand(open, close);
+    }
+
+    public void setPos(double pos){
+        transfer.set(pos);
     }
 }

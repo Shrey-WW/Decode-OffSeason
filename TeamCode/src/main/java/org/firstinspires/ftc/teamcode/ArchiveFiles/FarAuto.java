@@ -18,7 +18,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous (group = "auto")
+@Autonomous (group = "z-archive")
 public class FarAuto extends NextFTCOpMode {
     private double cVelo;
     Robot bot;
