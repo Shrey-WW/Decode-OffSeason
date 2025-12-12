@@ -70,8 +70,6 @@ public class RedPaths {
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
                 .build();
 
-        /// turn to *70* degrees
-
         Intake2 = follower.pathBuilder().addPath(
                         new BezierLine(scorePose, new Pose(88, 60)))
                 .setHeadingInterpolation(HeadingInterpolator.piecewise(
@@ -89,48 +87,27 @@ public class RedPaths {
                 ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
                 .build();
 
-        /// turn to *85* degrees
     }
 
     public void buildCloseNine(){
-        startPose = new Pose(21.500, 121.000, Math.PI/2).mirror();
-        scorePose = new Pose(59,84, Math.toRadians(130)).mirror();
-        PPGpose = new Pose(18,84, Math.PI).mirror();
-        PGPpose = new Pose(8.75,60, Math.PI).mirror();
+        startPose = new Pose(19,123).mirror();
+        scorePose = new Pose(50,93).mirror();
+        PPGpose = new Pose(18,84).mirror();
 
         ShootPreloads = follower.pathBuilder().addPath(
-                new BezierLine(startPose, scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(50)).build();
+                new BezierLine(startPose,scorePose)
+        ).setLinearHeadingInterpolation(Math.toRadians(36.5), Math.toRadians(50)).build();
 
         Intake1 = follower.pathBuilder().addPath(
-                new BezierLine(scorePose, new Pose(18, 84).mirror())
-        ).setTangentHeadingInterpolation().build();
-
-        goToScore1 = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(18, 84).mirror(), scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(50)).build();
-
-        Intake2 = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(18, 84).mirror(), new Pose(50, 59).mirror())
+                new BezierLine(scorePose, new Pose(50, 84).mirror())
         ).setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(0)).build();
 
+        Intake1_ = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(50, 84).mirror(), PPGpose)
+        ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
-        Intake2_ = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(18, 84).mirror(), new Pose(8.75, 59).mirror())
-        ).setTangentHeadingInterpolation().build();
-
-        goToScore2 = follower.pathBuilder().addPath(
-                        new BezierCurve(
-                                new Pose(8.75, 59).mirror(),
-                                new Pose(40, 59).mirror(),
-                                scorePose
-                        )
-                )
-                .setTangentHeadingInterpolation()
-                .setReversed()
-                .build();
-
-        /// turn to 50 degrees
-
+        goToScore1 = follower.pathBuilder().addPath(
+                new BezierLine(PPGpose, scorePose)
+        ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(50)).build();
     }
 }

@@ -23,7 +23,7 @@ public class RedClosePathing extends CommandOpMode {
         super.reset();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
+        follower.setStartingPose(new Pose(19, 123, Math.toRadians(143.5)).mirror());
 
         Paths = new RedPaths(RedPaths.AutoType.CLOSE_NINE, follower);
         Paths.buildPaths();
@@ -31,14 +31,11 @@ public class RedClosePathing extends CommandOpMode {
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 new FollowPathCommand(follower, Paths.Intake1),
-                new FollowPathCommand(follower, Paths.goToScore1),
-                new FollowPathCommand(follower, Paths.Intake2),
-                new FollowPathCommand(follower, Paths.Intake2_),
-                new FollowPathCommand(follower, Paths.goToScore2),
-                new TurnToCommand(follower, Math.toRadians(50))
+                new FollowPathCommand(follower, Paths.Intake1_),
+                new FollowPathCommand(follower, Paths.goToScore1)
         );
-        schedule(AutoSequence);
 
+        schedule(AutoSequence);
     }
 
     @Override

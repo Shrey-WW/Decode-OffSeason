@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class BlueFarLinear extends CommandOpMode {
+public class BlueFar extends CommandOpMode {
     private Follower follower;
     BluePaths Paths;
     Transfer transfer;

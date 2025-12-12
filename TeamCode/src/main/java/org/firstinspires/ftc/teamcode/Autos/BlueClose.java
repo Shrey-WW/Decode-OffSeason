@@ -11,9 +11,7 @@ import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
-import com.seattlesolvers.solverslib.pedroCommand.TurnToCommand;
 
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Requirements.BluePaths;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -22,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class BlueCloseNine extends CommandOpMode {
+public class BlueClose extends CommandOpMode {
     private Follower follower;
     Limelight3A limelight;
     IMU imu;
@@ -46,7 +44,7 @@ public class BlueCloseNine extends CommandOpMode {
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(21, 121.5, Math.PI/2));
+        follower.setStartingPose(new Pose(19, 123, Math.toRadians(143.5)));
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -58,49 +56,30 @@ public class BlueCloseNine extends CommandOpMode {
         startIntake = new InstantCommand(() -> intake.Spin(1));
         stopIntake = new InstantCommand(intake::PwrOff);
         reverseIntake = new InstantCommand(() -> intake.Spin(-1));
-        startFlywheel = new InstantCommand(() -> shooter.setTo(.5));
-        restFlywheel = new InstantCommand( () -> shooter.setTo(.3));
         hoodUp = new InstantCommand( () -> shooter.moveServo(0));
 
         AutoSequence = new SequentialCommandGroup(
                 /// shooting preloads
                 hoodUp,
                 new FollowPathCommand(follower, Paths.ShootPreloads),
-                transfer.close,
-                new WaitCommand(2500),
-                startIntake,
                 transfer.open,
+                new WaitCommand(500),
+                startIntake,
                 new WaitCommand(5000),
                 /// spitting out balls
                 reverseIntake,
-                new WaitCommand(1500),
+                new WaitCommand(1250),
                 /// intaking
                 transfer.close,
-                startIntake,
                 new FollowPathCommand(follower, Paths.Intake1),
+                startIntake,
+                new FollowPathCommand(follower, Paths.Intake1_),
                 stopIntake,
                 /// shooting
                 new FollowPathCommand(follower, Paths.goToScore1),
                 transfer.open,
                 startIntake,
-                new WaitCommand(5000),
-                /// spitting out balls
-                reverseIntake
-//                new WaitCommand(2500),
-//                stopIntake,
-//                /// intaking
-//                new FollowPathCommand(follower, Paths.Intake2),
-//                transfer.close,
-//                startIntake,
-//                new FollowPathCommand(follower, Paths.Intake2_),
-//                stopIntake,
-//                /// shooting
-//                startFlywheel,
-//                new FollowPathCommand(follower, Paths.goToScore2),
-//                new TurnToCommand(follower, Math.toRadians(130)),
-//                transfer.open,
-//                startIntake
-
+                new WaitCommand(5000)
         );
         register(intake, shooter, transfer, turret);
         schedule(AutoSequence);

@@ -37,9 +37,6 @@ public class BluePaths {
         else if(autoType == AutoType.CLOSE_NINE) {
             buildCloseNine();
         }
-        else if (autoType == AutoType.NINE_TEST){
-            buildTestNine();
-        }
     }
 
     private void buildLinearNine(){
@@ -92,66 +89,30 @@ public class BluePaths {
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(110))
                 .build();
 
-
-        /// turn to 97 degrees
     }
 
 
     public void buildCloseNine(){
-        startPose = new Pose(21.500, 121.000, Math.PI/2);
-        scorePose = new Pose(59,84, Math.toRadians(130));
-        GPPpose = new Pose(18,84, Math.PI);
-        PGPpose = new Pose(8.75,60, Math.PI);
+        startPose = new Pose(19,123);
+        scorePose = new Pose(50,93);
+        GPPpose = new Pose(18,84);
 
         ShootPreloads = follower.pathBuilder().addPath(
-                        new BezierLine(startPose, scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(130)).build();
+                new BezierLine(startPose,scorePose)
+        ).setLinearHeadingInterpolation(Math.toRadians(143.5), Math.toRadians(130)).build();
 
         Intake1 = follower.pathBuilder().addPath(
-                        new BezierLine(scorePose, GPPpose)
-        ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .5, HeadingInterpolator.linear(Math.toRadians(130), Math.toRadians(180))),
-                new HeadingInterpolator.PiecewiseNode(.5,1, HeadingInterpolator.constant(Math.toRadians(180))))
-                ).build();
-
-        goToScore1 = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(18, 84), scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130)).build();
-
-        Intake2 = follower.pathBuilder().addPath(
-                new BezierLine(scorePose, new Pose(50, 60))
+                new BezierLine(scorePose, new Pose(50, 84))
         ).setLinearHeadingInterpolation(Math.toRadians(130), Math.toRadians(180)).build();
 
 
-        Intake2_ = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(50, 60), PGPpose)
-        ).setConstantHeadingInterpolation(180).build();
+        Intake1_ = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(50, 84), GPPpose)
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
 
-        turn1 = follower.pathBuilder().addPath(
-                new BezierLine(PGPpose, new Pose(50, 60))
-        ).setConstantHeadingInterpolation(180).build();
-
-        goToScore2 = follower.pathBuilder().addPath(
-                        new BezierLine(
-                                new Pose(50, 60),
-                                scorePose
-                        )
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130))
-                .setReversed()
-                .build();
-
-        /// turn to 130 degrees
-
-
-    }
-
-    public void buildTestNine(){
-        startPose = new Pose(56, 8.75,Math.PI/2);
-        scorePose = new Pose(56,15, Math.toRadians(113));
-        PPGpose = new Pose(8.25,35, Math.PI);
-        PGPpose = new Pose(8.25,60, Math.PI);
-
+        goToScore1 = follower.pathBuilder().addPath(
+                new BezierLine(GPPpose, scorePose)
+        ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130)).build();
     }
 
 }
