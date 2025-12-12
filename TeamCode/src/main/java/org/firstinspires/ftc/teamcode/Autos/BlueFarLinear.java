@@ -46,7 +46,7 @@ public class BlueFarLinear extends CommandOpMode {
         reverseIntake = new InstantCommand(() -> intake.Spin(-1));
         startFlywheel = new InstantCommand(() -> shooter.setTo(.6));
         restFlywheel = new InstantCommand(() -> shooter.setTo(.3));
-        hoodUp = new InstantCommand(() -> shooter.moveServo(.62));
+        hoodUp = new InstantCommand(() -> shooter.moveServo(0));
 
         AutoSequence = new SequentialCommandGroup(
                 /// shooting preloads
@@ -54,14 +54,14 @@ public class BlueFarLinear extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 transfer.close,
                 startFlywheel,
-                new WaitCommand(2500),
+                new WaitCommand(2000),
                 startIntake,
                 transfer.open,
                 new WaitCommand(5000),
                 /// spitting out balls
                 restFlywheel,
                 reverseIntake,
-                new WaitCommand(3000),
+                new WaitCommand(2000),
                 stopIntake,
                 /// intaking
                 new FollowPathCommand(follower, Paths.Intake1),

@@ -39,6 +39,7 @@ public class Rusty extends Robot {
     private IMU imu;
 
     /// class Variables
+    private double lastTriggerInput;
     private final OpMode opmode;
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
@@ -118,7 +119,7 @@ public class Rusty extends Robot {
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinOut)
-                .whenReleased(transfer.close.alongWith(intake.StopIntake));
+                .whenReleased(new InstantCommand(()-> transfer.setPos(.91)).alongWith(new InstantCommand(intake::PwrOff)));
     }
 
     @Override
@@ -135,6 +136,9 @@ public class Rusty extends Robot {
 
         if (opmode.gamepad1.right_trigger > .05){
             intake.Spin(opmode.gamepad1.right_trigger);
+        }
+        else if (opmode.gamepad1.right_trigger <= 0.05 && intake.getPower() > 0 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper){
+            intake.PwrOff();
         }
 
 

@@ -22,7 +22,7 @@ public class BlueClosePathing extends CommandOpMode {
         super.reset();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
+        follower.setStartingPose(new Pose(21, 121.5, Math.PI/2));
 
         Paths = new BluePaths(BluePaths.AutoType.CLOSE_NINE, follower);
         Paths.buildPaths();
@@ -30,11 +30,12 @@ public class BlueClosePathing extends CommandOpMode {
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 new FollowPathCommand(follower, Paths.Intake1),
-                new FollowPathCommand(follower, Paths.goToScore1),
-                new FollowPathCommand(follower, Paths.Intake2),
-                new FollowPathCommand(follower, Paths.Intake2_),
-                new FollowPathCommand(follower, Paths.goToScore2),
-                new TurnToCommand(follower, Math.toRadians(130))
+                new FollowPathCommand(follower, Paths.goToScore1)
+//                new FollowPathCommand(follower, Paths.Intake2),
+//                new FollowPathCommand(follower, Paths.Intake2_),
+//                new FollowPathCommand(follower, Paths.turn1),
+//                new FollowPathCommand(follower, Paths.goToScore2),
+//                new TurnToCommand(follower, Math.toRadians(130))
         );
         schedule(AutoSequence);
 

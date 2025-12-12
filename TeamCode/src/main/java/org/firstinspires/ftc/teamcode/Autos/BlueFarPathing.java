@@ -32,11 +32,9 @@ public class BlueFarPathing extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.Intake1),
                 new FollowPathCommand(follower, Paths.Intake1_),
                 new FollowPathCommand(follower, Paths.goToScore1),
-                new TurnToCommand(follower, Math.toRadians(113)),
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.Intake2_),
-                new FollowPathCommand(follower, Paths.goToScore2),
-                new TurnToCommand(follower, Math.toRadians(113))
+                new FollowPathCommand(follower, Paths.goToScore2)
         );
         schedule(AutoSequence);
 

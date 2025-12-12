@@ -24,4 +24,8 @@ public class Intake extends SubsystemBase {
     public void PwrOff(){
         motor.set(0);
     }
+
+    public double getPower() {
+        return motor.get();
+    }
 }

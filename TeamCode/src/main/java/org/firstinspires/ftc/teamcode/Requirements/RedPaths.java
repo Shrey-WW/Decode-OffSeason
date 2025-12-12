@@ -39,23 +39,23 @@ public class RedPaths {
 
 
     public void buildLinearNine(){
-        startPose = new Pose(56, 8.75,Math.PI/2).mirror();
-        scorePose = new Pose(56,15, Math.toRadians(113)).mirror();
-        GPPpose = new Pose(8.25,35, Math.PI).mirror();
-        PGPpose = new Pose(8.25,60, Math.PI).mirror();
+        startPose = new Pose(88, 8.75,Math.PI/2).mirror();
+        scorePose = new Pose(88,15, Math.toRadians(97));
+        GPPpose = new Pose(134,35, Math.PI).mirror();
+        PGPpose = new Pose(134,60, Math.PI).mirror();
 
         ShootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
                                 startPose,
                                 scorePose
-                        )).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(67))
+                        )).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(83))
                 .build();
 
         Intake1 = follower.pathBuilder().addPath(
                         new BezierLine(
                                 scorePose,
                                 new Pose(101, 35)
-                        )).setLinearHeadingInterpolation(Math.toRadians(67), Math.toRadians(0))
+                        )).setLinearHeadingInterpolation(Math.toRadians(83), Math.toRadians(0))
                 .build();
 
         Intake1_ =  follower.pathBuilder().addPath(
@@ -67,16 +67,16 @@ public class RedPaths {
 
         goToScore1 = follower.pathBuilder().addPath(
                         new BezierLine(GPPpose, scorePose))
-                .setTangentHeadingInterpolation().setReversed()
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
                 .build();
 
-        /// turn to *67* degrees
+        /// turn to *70* degrees
 
         Intake2 = follower.pathBuilder().addPath(
                         new BezierLine(scorePose, new Pose(88, 60)))
                 .setHeadingInterpolation(HeadingInterpolator.piecewise(
-                        new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.constant(Math.toRadians(90))),
-                        new HeadingInterpolator.PiecewiseNode(.7,1, HeadingInterpolator.linear(Math.toRadians(90), Math.toRadians(0))
+                        new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.constant(Math.toRadians(70))),
+                        new HeadingInterpolator.PiecewiseNode(.7,1, HeadingInterpolator.linear(Math.toRadians(70), Math.toRadians(0))
                         ))).build();
 
         Intake2_ = follower.pathBuilder().addPath(
@@ -86,10 +86,10 @@ public class RedPaths {
 
         goToScore2 = follower.pathBuilder().addPath(
                         new BezierLine(PGPpose, scorePose)
-                ).setTangentHeadingInterpolation().setReversed()
+                ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
                 .build();
 
-        /// turn to *67* degrees
+        /// turn to *85* degrees
     }
 
     public void buildCloseNine(){
