@@ -17,7 +17,7 @@ public class RedPaths {
 
     public PathChain Intake1, goToScore1, Intake2, goToScore2;
 
-    public PathChain Intake2_, Intake1_, ShootPreloads;
+    public PathChain Intake2_, Intake1_, ShootPreloads,turn1, turn2, move;
 
     public enum AutoType {
         FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE
@@ -39,10 +39,10 @@ public class RedPaths {
 
 
     public void buildLinearNine(){
-        startPose = new Pose(88, 8.75,Math.PI/2).mirror();
-        scorePose = new Pose(88,15, Math.toRadians(97));
-        GPPpose = new Pose(134,35, Math.PI).mirror();
-        PGPpose = new Pose(134,60, Math.PI).mirror();
+        startPose = new Pose(88, 8.75);
+        scorePose = new Pose(88,10);
+        GPPpose = new Pose(134,35);
+        PGPpose = new Pose(134,60);
 
         ShootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
@@ -86,6 +86,10 @@ public class RedPaths {
                         new BezierLine(PGPpose, scorePose)
                 ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(70))
                 .build();
+        move = follower.pathBuilder().addPath(
+                        new BezierLine(scorePose, new Pose(56,30).mirror()))
+                .setLinearHeadingInterpolation(Math.toRadians(70), Math.toRadians(180))
+                .build();
 
     }
 
@@ -96,11 +100,11 @@ public class RedPaths {
 
         ShootPreloads = follower.pathBuilder().addPath(
                 new BezierLine(startPose,scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(36.5), Math.toRadians(50)).build();
+        ).setLinearHeadingInterpolation(Math.toRadians(36.5), Math.toRadians(42)).build();
 
         Intake1 = follower.pathBuilder().addPath(
                 new BezierLine(scorePose, new Pose(50, 84).mirror())
-        ).setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(0)).build();
+        ).setLinearHeadingInterpolation(Math.toRadians(42), Math.toRadians(0)).build();
 
         Intake1_ = follower.pathBuilder().addPath(
                 new BezierLine(new Pose(50, 84).mirror(), PPGpose)
@@ -108,6 +112,26 @@ public class RedPaths {
 
         goToScore1 = follower.pathBuilder().addPath(
                 new BezierLine(PPGpose, scorePose)
-        ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(50)).build();
+        ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42)).build();
+
+        Intake2 = follower.pathBuilder().addPath(
+                new BezierLine(scorePose, new Pose(50, 58).mirror())
+        ).setLinearHeadingInterpolation(Math.toRadians(42), Math.toRadians(0)).build();
+
+        Intake2_ = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(50, 58).mirror(), new Pose(8.75, 60).mirror())
+        ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
+
+        turn1 = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(8.75, 60).mirror(), new Pose(40, 60).mirror())
+        ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
+
+        goToScore2 = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(40, 60).mirror(), scorePose)
+        ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42)).build();
+
+        turn2 = follower.pathBuilder().addPath(
+                        new BezierLine(scorePose, new Pose(50, 80).mirror()))
+                .setLinearHeadingInterpolation(Math.toRadians(42), Math.toRadians(0)).build();
     }
 }

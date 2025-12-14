@@ -14,7 +14,7 @@ public class Transfer extends SubsystemBase {
     public Command close, open;
     public Transfer(final HardwareMap hw){
         transfer = new ServoEx(hw, "transfer");
-        close = new InstantCommand(() -> transfer.set(.91));
+        close = new InstantCommand(() -> transfer.set(.85));
         open = new InstantCommand(() -> transfer.set(1));
         transferCMD = new AdvancingCommand(open, close);
     }

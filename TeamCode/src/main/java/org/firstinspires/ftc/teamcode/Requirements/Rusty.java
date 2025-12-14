@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Requirements;
 
+import static android.os.SystemClock.sleep;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -10,13 +12,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
@@ -39,11 +41,11 @@ public class Rusty extends Robot {
     private IMU imu;
 
     /// class Variables
-    private double lastTriggerInput;
     private final OpMode opmode;
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
+    private static double flywheelPwr = .3;
     DcMotor fL, bL, fR, bR;
     DcMotor[] motors;
 
@@ -58,16 +60,11 @@ public class Rusty extends Robot {
     }
 
     public void init(){
-        initTele();
+        initSubsystems();
+        initControls();
+        register(intake, transfer, shooter);
         limelight.start();
         schedule(transfer.open, shooter.HoodCMD);
-    }
-
-
-    public void initTele() {
-        initSubsystems();
-        initBinds();
-        register(intake, transfer, shooter);
     }
 
     private void initSubsystems() {
@@ -94,7 +91,7 @@ public class Rusty extends Robot {
     }
 
 
-    public void initBinds(){
+    private void initControls(){
         driver = new GamepadEx(opmode.gamepad1);
 
 
@@ -103,12 +100,6 @@ public class Rusty extends Robot {
 
         Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
                 .whenPressed(() -> imu.resetYaw());
-
-        Button A = (new GamepadButton(driver, GamepadKeys.Button.A))
-                .whenHeld(new InstantCommand(()-> shooter.setTo(.49)));
-
-        Button B = (new GamepadButton(driver, GamepadKeys.Button.B))
-                .whenHeld(new InstantCommand(() -> shooter.setTo(.62)));
 
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(transfer.open)
@@ -119,27 +110,40 @@ public class Rusty extends Robot {
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinOut)
-                .whenReleased(new InstantCommand(()-> transfer.setPos(.91)).alongWith(new InstantCommand(intake::PwrOff)));
+                .whenReleased(new InstantCommand(()-> transfer.setPos(.85)).alongWith(new InstantCommand(intake::PwrOff)));
+
+
+
+        shooter.setDefaultCommand(new RunCommand(() -> shooter.setTo(.3), shooter));
     }
 
     @Override
     public void run() {
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         Drive();
-        limelight.updateRobotOrientation(orientation.getYaw());
-        LLResult llresult = limelight.getLatestResult();
-        if (llresult != null && llresult.isValid()){
-            Ta = llresult.getTa();
-            Tx = llresult.getTx();
-            opmode.telemetry.addData("ta", Ta);
-        }
+
+//        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+//        limelight.updateRobotOrientation(orientation.getYaw());
+//        LLResult llresult = limelight.getLatestResult();
+//
+//        if (llresult != null && llresult.isValid()){
+//            Ta = llresult.getTa();
+//            Tx = llresult.getTx();
+//            opmode.telemetry.addData("ta", Ta);
+//        }
 
         if (opmode.gamepad1.right_trigger > .05){
             intake.Spin(opmode.gamepad1.right_trigger);
         }
-        else if (opmode.gamepad1.right_trigger <= 0.05 && intake.getPower() > 0 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper){
+
+        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
             intake.PwrOff();
         }
+
+
+
+        if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
+
+        else shooter.setTo(.4);
 
 
         opmode.telemetry.addData("flywheel velo", shooter.getVelo());

@@ -33,7 +33,6 @@ public class Shooter extends SubsystemBase {
         ShootingMotors.setFeedforwardCoefficients(0, 1);
         ShootingMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         servo = new ServoEx(hw, "hood");
-
     }
 
 //    @Override

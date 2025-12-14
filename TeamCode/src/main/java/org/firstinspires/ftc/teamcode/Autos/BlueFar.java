@@ -18,21 +18,28 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
 public class BlueFar extends CommandOpMode {
+
+    /// class vars
     private Follower follower;
     BluePaths Paths;
+    private static final double targetSpeed = .5;
+
+    /// subsystems
     Transfer transfer;
     Shooter shooter;
     Intake intake;
     Turret turret;
+
+    /// Commands
     InstantCommand startIntake, stopIntake, reverseIntake, startFlywheel, restFlywheel, hoodUp;
     SequentialCommandGroup AutoSequence;
 
     @Override
-    public void initialize(){
+    public void initialize() {
         super.reset();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
+        follower.setStartingPose(new Pose(56, 8.75, Math.PI / 2));
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -53,44 +60,36 @@ public class BlueFar extends CommandOpMode {
                 hoodUp,
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 transfer.close,
-                startFlywheel,
                 new WaitCommand(2000),
                 startIntake,
                 transfer.open,
                 new WaitCommand(5000),
-                /// spitting out balls
-                restFlywheel,
-                reverseIntake,
-                new WaitCommand(2000),
-                stopIntake,
                 /// intaking
                 new FollowPathCommand(follower, Paths.Intake1),
                 transfer.close,
                 startIntake,
                 new FollowPathCommand(follower, Paths.Intake1_),
-                stopIntake,
                 /// shooting
-                startFlywheel,
                 new FollowPathCommand(follower, Paths.goToScore1),
                 transfer.open,
-                startIntake,
                 new WaitCommand(5000),
-                /// spitting out balls
-                restFlywheel,
-                reverseIntake,
-                new WaitCommand(2500),
-                stopIntake,
-                /// intaking
-                new FollowPathCommand(follower, Paths.Intake2),
-                transfer.close,
-                startIntake,
-                new FollowPathCommand(follower, Paths.Intake2_),
-                stopIntake,
-                /// shooting
-                startFlywheel,
-                new FollowPathCommand(follower, Paths.goToScore2),
-                transfer.open,
-                new WaitCommand(5000)
+                new FollowPathCommand(follower, Paths.move)
+//                /// spitting out balls
+//                restFlywheel,
+//                reverseIntake,
+//                new WaitCommand(2500),
+//                stopIntake,
+//                /// intaking
+//                new FollowPathCommand(follower, Paths.Intake2),
+//                transfer.close,
+//                startIntake,
+//                new FollowPathCommand(follower, Paths.Intake2_),
+//                stopIntake,
+//                /// shooting
+//                startFlywheel,
+//                new FollowPathCommand(follower, Paths.goToScore2),
+//                transfer.open,
+//                new WaitCommand(5000)
         );
         register(intake, shooter, transfer, turret);
         schedule(AutoSequence);
@@ -98,8 +97,9 @@ public class BlueFar extends CommandOpMode {
     }
 
     @Override
-    public void run(){
+    public void run() {
         super.run();
         follower.update();
+        shooter.setTo(.64);
     }
 }

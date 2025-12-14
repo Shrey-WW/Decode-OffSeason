@@ -65,21 +65,28 @@ public class BlueClose extends CommandOpMode {
                 transfer.open,
                 new WaitCommand(500),
                 startIntake,
-                new WaitCommand(5000),
-                /// spitting out balls
-                reverseIntake,
-                new WaitCommand(1250),
+                new WaitCommand(4000),
                 /// intaking
                 transfer.close,
                 new FollowPathCommand(follower, Paths.Intake1),
                 startIntake,
                 new FollowPathCommand(follower, Paths.Intake1_),
-                stopIntake,
                 /// shooting
                 new FollowPathCommand(follower, Paths.goToScore1),
                 transfer.open,
                 startIntake,
-                new WaitCommand(5000)
+                new WaitCommand(4000),
+                /// intaking
+                transfer.close,
+                new FollowPathCommand(follower, Paths.Intake2),
+                startIntake,
+                new FollowPathCommand(follower, Paths.Intake2_),
+                /// shooting
+                new FollowPathCommand(follower, Paths.goToScore2),
+                transfer.open,
+                startIntake,
+                new WaitCommand(4000),
+                new FollowPathCommand(follower, Paths.turn2)
         );
         register(intake, shooter, transfer, turret);
         schedule(AutoSequence);
@@ -89,7 +96,7 @@ public class BlueClose extends CommandOpMode {
     @Override
     public void run(){
         super.run();
-        shooter.setTo(.5);
+        shooter.setTo(.46);
         follower.update();
     }
 }
