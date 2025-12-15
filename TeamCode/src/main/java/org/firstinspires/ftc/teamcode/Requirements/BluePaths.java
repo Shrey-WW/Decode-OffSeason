@@ -20,7 +20,7 @@ public class BluePaths {
 
     public PathChain Intake2_, Intake1_, ShootPreloads;
 
-    public PathChain turn1, turn2, move;
+    public PathChain turn1, turn2, move, openGate, goToScore3;
 
     public enum AutoType {
         FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE, NINE_TEST
@@ -37,6 +37,10 @@ public class BluePaths {
         }
         else if(autoType == AutoType.CLOSE_NINE) {
             buildCloseNine();
+        }
+
+        else if(autoType == AutoType.FAR_TWELVE) {
+            buildFarTwelve();
         }
     }
 
@@ -138,6 +142,54 @@ public class BluePaths {
         turn2 = follower.pathBuilder().addPath(
                 new BezierLine(scorePose,new Pose(25, 55)))
         .setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(90)).build();
+    }
+
+    public void buildFarTwelve(){
+        startPose = new Pose(56, 8.75);
+        scorePose = new Pose(56,15);
+        PPGpose = new Pose(12, 35);
+        PGPpose = new Pose(12 ,60);
+        
+        Intake1 = follower.pathBuilder().addPath(
+        new BezierCurve(
+          startPose,
+          new Pose(56.100, 35.000),
+          PPGpose)
+        ).setTangentHeadingInterpolation()
+            .build();
+
+        goToScore1 = follower.pathBuilder().addPath(
+            new BezierLine(PPGpose, scorePose)
+        ).setTangentHeadingInterpolation().setReversed().build();
+        
+        Intake2 = follower.pathBuilder().addPath(
+            new BezierCurve(
+                scorePose,
+                new Pose(56.000, 59.000),
+                PGPpose)
+        ).setTangentHeadingInterpolation()
+            .build();
+        
+        goToScore2 = follower.pathBuilder().addPath(
+            new BezierLine(PGPpose, scorePose)
+        ).setTangentHeadingInterpolation().setReversed()
+            .build();
+        
+         openGate = follower.pathBuilder().addPath(
+            new BezierLine(
+                scorePose, 
+                new Pose(11.000, 60.000))
+        ).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                        new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent()),
+                        new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(150))
+                ))).build();
+
+        goToScore3 = follower.pathBuilder().addPath(
+            new BezierLine(
+                new Pose(11.000, 60.000),
+                scorePose)
+        ).setTangentHeadingInterpolation().setReversed()
+            .build();
     }
 
 }
