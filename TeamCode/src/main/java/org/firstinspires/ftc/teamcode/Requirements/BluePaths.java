@@ -180,7 +180,7 @@ public class BluePaths {
                 scorePose, 
                 new Pose(11.000, 60.000))
         ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                        new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent()),
+                        new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent),
                         new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(150))
                 ))).build();
 
