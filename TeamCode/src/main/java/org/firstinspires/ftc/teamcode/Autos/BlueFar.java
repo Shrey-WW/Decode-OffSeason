@@ -31,7 +31,7 @@ public class BlueFar extends CommandOpMode {
     Turret turret;
 
     /// Commands
-    InstantCommand startIntake, stopIntake, reverseIntake, startFlywheel, restFlywheel, hoodUp;
+    InstantCommand startIntake, stopIntake, reverseIntake, hoodUp;
     SequentialCommandGroup AutoSequence;
 
     @Override
@@ -51,8 +51,6 @@ public class BlueFar extends CommandOpMode {
         startIntake = new InstantCommand(() -> intake.Spin(1));
         stopIntake = new InstantCommand(intake::PwrOff);
         reverseIntake = new InstantCommand(() -> intake.Spin(-1));
-        startFlywheel = new InstantCommand(() -> shooter.setTo(.6));
-        restFlywheel = new InstantCommand(() -> shooter.setTo(.3));
         hoodUp = new InstantCommand(() -> shooter.moveServo(0));
 
         AutoSequence = new SequentialCommandGroup(

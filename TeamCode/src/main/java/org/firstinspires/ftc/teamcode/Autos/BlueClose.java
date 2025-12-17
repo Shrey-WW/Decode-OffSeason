@@ -29,7 +29,7 @@ public class BlueClose extends CommandOpMode {
     Shooter shooter;
     Intake intake;
     Turret turret;
-    InstantCommand startIntake, stopIntake, reverseIntake, startFlywheel, restFlywheel, hoodUp;
+    InstantCommand startIntake, stopIntake, reverseIntake, hoodUp;
     SequentialCommandGroup AutoSequence;
 
     @Override
@@ -86,7 +86,7 @@ public class BlueClose extends CommandOpMode {
                 transfer.open,
                 startIntake,
                 new WaitCommand(4000),
-                new FollowPathCommand(follower, Paths.turn2)
+                new FollowPathCommand(follower, Paths.fillerPath2)
         );
         register(intake, shooter, transfer, turret);
         schedule(AutoSequence);

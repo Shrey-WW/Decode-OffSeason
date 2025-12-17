@@ -74,7 +74,7 @@ public class RedClose extends CommandOpMode {
                 transfer.open,
                 startIntake,
                 new WaitCommand(4500),
-                new FollowPathCommand(follower, Paths.turn2)
+                new FollowPathCommand(follower, Paths.fillerPath2)
 
         );
         register(intake, shooter, transfer, turret);

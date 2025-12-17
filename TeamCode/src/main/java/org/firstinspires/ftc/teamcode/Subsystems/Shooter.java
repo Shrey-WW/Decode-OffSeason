@@ -21,8 +21,8 @@ public class Shooter extends SubsystemBase {
     public double t;
 
     public AdvancingCommand HoodCMD = new AdvancingCommand(
-            new InstantCommand(() -> moveServo(.62)),
-            new InstantCommand(() -> moveServo(.85))
+            new InstantCommand(() -> moveServo(0)),
+            new InstantCommand(() -> moveServo(1))
     );
 
 

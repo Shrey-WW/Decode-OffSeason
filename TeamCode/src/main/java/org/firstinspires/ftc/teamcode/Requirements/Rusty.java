@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.Requirements;
 
 import static android.os.SystemClock.sleep;
 
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,7 +47,6 @@ public class Rusty extends Robot {
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
-    private static double flywheelPwr = .3;
     DcMotor fL, bL, fR, bR;
     DcMotor[] motors;
 
@@ -64,7 +65,7 @@ public class Rusty extends Robot {
         initControls();
         register(intake, transfer, shooter);
         limelight.start();
-        schedule(transfer.open, shooter.HoodCMD);
+        schedule(transfer.close, shooter.HoodCMD);
     }
 
     private void initSubsystems() {
@@ -113,13 +114,11 @@ public class Rusty extends Robot {
                 .whenReleased(new InstantCommand(()-> transfer.setPos(.85)).alongWith(new InstantCommand(intake::PwrOff)));
 
 
-
-        shooter.setDefaultCommand(new RunCommand(() -> shooter.setTo(.3), shooter));
     }
 
     @Override
     public void run() {
-        Drive();
+//        Drive();
 
 //        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 //        limelight.updateRobotOrientation(orientation.getYaw());
@@ -131,13 +130,11 @@ public class Rusty extends Robot {
 //            opmode.telemetry.addData("ta", Ta);
 //        }
 
-        if (opmode.gamepad1.right_trigger > .05){
-            intake.Spin(opmode.gamepad1.right_trigger);
-        }
+        if (opmode.gamepad1.right_trigger > .05)
+            intake.Spin(1);
 
-        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
+        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper)
             intake.PwrOff();
-        }
 
 
 
