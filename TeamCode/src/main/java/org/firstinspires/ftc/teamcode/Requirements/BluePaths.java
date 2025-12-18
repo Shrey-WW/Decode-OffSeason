@@ -23,7 +23,7 @@ public class BluePaths {
     public PathChain fillerPath, fillerPath2, move, openGate;
 
     public enum AutoType {
-        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE, TEST, TEST2
+        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE, TEST, TEST2, TEST3
     }
 
     public BluePaths(AutoType type, Follower f){
@@ -44,11 +44,14 @@ public class BluePaths {
         else if(autoType == AutoType.CLOSE_TWELVE) {
             buildCloseTwelve();
         }
-        else if(autoType == AutoType.TEST){
+        else if(autoType == AutoType.TEST) {
             buildTest();
         }
-        else if(autoType == AutoType.TEST2){
+        else if(autoType == AutoType.TEST2) {
             buildTest2();
+        }
+        else if(autoType == AutoType.TEST3) {
+            buildTest3();
         }
     }
 
@@ -305,8 +308,31 @@ public class BluePaths {
 
         fillerPath2 = follower
                 .pathBuilder()
-                .addPath(new BezierLine(new Pose(8.750, 25.000), new Pose(8.750, 12.000)))
+                .addPath(new BezierLine(new Pose(8.750, 25.000), new Pose(8.750, 8)))
                 .setTangentHeadingInterpolation()
+                .build();
+    }
+
+    public void buildTest3(){
+        fillerPath = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(56.000, 8.750),
+                                new Pose(50.000, 10.000),
+                                new Pose(11.000, 10.000)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .build();
+
+        fillerPath2 = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(11.000, 10.000), new Pose(20.000, 10.000))
+                )
+                .setTangentHeadingInterpolation()
+                .setReversed()
                 .build();
     }
 
