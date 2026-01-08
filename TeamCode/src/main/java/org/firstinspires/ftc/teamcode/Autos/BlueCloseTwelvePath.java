@@ -25,7 +25,7 @@ public class BlueCloseTwelvePath extends CommandOpMode {
     public void initialize(){
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(19,123, Math.toRadians(143.5)));
-        Paths = new BluePaths(BluePaths.AutoType.CLOSE_TWELVE, follower);
+        Paths = new BluePaths(BluePaths.AutoType.CLOSE_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
@@ -33,7 +33,6 @@ public class BlueCloseTwelvePath extends CommandOpMode {
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 new FollowPathCommand(follower, Paths.Intake1),
-                new FollowPathCommand(follower, Paths.openGate),
                 new FollowPathCommand(follower, Paths.goToScore1),
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),

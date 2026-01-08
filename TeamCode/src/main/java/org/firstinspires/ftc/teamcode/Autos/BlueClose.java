@@ -90,7 +90,6 @@ public class BlueClose extends CommandOpMode {
         );
         register(intake, shooter, transfer, turret);
         schedule(AutoSequence);
-
     }
 
     @Override

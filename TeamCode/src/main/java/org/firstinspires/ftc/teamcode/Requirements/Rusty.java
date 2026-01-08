@@ -65,7 +65,7 @@ public class Rusty extends Robot {
         initControls();
         register(intake, transfer, shooter);
         limelight.start();
-        schedule(transfer.close, shooter.HoodCMD);
+        schedule(new InstantCommand(() -> transfer.setPos(.85)), new InstantCommand(() -> shooter.moveServo(0)));
     }
 
     private void initSubsystems() {
@@ -137,7 +137,6 @@ public class Rusty extends Robot {
             intake.PwrOff();
 
 
-
         if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
 
         else shooter.setTo(.4);
@@ -151,6 +150,7 @@ public class Rusty extends Robot {
 
 
     public void Drive(){
+
         double y = driver.getLeftY(); // Remember, Y stick value is reversed
         double x = driver.getLeftX();
         double rx = driver.getRightX();
