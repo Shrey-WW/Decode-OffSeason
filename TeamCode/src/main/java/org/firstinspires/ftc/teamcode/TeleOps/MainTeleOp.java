@@ -21,7 +21,6 @@ public class MainTeleOp extends CommandOpMode {
             .addStep(1, 0, 0, 250)
             .addStep(0, 1, 0, 250)
             .addStep(0, 0, 1, 250)
-            .addStep(0, 0, 0, 250)
             .setRepeating(true)
             .build();
 
