@@ -279,53 +279,48 @@ public class BluePaths {
         ).setTangentHeadingInterpolation().build();
 
         goToScore1 = follower.pathBuilder().addPath(
-                new BezierLine(GPPpose, new Pose(57, 90))
+                new BezierLine(GPPpose, new Pose(59, 85))
         ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
-                new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(143))
+                new HeadingInterpolator.PiecewiseNode(0, .8, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.8, 1, HeadingInterpolator.constant(Math.toRadians(143))
                 ))).build();
 
         Intake2 = follower.pathBuilder().addPath(
-                new BezierCurve(new Pose(57, 85),
+                new BezierCurve(
+                        new Pose(59, 85),
                         new Pose(60, 56),
                         PGPpose)
-        ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .4, HeadingInterpolator.linear(Math.toRadians(143), Math.toRadians(90))),
-                new HeadingInterpolator.PiecewiseNode(.4, 1, HeadingInterpolator.constant(Math.toRadians(180))
-                ))).build();
+        ).setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(180)).build();
 
         goToScore2 = follower.pathBuilder().addPath(
-            new BezierCurve(PGPpose,
-                    new Pose(36, 56),
-                    new Pose(52, 90))
+                new BezierCurve(
+                        PGPpose,
+                        new Pose(36, 56),
+                        new Pose(52, 90))
         ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
-                new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(143))
+                new HeadingInterpolator.PiecewiseNode(0, .8, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.8, 1, HeadingInterpolator.constant(Math.toRadians(143))
                 ))).build();
 
         Intake3 = follower.pathBuilder().addPath(
-                        new BezierCurve(
-                                new Pose(52, 85),
-                                new Pose(56, 22),
-                                new Pose(50, 38),
-                                PPGpose
-                        )
-                ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .5, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.5, 1, HeadingInterpolator.constant(Math.toRadians(180))
+                new BezierCurve(
+                        new Pose(52, 90),
+                        new Pose(52, 30),
+                        new Pose(52, 35),
+                        PPGpose)
+        ).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                new HeadingInterpolator.PiecewiseNode(0, .55, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.55, 1, HeadingInterpolator.constant(Math.toRadians(180))
                 ))).build();
+
         goToScore3 = follower.pathBuilder().addPath(
-                        new BezierLine(
-                                PPGpose,
-                                new Pose(52, 90)
-                        )
-                ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
-                new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(143))
+                new BezierLine(
+                        PPGpose,
+                        new Pose(52, 90)
+                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                new HeadingInterpolator.PiecewiseNode(0, .85, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.85, 1, HeadingInterpolator.constant(Math.toRadians(143))
                 ))).build();
-
-
-
 
     }
 
