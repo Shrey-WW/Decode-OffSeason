@@ -35,6 +35,8 @@ public class limelight extends OpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
+
+        llresult.getColorResults();
         if (llresult != null && llresult.isValid()) {
             Pose3D botPose = llresult.getBotpose_MT2();
             telemetry.addData("distance", getDistanceFromTag(llresult.getTa()));
