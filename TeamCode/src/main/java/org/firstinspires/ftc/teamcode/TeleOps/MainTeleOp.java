@@ -18,9 +18,9 @@ public class MainTeleOp extends CommandOpMode {
     Rusty rusty;
 
     Gamepad.LedEffect flashingColors = new Gamepad.LedEffect.Builder()
-            .addStep(1, 0, 0, 250)
-            .addStep(0, 1, 0, 250)
-            .addStep(0, 0, 1, 250)
+            .addStep(1, 0, 0, 333)
+            .addStep(0, 1, 0, 333)
+            .addStep(0, 0, 1, 333)
             .setRepeating(true)
             .build();
 
