@@ -139,7 +139,7 @@ public class Rusty extends Robot {
 
 
 
-        if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
+            if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
 
         else shooter.setTo(.4);
 
