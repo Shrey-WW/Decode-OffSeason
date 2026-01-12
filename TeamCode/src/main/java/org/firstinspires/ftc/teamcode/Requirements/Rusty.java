@@ -104,16 +104,14 @@ public class Rusty extends Robot {
 
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(transfer.open)
-                .whenHeld(intake.SpinIn)
-                .whenReleased(transfer.close.alongWith(intake.StopIntake));
+                .whenHeld(intake.SpinIn.alongWith(transfer.SpinIn))
+                .whenReleased(transfer.close.alongWith(transfer.StopTranfser));
 
 
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
-                .whenHeld(intake.SpinOut)
-                .whenReleased(new InstantCommand(()-> transfer.setPos(.85)).alongWith(new InstantCommand(intake::PwrOff)));
-
-
+                .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
+                .whenReleased(new InstantCommand(()-> transfer.setPos(.85)).alongWith(new InstantCommand(transfer::PwrOff)));
     }
 
     @Override
@@ -130,14 +128,18 @@ public class Rusty extends Robot {
 //            opmode.telemetry.addData("ta", Ta);
 //        }
 
-        if (opmode.gamepad1.right_trigger > .05)
+        if (opmode.gamepad1.right_trigger > .05) {
             intake.Spin(1);
+        }
 
-        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper)
+        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
             intake.PwrOff();
+            transfer.PwrOff();
+        }
 
 
-        if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
+
+            if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
 
         else shooter.setTo(.4);
 

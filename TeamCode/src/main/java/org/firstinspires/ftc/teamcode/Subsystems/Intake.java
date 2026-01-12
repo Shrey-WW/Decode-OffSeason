@@ -12,8 +12,8 @@ public class Intake extends SubsystemBase {
 
     public Intake(final HardwareMap hw){
         motor = new Motor(hw, "intake");
-        SpinIn = new InstantCommand(()-> Spin(1));
-        SpinOut = new InstantCommand( ()-> Spin(-1));
+        SpinIn = new InstantCommand(() -> Spin(1));
+        SpinOut = new InstantCommand(() -> Spin(-1));
         StopIntake = new InstantCommand(this::PwrOff);
     }
 
