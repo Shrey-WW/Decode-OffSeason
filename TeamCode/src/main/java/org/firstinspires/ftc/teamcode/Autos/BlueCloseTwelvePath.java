@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class BlueCloseTwelvePath extends CommandOpMode {
     private Follower follower;
     BluePaths Paths;
-    SequentialCommandGroup AutoSequence;
+    SequentialCommandGroup AutoSequence, AutoSequence2;
     Shooter shooter;
     Intake intake;
 
@@ -32,7 +32,10 @@ public class BlueCloseTwelvePath extends CommandOpMode {
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 new FollowPathCommand(follower, Paths.Intake1),
-                new FollowPathCommand(follower, Paths.goToScore1),
+                new FollowPathCommand(follower, Paths.goToScore1)
+                );
+        AutoSequence2 = new SequentialCommandGroup(
+
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),
                 new FollowPathCommand(follower, Paths.Intake3),

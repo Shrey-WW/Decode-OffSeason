@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Requirements;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
@@ -19,7 +20,7 @@ public class RedPaths {
     public PathChain Intake2_, Intake1_, ShootPreloads, fillerPath, fillerPath2, move;
 
     public enum AutoType {
-        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE
+        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE,
     }
 
     public RedPaths(AutoType type, Follower f){
@@ -31,8 +32,14 @@ public class RedPaths {
         if (autoType == AutoType.FAR_NINE){
             buildFarNine();
         }
-        else if (autoType == AutoType.CLOSE_NINE){
+        else if (autoType == AutoType.CLOSE_NINE) {
             buildCloseNine();
+        }
+        else if(autoType == RedPaths.AutoType.CLOSE_TWELVE) {
+            buildCloseTwelveNoTurret();
+        }
+        else if(autoType == AutoType.FAR_TWELVE) {
+            buildFarTwelve();
         }
     }
 
@@ -134,4 +141,55 @@ public class RedPaths {
                         new BezierLine(scorePose, new Pose(50, 80).mirror()))
                 .setLinearHeadingInterpolation(Math.toRadians(42), Math.toRadians(0)).build();
     }
+    public void buildFarTwelve(){
+        startPose = new Pose(56, 8.75);
+        scorePose = new Pose(56,15);
+        PPGpose = new Pose(12, 35);
+        PGPpose = new Pose(12 ,60);
+
+        Intake1 = follower.pathBuilder().addPath(
+                        new BezierCurve(
+                                startPose,
+                                new Pose(56.2, 35),
+                                PPGpose)
+                ).setTangentHeadingInterpolation()
+                .build();
+
+        goToScore1 = follower.pathBuilder().addPath(
+                new BezierLine(PPGpose, scorePose)
+        ).setTangentHeadingInterpolation().setReversed().build();
+
+        Intake2 = follower.pathBuilder().addPath(
+                        new BezierCurve(
+                                scorePose,
+                                new Pose(56, 59),
+                                PGPpose)
+                ).setTangentHeadingInterpolation()
+                .build();
+
+        goToScore2 = follower.pathBuilder().addPath(
+                        new BezierLine(PGPpose, scorePose)
+                ).setTangentHeadingInterpolation().setReversed()
+                .build();
+
+
+    }
+    public void buildCloseTwelveNoTurret(){
+        startPose = new Pose(19,123);
+        GPPpose = new Pose(18.5, 83);
+        PGPpose = new Pose(13.5, 56);
+        PPGpose = new Pose(13.5, 35);
+
+
+        ShootPreloads = follower.pathBuilder().addPath(
+                new BezierLine(startPose, new Pose(57, 85))
+        ).setTangentHeadingInterpolation().setReversed().build();
+
+        Intake1 = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(57, 85), GPPpose)
+        ).setTangentHeadingInterpolation().build();
+
+
+    }
+
 }
