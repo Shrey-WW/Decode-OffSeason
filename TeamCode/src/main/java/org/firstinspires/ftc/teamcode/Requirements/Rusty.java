@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.Requirements;
 
-import static android.os.SystemClock.sleep;
-
-import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,7 +10,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
-import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -105,7 +100,7 @@ public class Rusty extends Robot {
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinIn.alongWith(transfer.SpinIn))
-                .whenReleased(transfer.close.alongWith(transfer.StopTranfser));
+                .whenReleased(transfer.close.alongWith(transfer.StopTransfer));
 
 
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
@@ -139,7 +134,7 @@ public class Rusty extends Robot {
 
 
 
-            if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
+        if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
 
         else shooter.setTo(.4);
 

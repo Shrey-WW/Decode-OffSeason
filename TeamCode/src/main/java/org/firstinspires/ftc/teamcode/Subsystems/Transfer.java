@@ -11,33 +11,34 @@ import org.firstinspires.ftc.teamcode.Requirements.AdvancingCommand;
 
 public class Transfer extends SubsystemBase {
 
-    private final ServoEx transfer;
-    private final Motor transferMotor;
+    private final ServoEx TServo;
+    private final Motor TMotor;
 
     public final Command transferCMD;
     public Command close, open;
-    public InstantCommand SpinIn, SpinOut, StopTranfser;
+    public InstantCommand SpinIn, SpinOut, StopTransfer;
 
     public Transfer(final HardwareMap hw){
-        transfer = new ServoEx(hw, "transfer");
-        transferMotor = new Motor(hw, "transferMotor");
-        close = new InstantCommand(() -> transfer.set(.85));
-        open = new InstantCommand(() -> transfer.set(1));
+        TServo = new ServoEx(hw, "TServo");
+        TMotor = new Motor(hw, "TMotor");
+        close = new InstantCommand(() -> TServo.set(.85));
+        open = new InstantCommand(() -> TServo.set(1));
         transferCMD = new AdvancingCommand(open, close);
+
         SpinIn = new InstantCommand(() -> Spin(1));
         SpinOut = new InstantCommand(()-> Spin(-1));
-        StopTranfser = new InstantCommand(this::PwrOff);
+        StopTransfer = new InstantCommand(this::PwrOff);
     }
 
     public void setPos(double pos){
-        transfer.set(pos);
+        TServo.set(pos);
     }
 
     public void Spin(double pwr){
-        transferMotor.set(-pwr);
+        TMotor.set(pwr);
     }
 
     public void PwrOff(){
-        transferMotor.set(0);
+        TMotor.set(0);
     }
 }

@@ -44,7 +44,7 @@ public class BlueClose extends CommandOpMode {
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(19, 123, Math.toRadians(143.5)));
+        follower.setStartingPose(new Pose(20, 123, Math.toRadians(143.5)));
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
