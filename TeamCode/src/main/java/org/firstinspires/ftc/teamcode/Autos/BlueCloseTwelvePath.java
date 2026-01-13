@@ -34,10 +34,7 @@ public class BlueCloseTwelvePath extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.Intake1),
                 new FollowPathCommand(follower, Paths.openGate),
                 new FollowPathCommand(follower, Paths.goToScore1),
-                new FollowPathCommand(follower, Paths.goToScore1)
-                );
-        AutoSequence2 = new SequentialCommandGroup(
-
+                new FollowPathCommand(follower, Paths.goToScore1),
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),
                 new FollowPathCommand(follower, Paths.Intake3),
