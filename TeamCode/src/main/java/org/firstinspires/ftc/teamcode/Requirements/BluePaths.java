@@ -422,6 +422,12 @@ public class BluePaths {
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(115))
                 .build();
+
+        move = follower.pathBuilder().addPath(
+                new BezierLine(
+                        new Pose(55.500, 15.000),
+                        new Pose(55.500, 25)
+                )).setLinearHeadingInterpolation(Math.toRadians(115), Math.toRadians(180)).build();
     }
 
 
