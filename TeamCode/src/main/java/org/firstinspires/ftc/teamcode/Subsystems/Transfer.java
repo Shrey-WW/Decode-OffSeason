@@ -19,7 +19,7 @@ public class Transfer extends SubsystemBase {
     public InstantCommand SpinIn, SpinOut, StopTransfer;
 
     public Transfer(final HardwareMap hw){
-        TServo = new ServoEx(hw, "TServo");
+        TServo = new ServoEx(hw, "transfer");
         TMotor = new Motor(hw, "TMotor");
         close = new InstantCommand(() -> TServo.set(.85));
         open = new InstantCommand(() -> TServo.set(1));
@@ -35,7 +35,7 @@ public class Transfer extends SubsystemBase {
     }
 
     public void Spin(double pwr){
-        TMotor.set(pwr);
+        TMotor.set(-pwr);
     }
 
     public void PwrOff(){

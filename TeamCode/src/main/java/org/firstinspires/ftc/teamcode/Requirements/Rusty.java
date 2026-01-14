@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 public class Rusty extends Robot {
 
     /// limelight
-    private final Limelight3A limelight;
+//    private final Limelight3A limelight;
     public static double Ta;
     public static double Tx;
 
@@ -51,15 +51,15 @@ public class Rusty extends Robot {
 
     public Rusty(OpMode op) {
         opmode = op;
-        limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0);
+//        limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
+        // limelight.pipelineSwitch(0);
     }
 
     public void init(){
         initSubsystems();
         initControls();
         register(intake, transfer, shooter);
-        limelight.start();
+        // limelight.start();
         schedule(new InstantCommand(() -> transfer.setPos(.85)), new InstantCommand(() -> shooter.moveServo(0)));
     }
 
@@ -178,34 +178,34 @@ public class Rusty extends Robot {
         motors[3].setPower(backRightPower);
     }
 
-    public void TrackTag() {
-        LLResult llresult = limelight.getLatestResult();
-        double cPos = turret.getPos();
-        if (Math.abs(cPos) >= UnwindThreshold) {
-            if (isUnwrapping) return;
-
-            turret.setPositionControl();
-            isUnwrapping = true;
-            double direction = Math.signum(cPos);
-            int unwrapPos = (int) (cPos - (direction * TICKS_PER_REV));
-            turret.goToPos(unwrapPos);
-            turret.setVelocityControl();
-        }
-        isUnwrapping = false;
-        if (llresult != null && llresult.isValid()) {
-            double Tx = llresult.getTx();
-
-            if (Math.abs(Tx) <= 2) turret.setVelocity(0);
-            else {
-                turret.setVelocityControl();
-                double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
-                double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
-                double targetVel = Math.copySign(t, Tx);
-                turret.setVelocity(targetVel * 150);
-                if(Math.abs(targetVel) - Math.abs(turret.getVelo()) > 50){
-                    turret.increaseFriction();
-                }
-            }
-        }
-    }
+//    public void TrackTag() {
+//        LLResult llresult = limelight.getLatestResult();
+//        double cPos = turret.getPos();
+//        if (Math.abs(cPos) >= UnwindThreshold) {
+//            if (isUnwrapping) return;
+//
+//            turret.setPositionControl();
+//            isUnwrapping = true;
+//            double direction = Math.signum(cPos);
+//            int unwrapPos = (int) (cPos - (direction * TICKS_PER_REV));
+//            turret.goToPos(unwrapPos);
+//            turret.setVelocityControl();
+//        }
+//        isUnwrapping = false;
+//        if (llresult != null && llresult.isValid()) {
+//            double Tx = llresult.getTx();
+//
+//            if (Math.abs(Tx) <= 2) turret.setVelocity(0);
+//            else {
+//                turret.setVelocityControl();
+//                double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
+//                double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
+//                double targetVel = Math.copySign(t, Tx);
+//                turret.setVelocity(targetVel * 150);
+//                if(Math.abs(targetVel) - Math.abs(turret.getVelo()) > 50){
+//                    turret.increaseFriction();
+//                }
+//            }
+//        }
+//    }
 }

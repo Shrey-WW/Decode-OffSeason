@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void Spin(double pwr){
-        motor.set(-pwr);
+        motor.set(pwr);
     }
 
     public void PwrOff(){
