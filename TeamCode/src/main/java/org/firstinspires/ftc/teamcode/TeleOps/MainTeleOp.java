@@ -17,17 +17,6 @@ public class MainTeleOp extends CommandOpMode {
     Follower follower;
     Rusty rusty;
 
-    Gamepad.LedEffect flashingColors = new Gamepad.LedEffect.Builder()
-            .addStep(1, 0, 0, 333)
-            .addStep(0, 1, 0, 333)
-            .addStep(0, 0, 1, 333)
-            .setRepeating(true)
-            .build();
-
-    Gamepad.RumbleEffect rumble = new Gamepad.RumbleEffect.Builder()
-            .addStep(1, 1, Gamepad.RUMBLE_DURATION_CONTINUOUS)
-            .build();
-
     @Override
     public void initialize(){
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -37,8 +26,6 @@ public class MainTeleOp extends CommandOpMode {
         rusty.init();
         rusty.setBulkReading(hardwareMap, LynxModule.BulkCachingMode.MANUAL);
         gamepad1.setLedColor(0.721568627, .2, 0.1, Gamepad.LED_DURATION_CONTINUOUS);
-        gamepad2.runLedEffect(flashingColors);
-        gamepad2.runRumbleEffect(rumble);
     }
 
     @Override
