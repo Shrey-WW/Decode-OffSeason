@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Requirements.Rusty;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Config
-@TeleOp (name = "MainTeleOp", group = "teleop")
+@TeleOp (name = "MainTeleOp", group = "a teleop")
 public class MainTeleOp extends CommandOpMode {
     Follower follower;
     Rusty rusty;

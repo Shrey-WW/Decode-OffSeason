@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Config
-@TeleOp
-public class PedroTunning extends OpMode {
+@TeleOp (group = "tuning")
+public class PedroTuning extends OpMode {
     public static double DISTANCE = 40;
     private boolean forward = true;
 
