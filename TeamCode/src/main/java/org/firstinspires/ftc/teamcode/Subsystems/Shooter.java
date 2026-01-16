@@ -9,7 +9,7 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
-import org.firstinspires.ftc.teamcode.Requirements.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.CMDs.AdvancingCMD;
 import org.firstinspires.ftc.teamcode.Requirements.Rusty;
 
 @Config
@@ -20,7 +20,7 @@ public class Shooter extends SubsystemBase {
     public double kp, kv;
     public double t;
 
-    public AdvancingCommand HoodCMD = new AdvancingCommand(
+    public AdvancingCMD HoodCMD = new AdvancingCMD(
             new InstantCommand(() -> moveServo(0)),
             new InstantCommand(() -> moveServo(1))
     );

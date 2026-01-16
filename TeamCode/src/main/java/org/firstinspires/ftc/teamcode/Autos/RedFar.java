@@ -9,6 +9,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
+import org.firstinspires.ftc.teamcode.Requirements.AutoType;
 import org.firstinspires.ftc.teamcode.Requirements.BluePaths;
 import org.firstinspires.ftc.teamcode.Requirements.RedPaths;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -46,7 +47,7 @@ public class RedFar extends CommandOpMode {
         intake = new Intake(hardwareMap);
         turret = new Turret(hardwareMap);
 
-            Paths = new RedPaths(RedPaths.AutoType.FAR_NINE, follower);
+            Paths = new RedPaths(AutoType.FAR_NINE, follower);
         Paths.buildPaths();
 
         startIntake = new InstantCommand(() -> intake.Spin(1));

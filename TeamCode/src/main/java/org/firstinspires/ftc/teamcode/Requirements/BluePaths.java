@@ -7,8 +7,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.PathChain;
 
-import org.firstinspires.ftc.teamcode.Autos.Auto;
-
 public class BluePaths {
 
     private final AutoType autoType;
@@ -21,10 +19,6 @@ public class BluePaths {
     public PathChain Intake2_, Intake1_, ShootPreloads;
 
     public PathChain fillerPath, fillerPath2, move, openGate;
-
-    public enum AutoType {
-        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE, TEST, TEST2, CLOSE_TWELVE_NO_TURRET, FAR_TWELVE_NO_TURRET
-    }
 
     public BluePaths(AutoType type, Follower f){
         follower = f;

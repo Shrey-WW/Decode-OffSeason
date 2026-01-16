@@ -9,7 +9,7 @@ import com.pedropathing.paths.PathChain;
 
 public class RedPaths {
 
-    private final RedPaths.AutoType autoType;
+    private final AutoType autoType;
 
     private final Follower follower;
 
@@ -18,10 +18,6 @@ public class RedPaths {
     public PathChain Intake1, goToScore1, Intake2, goToScore2;
 
     public PathChain Intake2_, Intake1_, ShootPreloads, fillerPath, fillerPath2, move;
-
-    public enum AutoType {
-        FAR_TWELVE, CLOSE_TWELVE, CLOSE_NINE, FAR_NINE,
-    }
 
     public RedPaths(AutoType type, Follower f){
         follower = f;
@@ -35,7 +31,7 @@ public class RedPaths {
         else if (autoType == AutoType.CLOSE_NINE) {
             buildCloseNine();
         }
-        else if(autoType == RedPaths.AutoType.CLOSE_TWELVE) {
+        else if(autoType == AutoType.CLOSE_TWELVE) {
             buildCloseTwelveNoTurret();
         }
         else if(autoType == AutoType.FAR_TWELVE) {

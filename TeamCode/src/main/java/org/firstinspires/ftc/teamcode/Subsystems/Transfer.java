@@ -7,7 +7,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
-import org.firstinspires.ftc.teamcode.Requirements.AdvancingCommand;
+import org.firstinspires.ftc.teamcode.CMDs.AdvancingCMD;
 
 public class Transfer extends SubsystemBase {
 
@@ -23,7 +23,7 @@ public class Transfer extends SubsystemBase {
         TMotor = new Motor(hw, "TMotor");
         close = new InstantCommand(() -> TServo.set(.2));
         open = new InstantCommand(() -> TServo.set(0.05));
-        transferCMD = new AdvancingCommand(open, close);
+        transferCMD = new AdvancingCMD(open, close);
 
         SpinIn = new InstantCommand(() -> Spin(.8));
         SpinOut = new InstantCommand(()-> Spin(-.8));

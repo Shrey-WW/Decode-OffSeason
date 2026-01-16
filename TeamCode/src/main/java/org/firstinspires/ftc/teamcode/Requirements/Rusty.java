@@ -16,6 +16,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.CMDs.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
@@ -42,6 +43,8 @@ public class Rusty extends Robot {
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
+    private TeleShootingCMD shootingCMD;
+    public static LaunchState launchState;
     DcMotor fL, bL, fR, bR;
     DcMotor[] motors;
 
@@ -61,6 +64,7 @@ public class Rusty extends Robot {
         register(intake, transfer, shooter);
         // limelight.start();
         schedule(new InstantCommand(() -> transfer.setPos(.2)));
+        launchState = LaunchState.IDLE;
     }
 
     private void initSubsystems() {
@@ -90,10 +94,10 @@ public class Rusty extends Robot {
     private void initControls(){
         driver = new GamepadEx(opmode.gamepad1);
 
+        shootingCMD = new TeleShootingCMD(shooter, transfer, intake, 1450);
+
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
-                .whenPressed(transfer.open)
-                .whenHeld(intake.SpinIn.alongWith(transfer.SpinIn))
-                .whenReleased(transfer.close.alongWith(transfer.StopTransfer));
+                .whenHeld(shootingCMD);
 
 
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
@@ -125,11 +129,13 @@ public class Rusty extends Robot {
             transfer.PwrOff();
         }
 
+        if (launchState == LaunchState.SHOOTING){
+            shooter.setTo(.46);
+        }
+        else if (launchState == LaunchState.IDLE){
+            shooter.setTo(.3);
+        }
 
-
-        if (opmode.gamepad1.right_bumper) shooter.setTo(.55);
-
-        else shooter.setTo(.4);
 
 
         opmode.telemetry.addData("flywheel velo", shooter.getVelo());

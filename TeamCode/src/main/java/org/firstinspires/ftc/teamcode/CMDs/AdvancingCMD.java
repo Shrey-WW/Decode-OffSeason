@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Requirements;
+package org.firstinspires.ftc.teamcode.CMDs;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 
@@ -8,11 +8,11 @@ import java.util.List;
 
 import com.seattlesolvers.solverslib.command.Command;
 
-public class AdvancingCommand extends CommandBase {;
+public class AdvancingCMD extends CommandBase {;
     private final List<Command> cmdsList;
     private final int numCMDs;
     private int currentCMD;
-    public AdvancingCommand(Command... cmds) {
+    public AdvancingCMD(Command... cmds) {
         cmdsList = new ArrayList<>();
         Collections.addAll(cmdsList, cmds);
         numCMDs = cmdsList.size();

@@ -9,6 +9,7 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
+import org.firstinspires.ftc.teamcode.Requirements.AutoType;
 import org.firstinspires.ftc.teamcode.Requirements.BluePaths;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -25,7 +26,7 @@ public class BlueFarTwelvePath extends CommandOpMode {
     public void initialize(){
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
-        Paths = new BluePaths(BluePaths.AutoType.FAR_TWELVE_NO_TURRET, follower);
+        Paths = new BluePaths(AutoType.FAR_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
         intake = new Intake(hardwareMap);
 
