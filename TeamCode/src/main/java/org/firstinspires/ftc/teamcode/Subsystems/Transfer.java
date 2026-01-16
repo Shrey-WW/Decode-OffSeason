@@ -21,12 +21,12 @@ public class Transfer extends SubsystemBase {
     public Transfer(final HardwareMap hw){
         TServo = new ServoEx(hw, "transfer");
         TMotor = new Motor(hw, "TMotor");
-        close = new InstantCommand(() -> TServo.set(.85));
-        open = new InstantCommand(() -> TServo.set(1));
+        close = new InstantCommand(() -> TServo.set(.2));
+        open = new InstantCommand(() -> TServo.set(0.05));
         transferCMD = new AdvancingCommand(open, close);
 
-        SpinIn = new InstantCommand(() -> Spin(1));
-        SpinOut = new InstantCommand(()-> Spin(-1));
+        SpinIn = new InstantCommand(() -> Spin(.8));
+        SpinOut = new InstantCommand(()-> Spin(-.8));
         StopTransfer = new InstantCommand(this::PwrOff);
     }
 

@@ -10,6 +10,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Requirements.BluePaths;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
@@ -18,6 +19,7 @@ public class BlueFarTwelvePath extends CommandOpMode {
     private Follower follower;
     BluePaths Paths;
     SequentialCommandGroup AutoSequence;
+    Intake intake;
 
     @Override
     public void initialize(){
@@ -25,12 +27,15 @@ public class BlueFarTwelvePath extends CommandOpMode {
         follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
         Paths = new BluePaths(BluePaths.AutoType.FAR_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
+        intake = new Intake(hardwareMap);
 
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
                 new FollowPathCommand(follower, Paths.Intake1_),
                 new FollowPathCommand(follower, Paths.Intake2_),
                 new FollowPathCommand(follower, Paths.Intake3),
+                new FollowPathCommand(follower, Paths.fillerPath),
+                new FollowPathCommand(follower, Paths.fillerPath2),
                 new FollowPathCommand(follower, Paths.goToScore3),
                 new FollowPathCommand(follower, Paths.Intake1),
                 new FollowPathCommand(follower, Paths.goToScore1),
@@ -44,6 +49,7 @@ public class BlueFarTwelvePath extends CommandOpMode {
     @Override
     public void run(){
         follower.update();
+        intake.Spin(1);
         super.run();
     }
 }

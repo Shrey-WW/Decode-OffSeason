@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
     public Shooter(final HardwareMap hw){
         ShootingMotors = new MotorGroup(new Motor(hw, "shooter2", Motor.GoBILDA.BARE), new Motor(hw, "shooter1", Motor.GoBILDA.BARE));
         ShootingMotors.setRunMode(Motor.RunMode.VelocityControl);
-        ShootingMotors.setVeloCoefficients(3,0,0);
+        ShootingMotors.setVeloCoefficients(5,0,0);
         ShootingMotors.setFeedforwardCoefficients(0, 1);
         ShootingMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         servo = new ServoEx(hw, "hood");

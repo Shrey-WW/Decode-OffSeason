@@ -15,6 +15,7 @@ import com.seattlesolvers.solverslib.util.LUT;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 
 @Config
 @TeleOp (group = "tests")
@@ -24,6 +25,7 @@ public class DynamicVeloTest extends CommandOpMode {
     Intake intake;
     public static double number;
     public static double pos;
+    Transfer transfer;
     private Limelight3A limelight;
     ElapsedTime timer = new ElapsedTime();
     private IMU imu;
@@ -41,30 +43,31 @@ public class DynamicVeloTest extends CommandOpMode {
 
     @Override
     public void initialize(){
+        transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0);
+//        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+//        limelight.pipelineSwitch(0);
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        limelight.start();
+//        limelight.start();
     }
 
     @Override
     public void run() {
         intake.Spin(1);
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
-        LLResult llresult = limelight.getLatestResult();
+//        limelight.updateRobotOrientation(orientation.getYaw());
+//        LLResult llresult = limelight.getLatestResult();
 
-        if (llresult != null && llresult.isValid()) {
-            double Ta = llresult.getTa();
-            telemetry.addData("Ta", Ta);
-        }
-        shooter.moveServo(pos);
+//        if (llresult != null && llresult.isValid()) {
+//            double Ta = llresult.getTa();
+//            telemetry.addData("Ta", Ta);
+//        }
+        transfer.Spin(1);
         shooter.setTo(number);
 
         telemetry.addData("velo", shooter.getVelo());

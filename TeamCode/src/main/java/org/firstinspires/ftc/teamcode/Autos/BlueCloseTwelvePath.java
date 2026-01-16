@@ -10,6 +10,7 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.Requirements.BluePaths;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
@@ -19,6 +20,7 @@ public class BlueCloseTwelvePath extends CommandOpMode {
     SequentialCommandGroup AutoSequence, AutoSequence2;
     Shooter shooter;
     Intake intake;
+    Transfer transfer;
 
     @Override
     public void initialize(){
@@ -28,6 +30,7 @@ public class BlueCloseTwelvePath extends CommandOpMode {
         Paths.buildPaths();
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
+        transfer = new Transfer(hardwareMap);
 
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Paths.ShootPreloads),
@@ -36,6 +39,7 @@ public class BlueCloseTwelvePath extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.goToScore1),
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),
+                new FollowPathCommand(follower, Paths.Intake2_),
                 new FollowPathCommand(follower, Paths.Intake3),
                 new FollowPathCommand(follower, Paths.goToScore3),
                 new FollowPathCommand(follower, Paths.move)

@@ -23,6 +23,7 @@ public class BlueCloseTwelve extends CommandOpMode {
     Shooter shooter;
     Intake intake;
     Transfer transfer;
+    private double x = .45;
 
     @Override
     public void initialize(){
@@ -35,29 +36,39 @@ public class BlueCloseTwelve extends CommandOpMode {
         transfer = new Transfer(hardwareMap);
 
         AutoSequence = new SequentialCommandGroup(
+                new InstantCommand(() -> transfer.setPos(.2)),
                 new FollowPathCommand(follower, Paths.ShootPreloads),
+                new InstantCommand(() -> transfer.setPos(0)),
                 transfer.SpinIn.alongWith(intake.SpinIn),
-                new WaitCommand(2500),
+                new InstantCommand(() -> x = .49),
+                new WaitCommand(2300),
+                new InstantCommand(() -> x = .45),
                 transfer.StopTransfer,
+                new InstantCommand(() -> transfer.setPos(.2)),
                 new FollowPathCommand(follower, Paths.Intake1),
-                intake.StopIntake,
                 new FollowPathCommand(follower, Paths.openGate),
+                new WaitCommand(500),
                 new FollowPathCommand(follower, Paths.goToScore1),
-                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1);}),
-                new WaitCommand(2500),
+                new InstantCommand(() -> transfer.setPos(0)),
+                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1); x = .49;}),
+                new WaitCommand(2300),
+                new InstantCommand(() -> x = .45),
+                new InstantCommand(() -> transfer.setPos(.2)),
                 new InstantCommand(() -> transfer.Spin(0)),
                 new FollowPathCommand(follower, Paths.Intake2),
-                new InstantCommand(() -> intake.Spin(0)),
                 new FollowPathCommand(follower, Paths.goToScore2),
-                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1);}),
-                new WaitCommand(2500),
-                new InstantCommand(() -> transfer.Spin(0)),
+                new InstantCommand(() -> transfer.setPos(0)),
+                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1); x = .49;}),
+                new WaitCommand(2300),
+                new InstantCommand(() -> x = .45),
+                new InstantCommand(() -> transfer.setPos(.2)),
+                new FollowPathCommand(follower, Paths.Intake2_),
                 new FollowPathCommand(follower, Paths.Intake3),
-                new InstantCommand(() -> intake.Spin(0)),
                 new FollowPathCommand(follower, Paths.goToScore3),
-                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1);}),
-                new WaitCommand(2500),
-                new InstantCommand(() -> {transfer.Spin(0); intake.Spin(0);}),
+                new InstantCommand(() -> transfer.setPos(0)),
+                new InstantCommand(() -> {intake.Spin(1); transfer.Spin(1); x = .49;}),
+                new WaitCommand(2300),
+                new InstantCommand(() -> x = .2),
                 new FollowPathCommand(follower, Paths.move)
         );
         schedule(AutoSequence);
@@ -66,7 +77,7 @@ public class BlueCloseTwelve extends CommandOpMode {
     @Override
     public void run(){
         follower.update();
-        shooter.setTo(.5);
+        shooter.setTo(x);
         super.run();
     }
 }

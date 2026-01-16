@@ -60,7 +60,7 @@ public class Rusty extends Robot {
         initControls();
         register(intake, transfer, shooter);
         // limelight.start();
-        schedule(new InstantCommand(() -> transfer.setPos(.85)), new InstantCommand(() -> shooter.moveServo(0)));
+        schedule(new InstantCommand(() -> transfer.setPos(.2)));
     }
 
     private void initSubsystems() {
@@ -90,13 +90,6 @@ public class Rusty extends Robot {
     private void initControls(){
         driver = new GamepadEx(opmode.gamepad1);
 
-
-        Button dpadUp = (new GamepadButton(driver, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(() -> shooter.HoodCMD.schedule());
-
-        Button Start = (new GamepadButton(driver, GamepadKeys.Button.START))
-                .whenPressed(() -> imu.resetYaw());
-
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinIn.alongWith(transfer.SpinIn))
@@ -106,7 +99,7 @@ public class Rusty extends Robot {
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
-                .whenReleased(new InstantCommand(()-> transfer.setPos(.85)).alongWith(new InstantCommand(transfer::PwrOff)));
+                .whenReleased(new InstantCommand(()-> transfer.setPos(.2)).alongWith(new InstantCommand(transfer::PwrOff)));
     }
 
     @Override
@@ -134,7 +127,7 @@ public class Rusty extends Robot {
 
 
 
-        if (opmode.gamepad1.right_bumper) shooter.setTo(.5);
+        if (opmode.gamepad1.right_bumper) shooter.setTo(.55);
 
         else shooter.setTo(.4);
 

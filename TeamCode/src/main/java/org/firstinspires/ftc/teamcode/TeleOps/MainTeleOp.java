@@ -25,7 +25,7 @@ public class MainTeleOp extends CommandOpMode {
         follower.startTeleopDrive();
         rusty.init();
         rusty.setBulkReading(hardwareMap, LynxModule.BulkCachingMode.MANUAL);
-        gamepad1.setLedColor(0.721568627, .2, 0.1, Gamepad.LED_DURATION_CONTINUOUS);
+        gamepad1.setLedColor(0.721568627, .3, 0.1, Gamepad.LED_DURATION_CONTINUOUS);
     }
 
     @Override
