@@ -29,8 +29,6 @@ public class FlywheelTuning extends CommandOpMode {
         }
 
         shooter.setTo(target);
-
-        shooter.setTo(target);
         telemetry.addData("Velocity", shooter.getVelo());
         telemetry.addData("target", target);
         telemetry.update();

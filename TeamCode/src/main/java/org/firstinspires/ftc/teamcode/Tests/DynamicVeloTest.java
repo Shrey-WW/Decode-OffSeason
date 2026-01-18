@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.util.InterpLUT;
 import com.seattlesolvers.solverslib.util.LUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -29,13 +30,7 @@ public class DynamicVeloTest extends CommandOpMode {
     private Limelight3A limelight;
     ElapsedTime timer = new ElapsedTime();
     private IMU imu;
-    LUT<Double, Double> veloLUT = new LUT<Double, Double>()
-    {{
-        add(.28, .62);
-        add(.5, .3);
-        add(1.0,.48);
-        add(2.5, .46);
-    }};
+    InterpLUT veloLUT = new InterpLUT();
 
     //.53 Ta: .632
     //.45 Ta: 1.7976140603423119
@@ -43,6 +38,12 @@ public class DynamicVeloTest extends CommandOpMode {
 
     @Override
     public void initialize(){
+        veloLUT.add(.28, .62);
+        veloLUT.add(.623, .53);
+        veloLUT.add(1.0,.48);
+        veloLUT.add(2.26, .42);
+        veloLUT.createLUT();
+
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);

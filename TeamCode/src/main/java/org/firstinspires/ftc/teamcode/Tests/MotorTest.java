@@ -6,9 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Config
-@TeleOp
+@TeleOp (group = "tests")
 public class MotorTest extends OpMode {
-
 
     public static double pwr;
     private DcMotor motor, motor2;

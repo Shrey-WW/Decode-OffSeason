@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Requirements;
 
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Rusty extends Robot {
 
@@ -37,13 +39,13 @@ public class Rusty extends Robot {
     private Turret turret;
     private GamepadEx driver;
     private IMU imu;
+    private Follower follower;
 
     /// class Variables
     private final OpMode opmode;
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
-    private TeleShootingCMD shootingCMD;
     public static LaunchState launchState;
     DcMotor fL, bL, fR, bR;
     DcMotor[] motors;
@@ -65,6 +67,8 @@ public class Rusty extends Robot {
         // limelight.start();
         schedule(new InstantCommand(() -> transfer.setPos(.2)));
         launchState = LaunchState.IDLE;
+        follower = Constants.createFollower(opmode.hardwareMap);
+        follower.startTeleopDrive();
     }
 
     private void initSubsystems() {
@@ -72,7 +76,6 @@ public class Rusty extends Robot {
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
         turret = new Turret(opmode.hardwareMap);
-
 
         fL = opmode.hardwareMap.get(DcMotor.class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
@@ -94,11 +97,13 @@ public class Rusty extends Robot {
     private void initControls(){
         driver = new GamepadEx(opmode.gamepad1);
 
-        shootingCMD = new TeleShootingCMD(shooter, transfer, intake, 1450);
+        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, 980);
 
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenHeld(shootingCMD);
 
+        Button start = (new GamepadButton(driver, GamepadKeys.Button.START))
+                .whenHeld(new InstantCommand(() -> follower.setHeading(0)));
 
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
@@ -130,14 +135,15 @@ public class Rusty extends Robot {
         }
 
         if (launchState == LaunchState.SHOOTING){
-            shooter.setTo(.46);
+            shooter.setTo(.44);
         }
         else if (launchState == LaunchState.IDLE){
             shooter.setTo(.3);
         }
 
 
-
+        follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, false);
+        follower.update();
         opmode.telemetry.addData("flywheel velo", shooter.getVelo());
         opmode.telemetry.update();
         CommandScheduler.getInstance().run();

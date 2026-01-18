@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
+@Autonomous (group = "old")
 public class BlueClose extends CommandOpMode {
     private Follower follower;
     Limelight3A limelight;
@@ -96,7 +96,7 @@ public class BlueClose extends CommandOpMode {
     @Override
     public void run(){
         super.run();
-        shooter.setTo(.46);
+        shooter.setTo(.52);
         follower.update();
     }
 }

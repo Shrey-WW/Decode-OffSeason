@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
+@Autonomous (group = "old")
 public class RedFar extends CommandOpMode {
 
     /// class vars

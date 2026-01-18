@@ -14,15 +14,12 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Config
 @TeleOp (name = "MainTeleOp", group = "a teleop")
 public class MainTeleOp extends CommandOpMode {
-    Follower follower;
     Rusty rusty;
 
     @Override
     public void initialize(){
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         rusty = new Rusty( this);
-        follower = Constants.createFollower(hardwareMap);
-        follower.startTeleopDrive();
         rusty.init();
         rusty.setBulkReading(hardwareMap, LynxModule.BulkCachingMode.MANUAL);
         gamepad1.setLedColor(0.721568627, .3, 0.1, Gamepad.LED_DURATION_CONTINUOUS);
@@ -31,7 +28,5 @@ public class MainTeleOp extends CommandOpMode {
     @Override
     public void run(){
         rusty.run();
-        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, false);
-        follower.update();
     }
 }

@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.CMDs;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.robotcore.internal.network.RobotCoreCommandList;
-import org.firstinspires.ftc.teamcode.Autos.Blue12Theory;
 import org.firstinspires.ftc.teamcode.Requirements.LaunchState;
 import org.firstinspires.ftc.teamcode.Requirements.Rusty;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -36,13 +34,13 @@ public class TeleShootingCMD extends CommandBase {
     public void execute() {
         double currentVel = shooter.getVelo();
 
-        if (currentVel > TargetVel - 50) {
+        if (currentVel > TargetVel - 20) {
             transfer.Spin(1);
             intake.Spin(1);
         }
         else{
-            transfer.Spin(0);
-            intake.Spin(0);
+            transfer.Spin(-1);
+            intake.Spin(-.3);
         }
     }
 

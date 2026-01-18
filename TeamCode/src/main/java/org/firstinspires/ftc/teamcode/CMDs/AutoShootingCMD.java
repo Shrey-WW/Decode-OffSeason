@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.CMDs;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.Autos.Blue12Theory;
+import org.firstinspires.ftc.teamcode.Autos.Blue12close;
 import org.firstinspires.ftc.teamcode.Requirements.LaunchState;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -19,13 +21,23 @@ public class AutoShootingCMD extends CommandBase {
 
     private final double TargetVel;
 
-    private static final double TimeLimit = 2300;
+    private final double TimeLimit;
 
-    public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity) {
+    public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity, double timeout) {
         intake = i;
         transfer = t;
         shooter = s;
         TargetVel = TargetVelocity;
+        TimeLimit = timeout;
+        addRequirements(intake, transfer, shooter);
+    }
+
+    public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity){
+        intake = i;
+        transfer = t;
+        shooter = s;
+        TargetVel = TargetVelocity;
+        TimeLimit = 3000;
         addRequirements(intake, transfer, shooter);
     }
 
@@ -33,30 +45,30 @@ public class AutoShootingCMD extends CommandBase {
     public void initialize(){
         transfer.setPos(0);
         timer.reset();
-        Blue12Theory.launchState = LaunchState.SHOOTING;
+        Blue12close.launchState = LaunchState.SHOOTING;
     }
 
     @Override
     public void execute(){
         double CurrentVel = shooter.getVelo();
 
-        if (CurrentVel > TargetVel - 50){
+        if (CurrentVel > TargetVel - 20){
             transfer.Spin(1);
             intake.Spin(1);
         }
         else
         {
-            transfer.Spin(0);
-            intake.Spin(0);
+            transfer.Spin(-1);
+            intake.Spin(-.3);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        transfer.Spin(0);
+        transfer.Spin(-1);
         intake.Spin(1);
         transfer.setPos(.2);
-        Blue12Theory.launchState = LaunchState.IDLE;
+        Blue12close.launchState = LaunchState.IDLE;
     }
 
     @Override
