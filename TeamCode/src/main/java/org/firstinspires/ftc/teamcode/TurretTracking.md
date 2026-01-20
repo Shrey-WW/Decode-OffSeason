@@ -2,7 +2,7 @@
 # **RED**     
 
 **Constants**   
-GoalX = 132     
+GoalX = 132.5     
 GoalY = 135     
 TICKS_PER_REV = ???     
 TICKS_PER_DEGREE = ???  

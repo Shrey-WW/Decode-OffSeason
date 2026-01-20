@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.CMDs.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Rusty extends Robot {
@@ -36,7 +35,6 @@ public class Rusty extends Robot {
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
-    private Turret turret;
     private GamepadEx driver;
     private IMU imu;
     private Follower follower;
@@ -75,7 +73,6 @@ public class Rusty extends Robot {
         intake = new Intake(opmode.hardwareMap);
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
-        turret = new Turret(opmode.hardwareMap);
 
         fL = opmode.hardwareMap.get(DcMotor.class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
@@ -90,7 +87,6 @@ public class Rusty extends Robot {
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-        turret.setPositionControl();
     }
 
 
@@ -182,35 +178,4 @@ public class Rusty extends Robot {
         motors[2].setPower(frontRightPower);
         motors[3].setPower(backRightPower);
     }
-
-//    public void TrackTag() {
-//        LLResult llresult = limelight.getLatestResult();
-//        double cPos = turret.getPos();
-//        if (Math.abs(cPos) >= UnwindThreshold) {
-//            if (isUnwrapping) return;
-//
-//            turret.setPositionControl();
-//            isUnwrapping = true;
-//            double direction = Math.signum(cPos);
-//            int unwrapPos = (int) (cPos - (direction * TICKS_PER_REV));
-//            turret.goToPos(unwrapPos);
-//            turret.setVelocityControl();
-//        }
-//        isUnwrapping = false;
-//        if (llresult != null && llresult.isValid()) {
-//            double Tx = llresult.getTx();
-//
-//            if (Math.abs(Tx) <= 2) turret.setVelocity(0);
-//            else {
-//                turret.setVelocityControl();
-//                double exponent = -.013 * (Math.abs(Tx) * 10 - 300);
-//                double t = 600 / (1 + Math.exp(exponent)) - 11.90418;
-//                double targetVel = Math.copySign(t, Tx);
-//                turret.setVelocity(targetVel * 150);
-//                if(Math.abs(targetVel) - Math.abs(turret.getVelo()) > 50){
-//                    turret.increaseFriction();
-//                }
-//            }
-//        }
-//    }
 }

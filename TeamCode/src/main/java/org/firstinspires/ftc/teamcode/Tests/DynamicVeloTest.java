@@ -26,6 +26,8 @@ public class DynamicVeloTest extends CommandOpMode {
     Intake intake;
     public static double number;
     public static double pos;
+    public static Boolean LutMode;
+
     Transfer transfer;
     private Limelight3A limelight;
     ElapsedTime timer = new ElapsedTime();
@@ -60,7 +62,15 @@ public class DynamicVeloTest extends CommandOpMode {
     @Override
     public void run() {
         intake.Spin(1);
+        transfer.Spin(1);
+        if (LutMode){
+            shooter.setTo(0);
+        }
+        else {
+            shooter.setTo(number);
+        }
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        if (true)
 //        limelight.updateRobotOrientation(orientation.getYaw());
 //        LLResult llresult = limelight.getLatestResult();
 
@@ -68,8 +78,6 @@ public class DynamicVeloTest extends CommandOpMode {
 //            double Ta = llresult.getTa();
 //            telemetry.addData("Ta", Ta);
 //        }
-        transfer.Spin(1);
-        shooter.setTo(number);
 
         telemetry.addData("velo", shooter.getVelo());
         telemetry.update();
