@@ -46,23 +46,28 @@ public class Blue12close extends CommandOpMode {
         AutoSequence = new SequentialCommandGroup(
                 /// Shooting preloads
                 new FollowPathCommand(follower, Paths.ShootPreloads),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
+                new AutoShootingCMD(intake, transfer, shooter, 1040, 3000),
                 /// Intaking
                 new FollowPathCommand(follower, Paths.Intake1),
                 /// Shooting
                 new FollowPathCommand(follower, Paths.goToScore1),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
+                new AutoShootingCMD(intake, transfer, shooter, 1040, 3000),
                 /// Intaking
+                new FollowPathCommand(follower, Paths.Intake1_),
+                new InstantCommand(() -> follower.setMaxPower(.5)),
                 new FollowPathCommand(follower, Paths.Intake2),
+                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, Paths.goToScore2),
-                new AutoShootingCMD(intake, transfer, shooter, 1091, 3000),
+                new AutoShootingCMD(intake, transfer, shooter, 1040, 3000),
                 /// Intaking
                 new FollowPathCommand(follower, Paths.Intake2_),
+                new InstantCommand(() -> follower.setMaxPower(.5)),
                 new FollowPathCommand(follower, Paths.Intake3),
+                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, Paths.goToScore3),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3200),
+                new AutoShootingCMD(intake, transfer, shooter, 1040, 3200),
                 new InstantCommand(() -> launchState = LaunchState.END),
                 /// Leave
                 new FollowPathCommand(follower, Paths.move)
@@ -79,7 +84,7 @@ public class Blue12close extends CommandOpMode {
         if (launchState == LaunchState.IDLE)
             shooter.setTo(.4);
         else if (launchState == LaunchState.SHOOTING){
-            shooter.setTo(.475);
+            shooter.setTo(.45);
         }
         else{
             shooter.setTo(.2);

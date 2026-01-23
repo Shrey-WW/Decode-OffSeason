@@ -134,11 +134,11 @@ public class Rusty extends Robot {
             shooter.setTo(.44);
         }
         else if (launchState == LaunchState.IDLE){
-            shooter.setTo(.3);
+            shooter.setTo(.35);
         }
 
 
-        follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, false);
+        follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, true);
         follower.update();
         opmode.telemetry.addData("flywheel velo", shooter.getVelo());
         opmode.telemetry.update();

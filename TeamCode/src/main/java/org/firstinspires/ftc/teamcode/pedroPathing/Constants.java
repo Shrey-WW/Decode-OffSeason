@@ -47,7 +47,7 @@ public class Constants {
             .xVelocity(64.9)
             .yVelocity(33.34);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 2, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 200, 1.5, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

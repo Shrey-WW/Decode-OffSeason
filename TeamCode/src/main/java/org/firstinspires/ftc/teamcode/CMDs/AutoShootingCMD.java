@@ -23,28 +23,31 @@ public class AutoShootingCMD extends CommandBase {
 
     private final double TimeLimit;
 
+    private final ElapsedTime ShotChecker = new ElapsedTime();
+
+    private double lastVel;
+
+    private double numBallsShot;
+
     public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity, double timeout) {
         intake = i;
         transfer = t;
         shooter = s;
         TargetVel = TargetVelocity;
         TimeLimit = timeout;
+        numBallsShot = 0;
         addRequirements(intake, transfer, shooter);
     }
 
     public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity){
-        intake = i;
-        transfer = t;
-        shooter = s;
-        TargetVel = TargetVelocity;
-        TimeLimit = 3000;
-        addRequirements(intake, transfer, shooter);
+        this(i,t,s,TargetVelocity,3000);
     }
 
     @Override
     public void initialize(){
         transfer.setPos(0);
         timer.reset();
+        ShotChecker.reset();
         Blue12close.launchState = LaunchState.SHOOTING;
     }
 
@@ -52,14 +55,24 @@ public class AutoShootingCMD extends CommandBase {
     public void execute(){
         double CurrentVel = shooter.getVelo();
 
-        if (CurrentVel > TargetVel - 20){
+        if (CurrentVel > TargetVel - 125){
             transfer.Spin(1);
             intake.Spin(1);
         }
         else
         {
-            transfer.Spin(-1);
-            intake.Spin(-.3);
+            transfer.Spin(0);
+            intake.Spin(.5);
+        }
+
+        if (CurrentVel - lastVel >= 120)
+        {
+            numBallsShot++;
+        }
+        if (ShotChecker.milliseconds() > 225)
+        {
+            lastVel = CurrentVel;
+            ShotChecker.reset();
         }
     }
 
@@ -73,7 +86,7 @@ public class AutoShootingCMD extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.milliseconds() >= TimeLimit;
+        return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
     }
 
 

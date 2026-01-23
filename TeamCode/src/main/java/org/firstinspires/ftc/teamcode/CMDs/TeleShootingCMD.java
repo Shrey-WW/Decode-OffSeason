@@ -33,14 +33,13 @@ public class TeleShootingCMD extends CommandBase {
     @Override
     public void execute() {
         double currentVel = shooter.getVelo();
-
-        if (currentVel > TargetVel - 20) {
+        if (currentVel > TargetVel - 125) {
             transfer.Spin(1);
             intake.Spin(1);
         }
         else{
-            transfer.Spin(-1);
-            intake.Spin(-.3);
+            transfer.Spin(0);
+            intake.Spin(.7);
         }
     }
 
@@ -51,6 +50,5 @@ public class TeleShootingCMD extends CommandBase {
         transfer.setPos(.2);
         Rusty.launchState = LaunchState.IDLE;
     }
-
 
 }
