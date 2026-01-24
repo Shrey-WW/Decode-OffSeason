@@ -18,7 +18,7 @@ public class BluePaths {
     public PathChain Intake1, goToScore1, Intake2, goToScore2, Intake3, goToScore3;
     public PathChain Intake2_, Intake1_, ShootPreloads;
 
-    public PathChain fillerPath, fillerPath2, move, openGate;
+    public PathChain fillerPath, fillerPath2, move, openGate, openGate2;
 
     public BluePaths(AutoType type, Follower f){
         follower = f;
@@ -440,6 +440,58 @@ public class BluePaths {
                         new Pose(55.500, 15.000),
                         new Pose(55.500, 25)
                 )).setLinearHeadingInterpolation(Math.toRadians(115), Math.toRadians(180)).build();
+    }
+    public void exodusPath(){
+        startPose = new Pose(19,123);
+        GPPpose = new Pose(17, 84);
+        gatePose = new Pose(16, 70);
+        PGPpose = new Pose(18, 60);
+
+        ShootPreloads = follower.pathBuilder().addPath(
+                new BezierLine(startPose, new Pose(60, 83))
+        ).setLinearHeadingInterpolation(Math.toRadians(130),Math.toRadians(-90)).build();
+
+        Intake1 = follower.pathBuilder().addPath(
+                new BezierCurve(new Pose(60, 83),
+                        new Pose(57,57),
+                        PGPpose)
+        ).setTangentHeadingInterpolation().build();
+
+        openGate = follower.pathBuilder().addPath(
+                new BezierCurve(
+                        PGPpose,
+                        new Pose(20, 72),
+                        gatePose)
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+
+        goToScore1 = follower.pathBuilder().addPath(
+                new BezierLine(gatePose, new Pose(60, 83))
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+
+
+        Intake2 = follower.pathBuilder().addPath(
+                new BezierLine(
+                        new Pose(60, 83),
+                        GPPpose)
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+
+        goToScore2 = follower.pathBuilder().addPath(
+                new BezierLine(
+                        GPPpose,
+                        new Pose(61, 83))
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+
+        openGate2 = follower.pathBuilder().addPath(
+                new BezierCurve(
+                        new Pose(60, 83),
+                        new Pose(38,70),
+                        gatePose)
+        ).setTangentHeadingInterpolation().build();
+        move = follower.pathBuilder().addPath(
+                new BezierLine(
+                        gatePose,
+                        new Pose(38,70))
+        ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
     }
 
 
