@@ -33,13 +33,13 @@ public class DidBallShoot extends CommandOpMode {
 
     @Override
     public void run(){
-        if (time.milliseconds() > 200) {
+        if (time.milliseconds() > 150) {
             detectShot();
             time.reset();
             if (shooter.getVelo() < minVel) minVel = shooter.getVelo();
         }
 
-        shooter.setTo(1);
+        shooter.setTo(.45);
 
         if (gamepad1.a){
             numBallsShot = 0;
@@ -58,7 +58,7 @@ public class DidBallShoot extends CommandOpMode {
 
     public void detectShot(){
         double currentVel = shooter.getVelo();
-        if ((lastVel - currentVel) > 100)
+        if ((lastVel - currentVel) > 50)
         {
             numBallsShot++;
         }

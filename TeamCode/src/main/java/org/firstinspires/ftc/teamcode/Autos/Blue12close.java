@@ -40,7 +40,6 @@ public class Blue12close extends CommandOpMode {
         transfer = new Transfer(hardwareMap);
         Paths = new BluePaths(AutoType.CLOSE_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
-        ElapsedTime timer;
         launchState = LaunchState.SHOOTING;
 
         AutoSequence = new SequentialCommandGroup(
@@ -62,15 +61,11 @@ public class Blue12close extends CommandOpMode {
                 new AutoShootingCMD(intake, transfer, shooter, 1040, 3000),
                 /// Intaking
                 new FollowPathCommand(follower, Paths.Intake2_),
-                new InstantCommand(() -> follower.setMaxPower(.5)),
                 new FollowPathCommand(follower, Paths.Intake3),
-                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, Paths.goToScore3),
                 new AutoShootingCMD(intake, transfer, shooter, 1040, 3200),
-                new InstantCommand(() -> launchState = LaunchState.END),
-                /// Leave
-                new FollowPathCommand(follower, Paths.move)
+                new InstantCommand(() -> launchState = LaunchState.END)
         );
 
         schedule(AutoSequence.alongWith(new InstantCommand(() -> transfer.setPos(0))));
@@ -89,6 +84,12 @@ public class Blue12close extends CommandOpMode {
         else{
             shooter.setTo(.2);
         }
+        Pose cPose = follower.getPose();
+        telemetry.addData("x", cPose.getX());
+        telemetry.addData("y", cPose.getY());
+        telemetry.addData("heading", cPose.getHeading());
+        telemetry.addData("did da ball shoot or nha?", AutoShootingCMD.numBallsShot);
+        telemetry.update();
     }
 
 }

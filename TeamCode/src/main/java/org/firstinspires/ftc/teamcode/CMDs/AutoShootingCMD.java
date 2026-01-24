@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.CMDs;
 
-import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
@@ -27,7 +26,7 @@ public class AutoShootingCMD extends CommandBase {
 
     private double lastVel;
 
-    private double numBallsShot;
+    public static double numBallsShot;
 
     public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity, double timeout) {
         intake = i;
@@ -35,7 +34,6 @@ public class AutoShootingCMD extends CommandBase {
         shooter = s;
         TargetVel = TargetVelocity;
         TimeLimit = timeout;
-        numBallsShot = 0;
         addRequirements(intake, transfer, shooter);
     }
 
@@ -46,6 +44,7 @@ public class AutoShootingCMD extends CommandBase {
     @Override
     public void initialize(){
         transfer.setPos(0);
+        numBallsShot = 0;
         timer.reset();
         ShotChecker.reset();
         Blue12close.launchState = LaunchState.SHOOTING;
@@ -53,9 +52,8 @@ public class AutoShootingCMD extends CommandBase {
 
     @Override
     public void execute(){
-        double CurrentVel = shooter.getVelo();
-
-        if (CurrentVel > TargetVel - 125){
+        double currentVelocity = shooter.getVelo();
+        if (currentVelocity > TargetVel - 125){
             transfer.Spin(1);
             intake.Spin(1);
         }
@@ -65,15 +63,11 @@ public class AutoShootingCMD extends CommandBase {
             intake.Spin(.5);
         }
 
-        if (CurrentVel - lastVel >= 120)
-        {
-            numBallsShot++;
-        }
-        if (ShotChecker.milliseconds() > 225)
-        {
-            lastVel = CurrentVel;
+        if (ShotChecker.milliseconds() > 75) {
+            detectShot(currentVelocity);
             ShotChecker.reset();
         }
+
     }
 
     @Override
@@ -87,6 +81,14 @@ public class AutoShootingCMD extends CommandBase {
     @Override
     public boolean isFinished() {
         return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
+    }
+
+    public void detectShot(double cVel){
+        if ((lastVel - cVel) > 50)
+        {
+            numBallsShot++;
+        }
+        lastVel = cVel;
     }
 
 

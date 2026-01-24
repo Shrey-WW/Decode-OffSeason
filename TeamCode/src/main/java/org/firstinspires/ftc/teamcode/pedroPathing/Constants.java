@@ -20,9 +20,9 @@ public class Constants {
             .mass(14.7)
             .forwardZeroPowerAcceleration(-44.9)
             .lateralZeroPowerAcceleration(-89.786)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0,.05, 0.067))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0,0.001,0.6,0.067));
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.11, 0, 0.009, 0.05))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0,.1, .03))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0,0,0,0.6,0.067));
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
