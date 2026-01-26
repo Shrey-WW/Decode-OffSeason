@@ -63,7 +63,7 @@ public class AutoShootingCMD extends CommandBase {
             intake.Spin(.5);
         }
 
-        if (ShotChecker.milliseconds() > 75) {
+        if (ShotChecker.milliseconds() > 66) {
             detectShot(currentVelocity);
             ShotChecker.reset();
         }

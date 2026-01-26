@@ -20,7 +20,7 @@ public class ExodussyAuto extends CommandOpMode {
     @Override
     public void initialize(){
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(56, 8.75, Math.PI/2));
+        follower.setStartingPose(new Pose(19, 123, Math.toRadians(143.5)));
         Paths = new BluePaths(AutoType.FAR_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
         intake = new Intake(hardwareMap);
@@ -33,7 +33,7 @@ public class ExodussyAuto extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),
                 new FollowPathCommand(follower, Paths.openGate2),
-                new FollowPathCommand(follower, Paths.move)
+                new FollowPathCommand(follower, Paths.leave)
         );
         schedule(AutoSequence);
     }

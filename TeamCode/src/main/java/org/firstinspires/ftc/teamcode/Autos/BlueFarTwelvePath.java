@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
-import androidx.loader.content.Loader;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -42,7 +40,7 @@ public class BlueFarTwelvePath extends CommandOpMode {
                 new FollowPathCommand(follower, Paths.goToScore1),
                 new FollowPathCommand(follower, Paths.Intake2),
                 new FollowPathCommand(follower, Paths.goToScore2),
-                new FollowPathCommand(follower, Paths.move)
+                new FollowPathCommand(follower, Paths.leave)
         );
         schedule(AutoSequence);
     }
