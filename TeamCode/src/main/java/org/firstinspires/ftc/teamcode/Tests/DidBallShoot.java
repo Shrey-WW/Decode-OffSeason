@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
-import androidx.core.location.GnssStatusCompat;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
