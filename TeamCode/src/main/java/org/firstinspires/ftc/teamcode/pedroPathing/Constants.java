@@ -22,9 +22,13 @@ public class Constants {
             .lateralZeroPowerAcceleration(-89.786)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.11, 0, 0.009, 0.05))
             .headingPIDFCoefficients(new PIDFCoefficients(1.5, 0,.1, .03))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0,0,0,0.6,0.067))
-            .useSecondaryDrivePIDF(false)
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0,0,0,0.6,0.0));
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(.005,0,0.00015,0.6,.2))
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryDrivePIDF(true)
+            .useSecondaryHeadingPIDF(true)
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.5,0,0,0.06))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.00002,0,0,0,0))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0,.05));
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
@@ -49,7 +53,7 @@ public class Constants {
             .xVelocity(64.9)
             .yVelocity(33.34);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 200, 1.5, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1.5, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
