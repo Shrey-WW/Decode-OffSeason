@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Tests;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,7 +10,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.util.InterpLUT;
-import com.seattlesolvers.solverslib.util.LUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -20,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 
 @Config
 @TeleOp (group = "tests")
-public class DynamicVeloTest extends CommandOpMode {
+public class VELOTesting extends CommandOpMode {
 
     Shooter shooter;
     Intake intake;
@@ -70,7 +68,6 @@ public class DynamicVeloTest extends CommandOpMode {
             shooter.setTo(number);
         }
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        if (true)
 //        limelight.updateRobotOrientation(orientation.getYaw());
 //        LLResult llresult = limelight.getLatestResult();
 

@@ -282,9 +282,9 @@ public class BluePaths {
 
     public void buildCloseTwelve() {
         startPose = new Pose(19, 121);
-        Spike1 = new Pose(23, 84);
+        Spike1 = new Pose(21, 84);
         Spike2 = new Pose(21, 55);
-        Spike3 = new Pose(20, 42);
+        Spike3 = new Pose(21, 42);
 
         ShootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
