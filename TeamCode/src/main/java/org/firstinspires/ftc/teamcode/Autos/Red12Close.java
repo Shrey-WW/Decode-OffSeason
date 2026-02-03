@@ -10,9 +10,9 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.CMDs.AutoShootingCMD;
-import org.firstinspires.ftc.teamcode.Requirements.AutoType;
-import org.firstinspires.ftc.teamcode.Requirements.LaunchState;
-import org.firstinspires.ftc.teamcode.Requirements.RedPaths;
+import org.firstinspires.ftc.teamcode.Globals.AutoType;
+import org.firstinspires.ftc.teamcode.Globals.LaunchState;
+import org.firstinspires.ftc.teamcode.Globals.RedPaths;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;

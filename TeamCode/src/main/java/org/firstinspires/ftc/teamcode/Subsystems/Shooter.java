@@ -10,7 +10,7 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
 import org.firstinspires.ftc.teamcode.CMDs.AdvancingCMD;
-import org.firstinspires.ftc.teamcode.Requirements.Rusty;
+import org.firstinspires.ftc.teamcode.Globals.Rusty;
 
 @Config
 public class Shooter extends SubsystemBase {

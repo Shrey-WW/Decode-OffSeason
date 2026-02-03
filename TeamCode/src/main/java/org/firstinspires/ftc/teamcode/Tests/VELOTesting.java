@@ -33,9 +33,6 @@ public class VELOTesting extends CommandOpMode {
     private IMU imu;
     InterpLUT veloLUT = new InterpLUT();
 
-    //.53 Ta: .632
-    //.45 Ta: 1.7976140603423119
-    //.42 Ta: 2.262764237821102
 
     @Override
     public void initialize(){
@@ -61,7 +58,7 @@ public class VELOTesting extends CommandOpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        LutMode=true;
+        LutMode = true;
         limelight.start();
     }
 
@@ -69,11 +66,11 @@ public class VELOTesting extends CommandOpMode {
     public void run() {
         intake.Spin(1);
         transfer.Spin(1);
-        if (limelight.getLatestResult().getTa()<.18) {
-            shooter.setTo(.51);
-
+        if (limelight.getLatestResult().getTa() < .18) {
+            shooter.moveServo(0);
         }
-        else if (LutMode){
+        else if (LutMode) {
+            shooter.moveServo(.8);
             shooter.setTo(veloLUT.get(limelight.getLatestResult().getTa()));
         }
         else {

@@ -1,26 +1,41 @@
 package org.firstinspires.ftc.teamcode.CMDs;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.seattlesolvers.solverslib.command.CommandBase;
+import com.seattlesolvers.solverslib.util.InterpLUT;
 
-import org.firstinspires.ftc.teamcode.Requirements.LaunchState;
-import org.firstinspires.ftc.teamcode.Requirements.Rusty;
+import org.firstinspires.ftc.teamcode.Globals.LaunchState;
+import org.firstinspires.ftc.teamcode.Globals.Rusty;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+
+import java.lang.annotation.Target;
 
 public class TeleShootingCMD extends CommandBase {
 
     private final Shooter shooter;
     private final Transfer transfer;
     private final Intake intake;
+    private Limelight3A limelight;
 
-    private final double TargetVel;
 
-    public TeleShootingCMD(Shooter s, Transfer t, Intake i, double TargetVelocity) {
+    private InterpLUT pwr2velo = new InterpLUT();
+    private InterpLUT VELO = new InterpLUT();
+    private double TargetVel = 0;
+    private static final double DefaultTargetVel = 980;
+    public TeleShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll, InterpLUT lut) {
         shooter = s;
         transfer = t;
         intake = i;
-        TargetVel = TargetVelocity;
+        limelight = ll;
+        VELO = lut;
+        pwr2velo.add(.3, 700);
+        pwr2velo.add(.5, 1200);
+        pwr2velo.add(.7, 1700);
+        pwr2velo.add(.9, 2200);
+        pwr2velo.createLUT();
         addRequirements(shooter, transfer, intake);
     }
 
@@ -32,14 +47,32 @@ public class TeleShootingCMD extends CommandBase {
 
     @Override
     public void execute() {
-        double currentVel = shooter.getVelo();
-        if (currentVel > TargetVel - 125) {
-            transfer.Spin(1);
-            intake.Spin(1);
+        LLResult llResult = limelight.getLatestResult();
+        if (llResult.isValid()) {
+            double pwr = VELO.get(llResult.getTa());
+            TargetVel = pwr2velo.get(pwr);
+            shooter.setTo(pwr);
+            double currentVel = shooter.getVelo();
+            if (currentVel > TargetVel - 125) {
+                transfer.Spin(1);
+                intake.Spin(1);
+            }
+            else{
+                transfer.Spin(0);
+                intake.Spin(.7);
+            }
         }
         else{
-            transfer.Spin(0);
-            intake.Spin(.7);
+            double currentVel = shooter.getVelo();
+            shooter.setTo(.44);
+            if (currentVel > DefaultTargetVel - 125) {
+                transfer.Spin(1);
+                intake.Spin(1);
+            }
+            else{
+                transfer.Spin(0);
+                intake.Spin(.7);
+            }
         }
     }
 
