@@ -43,7 +43,6 @@ public class Rusty extends Robot {
     private Follower follower;
 
     /// class Variables
-    private InterpLUT veloLUT = new InterpLUT();
     private final OpMode opmode;
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
@@ -63,16 +62,6 @@ public class Rusty extends Robot {
         alliance = a;
         pwr = 0;
         Ta = 0;
-        veloLUT.add(.18, .67);
-        veloLUT.add(.2, .6);
-        veloLUT.add(.305, .59);
-        veloLUT.add(.45, .5075);
-        veloLUT.add(.69, .475);
-        veloLUT.add(1.05, .4467);
-        veloLUT.add(1.61,.43);
-        veloLUT.add(2.81, .424);
-        veloLUT.add(5.5, .403);
-        veloLUT.createLUT();
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         if (alliance == Alliance.BLUE) { limelight.pipelineSwitch(0); }
         else { limelight.pipelineSwitch(1); }
@@ -113,7 +102,7 @@ public class Rusty extends Robot {
     private void initControls(){
         driver = new GamepadEx(opmode.gamepad1);
 
-        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, limelight, veloLUT);
+        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, limelight);
 
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenHeld(shootingCMD);

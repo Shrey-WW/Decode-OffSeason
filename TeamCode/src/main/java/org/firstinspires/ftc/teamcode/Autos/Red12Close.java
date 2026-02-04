@@ -44,30 +44,30 @@ public class Red12Close extends CommandOpMode {
         ElapsedTime timer;
         launchState = LaunchState.SHOOTING;
 
-        AutoSequence = new SequentialCommandGroup(
-                /// Shooting preloads
-                new FollowPathCommand(follower, Paths.ShootPreloads),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
-                /// Intaking
-                new FollowPathCommand(follower, Paths.Intake1),
-                /// Shooting
-                new FollowPathCommand(follower, Paths.goToScore1),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
-                /// Intaking
-                new FollowPathCommand(follower, Paths.Intake2),
-                /// Shooting
-                new FollowPathCommand(follower, Paths.goToScore2),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
-                /// Intaking
-                new FollowPathCommand(follower, Paths.Intake2_),
-                new FollowPathCommand(follower, Paths.Intake3),
-                /// Shooting
-                new FollowPathCommand(follower, Paths.goToScore3),
-                new AutoShootingCMD(intake, transfer, shooter, 1092, 3200),
-                new InstantCommand(() -> launchState = LaunchState.END),
-                /// Leave
-                new FollowPathCommand(follower, Paths.move)
-        );
+//        AutoSequence = new SequentialCommandGroup(
+//                /// Shooting preloads
+//                new FollowPathCommand(follower, Paths.ShootPreloads),
+//                new AutoShootingCMD(intake, transfer, shooter, limelight, 3000),
+//                /// Intaking
+//                new FollowPathCommand(follower, Paths.Intake1),
+//                /// Shooting
+//                new FollowPathCommand(follower, Paths.goToScore1),
+//                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
+//                /// Intaking
+//                new FollowPathCommand(follower, Paths.Intake2),
+//                /// Shooting
+//                new FollowPathCommand(follower, Paths.goToScore2),
+//                new AutoShootingCMD(intake, transfer, shooter, 1092, 3000),
+//                /// Intaking
+//                new FollowPathCommand(follower, Paths.Intake2_),
+//                new FollowPathCommand(follower, Paths.Intake3),
+//                /// Shooting
+//                new FollowPathCommand(follower, Paths.goToScore3),
+//                new AutoShootingCMD(intake, transfer, shooter, 1092, 3200),
+//                new InstantCommand(() -> launchState = LaunchState.END),
+//                /// Leave
+//                new FollowPathCommand(follower, Paths.move)
+//        );
 
         schedule(AutoSequence.alongWith(new InstantCommand(() -> transfer.setPos(0))));
     }

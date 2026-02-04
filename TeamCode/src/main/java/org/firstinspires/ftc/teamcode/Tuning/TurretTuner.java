@@ -17,8 +17,8 @@ public class TurretTuner extends CommandOpMode {
     private AbsoluteAnalogEncoder encoder;
     public static double setPoint;
     public static double kP, kD, kI, kF;
-    CRServoEx servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.005);
-    CRServoEx servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.005);
+    CRServoEx servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
+    CRServoEx servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
 
     public static double pwr, pwr2;
 

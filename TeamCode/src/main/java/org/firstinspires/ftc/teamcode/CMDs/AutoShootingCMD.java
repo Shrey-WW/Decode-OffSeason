@@ -1,24 +1,21 @@
 package org.firstinspires.ftc.teamcode.CMDs;
 
 
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.Autos.Blue12close;
+import org.firstinspires.ftc.teamcode.Globals.AutoStates;
 import org.firstinspires.ftc.teamcode.Globals.LaunchState;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
 
 
-public class AutoShootingCMD extends CommandBase {
-    Intake intake;
-    Transfer transfer;
-    Shooter shooter;
+public class AutoShootingCMD extends ShootingCMD {
 
     ElapsedTime timer = new ElapsedTime();
-
-    private final double TargetVel;
 
     private final double TimeLimit;
 
@@ -28,17 +25,14 @@ public class AutoShootingCMD extends CommandBase {
 
     public static double numBallsShot;
 
-    public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity, double timeout) {
-        intake = i;
-        transfer = t;
-        shooter = s;
-        TargetVel = TargetVelocity;
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll, double timeout) {
+        super(s, t, i, ll);
         TimeLimit = timeout;
         addRequirements(intake, transfer, shooter);
     }
 
-    public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity){
-        this(i,t,s,TargetVelocity,1500);
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll){
+        this(s, t, i, ll, 1500);
     }
 
     @Override
@@ -47,24 +41,17 @@ public class AutoShootingCMD extends CommandBase {
         numBallsShot = 0;
         timer.reset();
         ShotChecker.reset();
-        Blue12close.launchState = LaunchState.SHOOTING;
+        AutoStates.launchstate = LaunchState.SHOOTING;
     }
 
     @Override
     public void execute(){
         double currentVelocity = shooter.getVelo();
-        if (currentVelocity > TargetVel - 125){
-            transfer.Spin(1);
-            intake.Spin(1);
-        }
-        else
-        {
-            transfer.Spin(0);
-            intake.Spin(.5);
-        }
+
+        VELO();
 
         if (ShotChecker.milliseconds() > 66) {
-            detectShot(currentVelocity);
+            didBallShoot(currentVelocity);
             ShotChecker.reset();
         }
 
@@ -75,7 +62,7 @@ public class AutoShootingCMD extends CommandBase {
         transfer.Spin(-1);
         intake.Spin(1);
         transfer.setPos(.2);
-        Blue12close.launchState = LaunchState.IDLE;
+        AutoStates.launchstate = LaunchState.IDLE;
     }
 
     @Override
@@ -83,7 +70,7 @@ public class AutoShootingCMD extends CommandBase {
         return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
     }
 
-    public void detectShot(double cVel){
+    public void didBallShoot(double cVel){
         if ((lastVel - cVel) > 50)
         {
             numBallsShot++;
