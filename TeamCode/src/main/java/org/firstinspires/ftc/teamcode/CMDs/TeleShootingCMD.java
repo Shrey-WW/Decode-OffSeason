@@ -48,7 +48,7 @@ public class TeleShootingCMD extends CommandBase {
     @Override
     public void execute() {
         LLResult llResult = limelight.getLatestResult();
-        if (llResult.isValid()) {
+        if (llResult.isValid() && llResult != null) {
             double pwr = VELO.get(llResult.getTa());
             TargetVel = pwr2velo.get(pwr);
             shooter.setTo(pwr);

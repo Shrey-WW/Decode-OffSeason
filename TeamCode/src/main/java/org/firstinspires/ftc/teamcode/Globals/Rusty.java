@@ -48,6 +48,7 @@ public class Rusty extends Robot {
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
+    private static double pwr;
     public static LaunchState launchState;
     private final Alliance alliance;
     DcMotor fL, bL, fR, bR;
@@ -60,6 +61,8 @@ public class Rusty extends Robot {
     public Rusty(OpMode op, Alliance a) {
         opmode = op;
         alliance = a;
+        pwr = 0;
+        Ta = 0;
         veloLUT.add(.18, .67);
         veloLUT.add(.2, .6);
         veloLUT.add(.305, .59);
@@ -148,7 +151,6 @@ public class Rusty extends Robot {
         if (launchState == LaunchState.IDLE) {
             shooter.setTo(.35);
         }
-        else{}
 
         follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, true);
         follower.update();

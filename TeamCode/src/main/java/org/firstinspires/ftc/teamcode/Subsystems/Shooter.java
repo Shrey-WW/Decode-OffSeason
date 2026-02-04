@@ -79,11 +79,6 @@ public class Shooter extends SubsystemBase {
         return ShootingMotors.getFeedforwardCoefficients();
     }
 
-    public double updateVeloPwr(){
-        double velo = 1470 * Math.pow(Rusty.Ta, -.141712);
-        return 0.2057298 * Math.pow(1.000755, velo);
-    }
-
 
 
 

@@ -38,7 +38,7 @@ public class AutoShootingCMD extends CommandBase {
     }
 
     public AutoShootingCMD(Intake i, Transfer t, Shooter s, double TargetVelocity){
-        this(i,t,s,TargetVelocity,3000);
+        this(i,t,s,TargetVelocity,1500);
     }
 
     @Override

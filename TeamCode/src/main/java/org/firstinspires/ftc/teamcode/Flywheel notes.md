@@ -1,12 +1,11 @@
 
-# **SOME_BALL_STUFF**
+### **SOME_BALL_STUFF**
 
 DEFAULT SHOT ANGLE 80
 60 =< θ =< 80
 
 vball = d * sqrt(-9.8 / (2cos^2(θ)(d * tan((θ)) - (.6952))))
-
-# **INERTIA CALCULATION**
+### **INERTIA CALCULATION**
 
 m flywheel = .6699 kg    
 r flywheel = .048 m    
@@ -20,7 +19,7 @@ actual value: .000172
 inertia reduction factor = (inertia of system)/(inertia of system + inertia of ball)     
 actual value: 0.81774347776
 
-# **MOTOR SPEED CALCULATION**
+### **MOTOR SPEED CALCULATION**
 
 inertia reduction factor = .81774347776
 
@@ -29,4 +28,4 @@ actual value: vball / 0.03888
 
 tps = (28 * (rad/s)) / (2 * Math.Pi)
 
-# _**Speed to run the motor: (28 * vball) / 0.244290244743**_
+### _**Speed to run the motor: (28 * vball) / 0.244290244743**_
