@@ -4,44 +4,82 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.controller.SquIDFController;
 import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoGroup;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
+import com.seattlesolvers.solverslib.util.MathUtils;
 
-@Config
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
+
 @TeleOp
+@Config
 public class TurretTuner extends CommandOpMode {
-    private CRServoGroup servoGroup;
+
     private AbsoluteAnalogEncoder encoder;
+    public double realCurrPos;
     public static double setPoint;
-    public static double kP, kD, kI, kF;
-    CRServoEx servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
-    CRServoEx servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
+    public static double kP, kD;
+    public CRServoEx servo1;
+    public CRServoEx servo2;
+    public double lastPos;
+    Shooter shooter;
 
-    public static double pwr, pwr2;
+    public static double pwr;
 
-    SquIDFController squIDFController = new SquIDFController(0,0,0,0);
+    PIDFController PID = new PIDFController(0.8,0,0,0.001);
     @Override
     public void initialize(){
-        servo2.setInverted(true);
-        encoder = new AbsoluteAnalogEncoder(hardwareMap, "turretEncoder");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        servoGroup = new CRServoGroup(
-                new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.005),
-                new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.005).setInverted(true));
+        servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
+        servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
+        shooter = new Shooter(hardwareMap);
+        encoder = new AbsoluteAnalogEncoder(hardwareMap, "turretEncoder");
+        PID.setTolerance(1);
     }
 
     @Override
     public void run(){
-//        squIDFController.setCoefficients(new PIDFCoefficients(kP, kI, kD, kF));
-//        double output = squIDFController.calculate(servoGroup.getCurrentPosition(), setPoint);
-//        servoGroup.set(output);
-        servo1.set(pwr);
-        servo2.set(pwr2);
-        telemetry.addData("pos", encoder.getCurrentPosition());
+        getRealPosition();
+        double output = PID.calculate(realCurrPos, setPoint);
+
+        servo1.set(output);
+        servo2.set(output);
+        telemetry.addData("realcurrPos", realCurrPos);
+        telemetry.addData("output", output);
         telemetry.update();
         super.run();
+    }
+
+    public void getRealPosition(){
+        double currentPos = MathUtils.normalizeRadians(encoder.getCurrentPosition(), false);
+
+        if (currentPos < 0){
+            if (lastPos < 0){
+                realCurrPos += currentPos - lastPos;
+            }
+            else if (lastPos > 3){
+                double delta1 = -(-Math.PI - currentPos);
+                double delta2 = Math.PI - lastPos;
+                realCurrPos += delta1 + delta2;
+            }
+
+        }
+        else if (currentPos >= 0) {
+            if (lastPos > 0){
+                realCurrPos += currentPos - lastPos;
+            }
+            else if(lastPos < -3){
+                double delta1 = -(-Math.PI - lastPos);
+                double delta2 = Math.PI - currentPos;
+                realCurrPos += delta1 + delta2;
+            }
+        }
+        lastPos = currentPos;
     }
 }

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Globals;
 
-import androidx.appcompat.widget.AlertDialogLayout;
+
 
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -17,7 +17,6 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
-import com.seattlesolvers.solverslib.util.InterpLUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.CMDs.TeleShootingCMD;
@@ -38,7 +37,6 @@ public class Rusty extends Robot {
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
-    private GamepadEx driver;
     private IMU imu;
     private Follower follower;
 
@@ -47,7 +45,6 @@ public class Rusty extends Robot {
     private boolean isUnwrapping = false;
     private static final double TICKS_PER_REV = 2403;
     private static final double UnwindThreshold = 1400;
-    private static double pwr;
     public static LaunchState launchState;
     private final Alliance alliance;
     DcMotor fL, bL, fR, bR;
@@ -60,7 +57,6 @@ public class Rusty extends Robot {
     public Rusty(OpMode op, Alliance a) {
         opmode = op;
         alliance = a;
-        pwr = 0;
         Ta = 0;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         if (alliance == Alliance.BLUE) { limelight.pipelineSwitch(0); }
@@ -100,7 +96,7 @@ public class Rusty extends Robot {
 
 
     private void initControls(){
-        driver = new GamepadEx(opmode.gamepad1);
+        GamepadEx driver = new GamepadEx(opmode.gamepad1);
 
         TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, limelight);
 

@@ -1,59 +1,26 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
-import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Globals.AutoStates;
 import org.firstinspires.ftc.teamcode.Globals.AutoType;
 import org.firstinspires.ftc.teamcode.Globals.BluePaths;
 import org.firstinspires.ftc.teamcode.CMDs.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.Globals.LaunchState;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous (group = "a. New")
-public class Blue12close extends CommandOpMode {
+public class Blue12close extends AutoBase {
 
-    private Follower follower;
-    private IMU imu;
-    private BluePaths Paths;
-    private  SequentialCommandGroup AutoSequence;
-    private Limelight3A limelight;
-    private Shooter shooter;
-    private Intake intake;
-    private Transfer transfer;
-    private AutoStates states;
-
-
+    BluePaths Paths;
     @Override
     public void initialize(){
-        states = new AutoStates();
-
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(20, 123, Math.toRadians(143.5)));
-
-        shooter = new Shooter(hardwareMap);
-        intake = new Intake(hardwareMap);
-        transfer = new Transfer(hardwareMap);
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
-        limelight.pipelineSwitch(0);
-        limelight.start();
+        pipelineNum = 0;
+        startingPose = new Pose(19, 123, Math.toRadians(144));
+        super.initialize();
 
         Paths = new BluePaths(AutoType.CLOSE_TWELVE_NO_TURRET, follower);
         Paths.buildPaths();
@@ -81,31 +48,13 @@ public class Blue12close extends CommandOpMode {
                 /// Shooting
                 new FollowPathCommand(follower, Paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, limelight),
-                new InstantCommand(() -> states.launchstate = LaunchState.END)
+                new InstantCommand(() -> AutoStates.launchstate = LaunchState.END)
         );
-
         schedule(AutoSequence.alongWith(new InstantCommand(() -> transfer.setPos(0))));
     }
 
     @Override
     public void run() {
         super.run();
-
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
-        follower.update();
-        if (states.launchstate == LaunchState.IDLE)
-            shooter.setTo(.35);
-        else if (states.launchstate == LaunchState.END){
-            shooter.setTo(.2);
-        }
-
-        Pose cPose = follower.getPose();
-        telemetry.addData("x", cPose.getX());
-        telemetry.addData("y", cPose.getY());
-        telemetry.addData("heading", cPose.getHeading());
-        telemetry.addData("did da ball shoot or nah?", AutoShootingCMD.numBallsShot);
-        telemetry.update();
     }
-
 }

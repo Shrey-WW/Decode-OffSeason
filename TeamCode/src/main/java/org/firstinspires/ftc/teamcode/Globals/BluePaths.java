@@ -44,7 +44,7 @@ public class BluePaths {
     }
 
     public void buildCloseTwelveNoTurret(){
-        startPose = new Pose(20,123);
+        startPose = new Pose(19, 123);
         Spike1 = new Pose(24, 85.5);
         gatePose = new Pose(18, 74);
         Spike2 = new Pose(20, 59);
