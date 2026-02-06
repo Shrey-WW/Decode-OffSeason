@@ -9,12 +9,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.CommandScheduler;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -24,8 +19,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class TrackTagLL extends CommandOpMode {
     private double goalX = 132.5;
     private int goalY = 135;
-    private static final double TicksPerRev = 19;
-    private static final double StoppingThreshold = 5.5;
     public static double kV = 0;
     private Limelight3A limelight;
     private IMU imu;
@@ -46,7 +39,6 @@ public class TrackTagLL extends CommandOpMode {
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
-
         register(turret);
         limelight.start();
     }
@@ -59,7 +51,7 @@ public class TrackTagLL extends CommandOpMode {
 //        double vOmega = follower.getAngularVelocity();
 //        double requiredTurretSpeed = -vOmega;
 //
-//        double feedforwardPower = requiredTurretSpeed * kV;
+//        double feedforwardPower = requiredTurretSpeed * kA;
 
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
@@ -67,7 +59,15 @@ public class TrackTagLL extends CommandOpMode {
             double RadianTx = -Math.toRadians(Tx);
             double targetPosition = RadianTx + turret.getPos();
             telemetry.addData("target pos", targetPosition);
-            turret.PIDto(targetPosition);
+            double parallax = follower.getAngularVelocity();
+            double HeadingFF = parallax * .05;
+            turret.PIDto(targetPosition, HeadingFF);
+        }
+        else {
+
+            double parallax = follower.getAngularVelocity();
+            double HeadingFF = parallax * .05;
+            turret.setTo(HeadingFF);
         }
 
 //        telemetry.addData("ffpwr", feedforwardPower);

@@ -7,11 +7,12 @@ import org.firstinspires.ftc.teamcode.Globals.Rusty;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 public class TeleShootingCMD extends ShootingCMD {
 
-    public TeleShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll) {
-        super(s,t,i,ll);
+    public TeleShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll) {
+        super(s,t,i, tt, ll);
         addRequirements(shooter, transfer, intake);
     }
 

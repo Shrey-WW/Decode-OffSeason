@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Globals;
 
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -23,28 +24,28 @@ import org.firstinspires.ftc.teamcode.CMDs.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Rusty extends Robot {
 
     /// limelight
     private final Limelight3A limelight;
-    private double Ta;
-    private double Tx;
 
 
     /// Subsystems
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
+    private Turret turret;
     private IMU imu;
     private Follower follower;
+    boolean Reseting = false;
 
     /// class Variables
+    private double GoalX;
+    private int GoalY;
     private final OpMode opmode;
-    private boolean isUnwrapping = false;
-    private static final double TICKS_PER_REV = 2403;
-    private static final double UnwindThreshold = 1400;
     public static LaunchState launchState;
     private final Alliance alliance;
     DcMotor fL, bL, fR, bR;
@@ -57,10 +58,15 @@ public class Rusty extends Robot {
     public Rusty(OpMode op, Alliance a) {
         opmode = op;
         alliance = a;
-        Ta = 0;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
-        if (alliance == Alliance.BLUE) { limelight.pipelineSwitch(0); }
-        else { limelight.pipelineSwitch(1); }
+        if (alliance == Alliance.BLUE) {
+            limelight.pipelineSwitch(0);
+        }
+        else {
+            limelight.pipelineSwitch(1);
+            GoalX = 132.5;
+            GoalY = 135;
+        }
     }
 
     public void init(){
@@ -68,6 +74,7 @@ public class Rusty extends Robot {
         initControls();
         launchState = LaunchState.IDLE;
         follower = Constants.createFollower(opmode.hardwareMap);
+        follower.setStartingPose(new Pose(100, 135, 0));
         follower.startTeleopDrive();
         schedule(new InstantCommand(() -> transfer.setPos(.2)), new InstantCommand(() -> shooter.moveServo(.8)));
         register(intake, transfer, shooter);
@@ -77,6 +84,7 @@ public class Rusty extends Robot {
         intake = new Intake(opmode.hardwareMap);
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
+        turret = new Turret((opmode.hardwareMap));
 
         fL = opmode.hardwareMap.get(DcMotor.class, "fl");
         fR = opmode.hardwareMap.get(DcMotor.class, "fr");
@@ -95,35 +103,69 @@ public class Rusty extends Robot {
     }
 
 
-    private void initControls(){
+    private void initControls() {
         GamepadEx driver = new GamepadEx(opmode.gamepad1);
 
-        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, limelight);
+        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, turret, limelight);
 
         Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenHeld(shootingCMD);
 
-        Button start = (new GamepadButton(driver, GamepadKeys.Button.START))
-                .whenHeld(new InstantCommand(() -> follower.setHeading(0)));
-
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(transfer.open)
                 .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
-                .whenReleased(new InstantCommand(()-> transfer.setPos(.2)).alongWith(new InstantCommand(transfer::PwrOff)));
+                .whenReleased(new InstantCommand(() -> transfer.setPos(.2)).alongWith(new InstantCommand(transfer::PwrOff)));
+
+
+        Button a = (new GamepadButton(driver, GamepadKeys.Button.A))
+                .whenPressed(() -> Reseting = true);
+
+        Button b = (new GamepadButton(driver, GamepadKeys.Button.B))
+                .whenPressed(() -> turret.resetPos());
     }
 
     @Override
     public void run() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
-        LLResult llresult = limelight.getLatestResult();
-
-        if (llresult != null && llresult.isValid()){
-            Ta = llresult.getTa();
-            Tx = llresult.getTx();
-            opmode.telemetry.addData("ta", Ta);
+        if (launchState == LaunchState.SHOOTING) {
+            LLResult llresult = limelight.getLatestResult();
+            if (llresult != null && llresult.isValid()) {
+                double Tx = llresult.getTx();
+                double RadianTx = -Math.toRadians(Tx);
+                double targetPosition = RadianTx * 1.2 + turret.getPos();
+                if (targetPosition >= 5 || targetPosition <= -3.3) {
+                    turret.pwrOff();
+                } else {
+                    turret.PIDto(targetPosition);
+                }
+            }
+        }
+        else {
+            Pose cPos = follower.getPose();
+            double CorrectedHeading = Math.atan((GoalY - cPos.getY())/(GoalX - cPos.getX()));
+            double TurretFieldHeading = turret.getTurretHeadingRad() + cPos.getHeading();
+            double turretHeadingError = TurretFieldHeading - CorrectedHeading;
+            double targetTurretRad = (turret.getTurretHeadingRad() - turretHeadingError);
+            double targetPosition = targetTurretRad * 2.6;
+            if (targetPosition >= 5 || targetPosition <= -3.3){
+                turret.pwrOff();
+            }
+            else {
+                turret.PIDto(targetPosition);
+            }
         }
 
+        if (turret.getPos() <= -3.3 && turret.getPos() >= 5){
+            turret.pwrOff();
+        }
+        if (Reseting){
+            turret.PIDto(0);
+            if (Math.abs(0 - turret.getPos()) < .2){
+                Reseting = false;
+                turret.pwrOff();
+            }
+        }
 
         if (opmode.gamepad1.right_trigger > .05) {
             intake.Spin(1);

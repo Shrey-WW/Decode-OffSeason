@@ -282,7 +282,7 @@ public class BluePaths {
 
     public void buildCloseTwelve() {
         startPose = new Pose(19, 121);
-        Spike1 = new Pose(21, 84);
+        Spike1 = new Pose(19, 84);
         Spike2 = new Pose(21, 55);
         Spike3 = new Pose(21, 42);
 
@@ -345,13 +345,7 @@ public class BluePaths {
         goToScore3 = follower.pathBuilder().addPath(
                 new BezierLine(
                         Spike1,
-                        new Pose(38.5, 95)
-                )).setConstantHeadingInterpolation(Math.toRadians(180)).build();
-
-        leave = follower.pathBuilder().addPath(
-                new BezierLine(
-                        new Pose(38.5, 95),
-                        new Pose(28, 95)
+                        new Pose(38.5, 100)
                 )).setConstantHeadingInterpolation(Math.toRadians(180)).build();
 
     }

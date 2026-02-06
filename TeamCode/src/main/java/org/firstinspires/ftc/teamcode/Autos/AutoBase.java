@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Globals.LaunchState;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public abstract class AutoBase extends CommandOpMode {
@@ -22,6 +23,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected Intake intake;
     protected Shooter shooter;
     protected Transfer transfer;
+    protected Turret turret;
     protected Limelight3A limelight;
     protected SequentialCommandGroup AutoSequence;
     protected Follower follower;
@@ -35,7 +37,9 @@ public abstract class AutoBase extends CommandOpMode {
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
+        turret = new Turret(hardwareMap);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));

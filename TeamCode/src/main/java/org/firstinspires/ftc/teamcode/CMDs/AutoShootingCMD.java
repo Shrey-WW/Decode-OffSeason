@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Globals.LaunchState;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 public class AutoShootingCMD extends ShootingCMD {
@@ -25,14 +26,14 @@ public class AutoShootingCMD extends ShootingCMD {
 
     public static double numBallsShot;
 
-    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll, double timeout) {
-        super(s, t, i, ll);
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, double timeout) {
+        super(s, t, i, tt, ll);
         TimeLimit = timeout;
         addRequirements(intake, transfer, shooter);
     }
 
-    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll){
-        this(s, t, i, ll, 1500);
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
+        this(s, t, i, tt, ll, 3000);
     }
 
     @Override

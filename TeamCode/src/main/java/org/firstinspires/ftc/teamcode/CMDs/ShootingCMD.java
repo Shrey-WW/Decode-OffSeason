@@ -8,6 +8,7 @@ import com.seattlesolvers.solverslib.util.InterpLUT;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 public abstract class ShootingCMD extends CommandBase {
@@ -17,15 +18,17 @@ public abstract class ShootingCMD extends CommandBase {
     protected final Shooter shooter;
     protected final Intake intake;
     protected final Transfer transfer;
+    protected final Turret turret;
     protected Limelight3A limelight;
 
     protected static final double DefaultTargetVel = 980;
     protected double TargetVel = 0;
 
-    public ShootingCMD(Shooter s, Transfer t, Intake i, Limelight3A ll){
+    public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
         shooter = s;
         transfer = t;
         intake = i;
+        turret = tt;
         limelight = ll;
         VELO.add(.18, .67);
         VELO.add(.2, .6);
@@ -36,6 +39,7 @@ public abstract class ShootingCMD extends CommandBase {
         VELO.add(1.61,.43);
         VELO.add(2.81, .424);
         VELO.add(5.5, .403);
+        VELO.add(7, .2);
 
         pwr2velo.add(.3, 700);
         pwr2velo.add(.5, 1200);
@@ -53,7 +57,7 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = pwr2velo.get(pwr);
             shooter.setTo(pwr);
             double currentVel = shooter.getVelo();
-            if (currentVel > TargetVel - 125) {
+            if (currentVel > TargetVel - 75 && turretAligned(llResult)) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
@@ -65,7 +69,7 @@ public abstract class ShootingCMD extends CommandBase {
         else{
             double currentVel = shooter.getVelo();
             shooter.setTo(.44);
-            if (currentVel > DefaultTargetVel - 125) {
+            if (currentVel > DefaultTargetVel - 75) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
@@ -74,5 +78,9 @@ public abstract class ShootingCMD extends CommandBase {
                 intake.Spin(.7);
             }
         }
+    }
+
+    protected boolean turretAligned(LLResult lr){
+        return Math.abs(lr.getTx()) < 4;
     }
 }
