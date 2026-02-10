@@ -33,7 +33,7 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-        this(s, t, i, tt, ll, 3000);
+        this(s, t, i, tt, ll, 2000);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AutoShootingCMD extends ShootingCMD {
             didShoot(currentVelocity);
         }
 
-        if (currentVelocity >= getTargetVel() - 50){
+        if (currentVelocity >= getTargetVel() - 40){
             isRecovering = false;
         }
     }
@@ -72,7 +72,11 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public void didShoot(double cVel){
-        if (cVel <= getTargetVel() - 60 && !isRecovering){
+        if (cVel <= getTargetVel() - 110 && !isRecovering){
+            numBallsShot += 2;
+            isRecovering = true;
+        }
+        else if (cVel <= getTargetVel() - 50 && !isRecovering){
             numBallsShot++;
             isRecovering = true;
         }
