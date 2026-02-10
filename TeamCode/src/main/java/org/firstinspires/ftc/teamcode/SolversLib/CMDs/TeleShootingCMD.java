@@ -19,7 +19,6 @@ public class TeleShootingCMD extends ShootingCMD {
 
     @Override
     public void initialize() {
-        transfer.setPos(0);
         Rusty.launchState = LaunchState.SHOOTING;
     }
 
@@ -31,8 +30,7 @@ public class TeleShootingCMD extends ShootingCMD {
     @Override
     public void end(boolean interrupted) {
         intake.Spin(0);
-        transfer.Spin(0);
-        transfer.setPos(.2);
+        transfer.Spin(-.6);
         Rusty.launchState = LaunchState.IDLE;
     }
 

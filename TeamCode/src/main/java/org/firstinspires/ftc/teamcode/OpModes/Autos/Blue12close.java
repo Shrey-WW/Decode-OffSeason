@@ -34,7 +34,7 @@ public class Blue12close extends AutoBase {
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
                 new FollowPathCommand(follower, paths.Intake1_),
-                new InstantCommand(() -> follower.setMaxPower(.5)),
+                new InstantCommand(() -> follower.setMaxPower(.6)),
                 new FollowPathCommand(follower, paths.Intake2),
                 new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
@@ -42,13 +42,17 @@ public class Blue12close extends AutoBase {
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
                 new FollowPathCommand(follower, paths.Intake2_),
+                new InstantCommand(() -> follower.setMaxPower(.6)),
                 new FollowPathCommand(follower, paths.Intake3),
+                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new InstantCommand(() -> AutoStates.launchstate = LaunchState.END)
         );
-        schedule(AutoSequence.alongWith(new InstantCommand(() -> transfer.setPos(0))).alongWith(new InstantCommand(() -> shooter.moveServo(.8))));
+        schedule(AutoSequence
+                .alongWith((new InstantCommand(() -> shooter.moveServo(.8)))
+                .alongWith(new InstantCommand(() -> transfer.setPos(0)))));
     }
 
     @Override
@@ -56,6 +60,7 @@ public class Blue12close extends AutoBase {
         if (AutoState.launchstate == LaunchState.SHOOTING) {
             ARC();
         }
+        telemetry.addData("numballshot", AutoShootingCMD.numBallsShot);
         telemetry.addData("turret pos", turret.getPos());
         telemetry.addData("tx", limelight.getLatestResult().getTx());
         super.run();

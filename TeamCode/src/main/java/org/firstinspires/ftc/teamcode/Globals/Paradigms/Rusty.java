@@ -42,11 +42,12 @@ public class Rusty extends Robot {
     private Turret turret;
     private IMU imu;
     private Follower follower;
-    boolean Reseting = false;
+
 
     /// class Variables
     private double GoalX;
     private int GoalY;
+    boolean Reseting = false;
     private final OpMode opmode;
     public static LaunchState launchState;
     private final Alliance alliance;
@@ -80,7 +81,7 @@ public class Rusty extends Robot {
         follower = Constants.createFollower(opmode.hardwareMap);
         follower.setStartingPose(new Pose(19, 135, Math.toRadians(0)));
         follower.startTeleopDrive();
-        schedule(new InstantCommand(() -> transfer.setPos(.2)), new InstantCommand(() -> shooter.moveServo(.8)));
+        schedule(new InstantCommand(() -> shooter.moveServo(.8)).alongWith(new InstantCommand(() -> transfer.setPos(0))));
         register(intake, transfer, shooter, turret);
     }
 
@@ -116,9 +117,8 @@ public class Rusty extends Robot {
                 .whenHeld(shootingCMD);
 
         Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
-                .whenPressed(transfer.open)
                 .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
-                .whenReleased(new InstantCommand(() -> transfer.setPos(.2)).alongWith(new InstantCommand(transfer::PwrOff)));
+                .whenReleased((new InstantCommand(transfer::PwrOff)));
 
 
         Button a = (new GamepadButton(driver, GamepadKeys.Button.A))
@@ -137,7 +137,7 @@ public class Rusty extends Robot {
 
         if (Reseting){
             turret.PIDto(0);
-            if (Math.abs(0 - turret.getPos()) < .2){
+            if (Math.abs(0 - turret.getPos()) < .3){
                 Reseting = false;
                 turret.pwrOff();
             }

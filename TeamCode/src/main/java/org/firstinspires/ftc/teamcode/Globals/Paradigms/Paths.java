@@ -31,16 +31,16 @@ public abstract class Paths {
         else if(autoType == AutoType.FAR_TWELVE_NO_TURRET) {
             buildFarTwelveNoTurret();
         }
-        else if(autoType == AutoType.EXODUS){
-            buildExodus();
-        }
         else if (autoType == AutoType.CLOSE_TWELVE){
             buildCloseTwelve();
+        }
+        else if(autoType == AutoType.AutoTheory12){
+            buildAutoTheory12();
         }
     }
 
     public abstract void buildCloseTwelveNoTurret();
     public abstract void buildFarTwelveNoTurret();
     public abstract void buildCloseTwelve();
-    public abstract void buildExodus();
+    public abstract void buildAutoTheory12();
 }

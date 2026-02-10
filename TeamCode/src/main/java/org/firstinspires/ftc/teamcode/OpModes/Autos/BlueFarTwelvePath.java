@@ -48,7 +48,6 @@ public class BlueFarTwelvePath extends CommandOpMode {
     @Override
     public void run(){
         follower.update();
-        intake.Spin(1);
         super.run();
     }
 }

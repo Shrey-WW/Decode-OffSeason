@@ -21,7 +21,8 @@ public class AutoShootingCMD extends ShootingCMD {
 
     private final ElapsedTime ShotChecker = new ElapsedTime();
 
-    private double lastVel;
+
+    private boolean isRecovering = true;
 
     public static double numBallsShot;
 
@@ -32,12 +33,11 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-        this(s, t, i, tt, ll, 2000);
+        this(s, t, i, tt, ll, 3000);
     }
 
     @Override
     public void initialize(){
-        transfer.setPos(0);
         numBallsShot = 0;
         timer.reset();
         ShotChecker.reset();
@@ -50,18 +50,19 @@ public class AutoShootingCMD extends ShootingCMD {
 
         VELO();
 
-        if (ShotChecker.milliseconds() > 66) {
-            didBallShoot(currentVelocity);
-            ShotChecker.reset();
+        if (ShotChecker.milliseconds() > 33){
+            didShoot(currentVelocity);
         }
 
+        if (currentVelocity >= getTargetVel() - 50){
+            isRecovering = false;
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        transfer.Spin(-.3);
+        transfer.Spin(-.6);
         intake.Spin(1);
-        transfer.setPos(.2);
         AutoStates.launchstate = LaunchState.IDLE;
     }
 
@@ -70,12 +71,11 @@ public class AutoShootingCMD extends ShootingCMD {
         return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
     }
 
-    public void didBallShoot(double cVel){
-        if ((lastVel - cVel) > 75)
-        {
+    public void didShoot(double cVel){
+        if (cVel <= getTargetVel() - 60 && !isRecovering){
             numBallsShot++;
+            isRecovering = true;
         }
-        lastVel = cVel;
     }
 
 

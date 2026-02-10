@@ -12,13 +12,14 @@ import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Transfer;
 @TeleOp (group = "tests")
 public class DidBallShoot extends CommandOpMode {
 
-    private int numBallsShot = 0;
+    private double numBallsShot = 0;
     public double lastVel;
     public double minVel = Integer.MAX_VALUE;
     private Shooter shooter;
     private Intake intake;
     private Transfer transfer;
-    ElapsedTime time;
+    private ElapsedTime time;
+    private Boolean Recovering;
 
     @Override
     public void initialize(){
@@ -26,16 +27,23 @@ public class DidBallShoot extends CommandOpMode {
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
         time = new ElapsedTime();
+        Recovering = true;
         intake.Spin(1);
         transfer.Spin(1);
     }
 
     @Override
     public void run(){
-        if (time.milliseconds() > 150) {
-            detectShot();
-            time.reset();
-            if (shooter.getVelo() < minVel) minVel = shooter.getVelo();
+        if (shooter.getVelo() < minVel) minVel = shooter.getVelo();
+
+        double currentVel = shooter.getVelo();
+
+        if (time.milliseconds() > 33){
+            didShoot(currentVel);
+        }
+
+        if (currentVel >= 1080){
+            Recovering = false;
         }
 
         shooter.setTo(.45);
@@ -51,17 +59,17 @@ public class DidBallShoot extends CommandOpMode {
         telemetry.addData("Balls Shot", numBallsShot);
         telemetry.addData("Current TPS", shooter.getVelo());
         telemetry.addData("Minimum Velocity", minVel);
+        telemetry.addData("time", numBallsShot);
         telemetry.update();
+        lastVel = currentVel;
         super.run();
     }
 
-    public void detectShot(){
-        double currentVel = shooter.getVelo();
-        if ((lastVel - currentVel) > 50)
-        {
+    public void didShoot(double cVel){
+        if (cVel <= 1040 && !Recovering){
             numBallsShot++;
+            Recovering = true;
         }
-        lastVel = currentVel;
     }
 
 }

@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Turret;
 
 public abstract class ShootingCMD extends CommandBase {
 
-    protected InterpLUT pwr2velo = new InterpLUT();
     protected InterpLUT VELO = new InterpLUT();
     protected final Shooter shooter;
     protected final Intake intake;
@@ -25,11 +24,13 @@ public abstract class ShootingCMD extends CommandBase {
     protected double TargetVel = 0;
 
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
+
         shooter = s;
         transfer = t;
         intake = i;
         turret = tt;
         limelight = ll;
+
         VELO.add(.18, .67);
         VELO.add(.2, .6);
         VELO.add(.305, .59);
@@ -41,29 +42,23 @@ public abstract class ShootingCMD extends CommandBase {
         VELO.add(5.5, .415);
         VELO.add(7, .2);
 
-        pwr2velo.add(0, 0);
-        pwr2velo.add(.3, 700);
-        pwr2velo.add(.5, 1200);
-        pwr2velo.add(.7, 1700);
-        pwr2velo.add(.9, 2200);
 
         VELO.createLUT();
-        pwr2velo.createLUT();
     }
 
     protected void VELO(){
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
             double pwr = VELO.get(llResult.getTa());
-            TargetVel = pwr2velo.get(pwr);
+            TargetVel = getTargetVel();
             shooter.setTo(pwr);
             double currentVel = shooter.getVelo();
-            if (currentVel > TargetVel - 75 && turretAligned(llResult)) {
+            if (currentVel > TargetVel - 40 && turretAligned(llResult)) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
-                transfer.Spin(0);
+                transfer.Spin(-.5);
                 intake.Spin(.7);
             }
         }
@@ -82,6 +77,19 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     protected boolean turretAligned(LLResult lr){
-        return Math.abs(lr.getTx()) < 4.5;
+        double Tx = lr.getTx();
+        double Ta = lr.getTa();
+        if (Ta < .45)
+            return Math.abs(Tx) < 7;
+        return Math.abs(lr.getTx()) < 6;
+    }
+
+    protected double getTargetVel(){
+        LLResult lr = limelight.getLatestResult();
+        if (lr != null && lr.isValid()) {
+            double pwr = VELO.get(lr.getTa());
+            return pwr * 2500 - 50;
+        }
+        return -1;
     }
 }
