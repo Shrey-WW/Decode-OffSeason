@@ -30,7 +30,6 @@ public class TrackTagOdom extends CommandOpMode {
 
     @Override
     public void initialize_loop(){
-        follower.update();
     }
 
     @Override
@@ -38,21 +37,31 @@ public class TrackTagOdom extends CommandOpMode {
         follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
         follower.update();
         Pose cPos = follower.getPose();
-        double CorrectedHeading = Math.atan((GoalY - cPos.getY())/(GoalX - cPos.getX()));
-        double TurretFieldHeading = turret.getTurretHeadingRad() + cPos.getHeading();
-        double turretHeadingError = TurretFieldHeading - CorrectedHeading;
-        double targetTurretPosRad = (turret.getTurretHeadingRad() - turretHeadingError);
-        turret.PIDto(targetTurretPosRad * Math.PI);
+        double dy = GoalY - cPos.getY();
+        double dx = GoalX - cPos.getX();
+        double CorrectedHeading = Math.atan2(dy, dx);
+        double TargetTurretRad = CorrectedHeading - cPos.getHeading();
+
+        TargetTurretRad = angleWrap(TargetTurretRad);
+
+        turret.PIDto(TargetTurretRad * 2.5);
 
         telemetry.addData("X: ", cPos.getX());
         telemetry.addData("Y: ", cPos.getY());
         telemetry.addData("y diff", GoalY - cPos.getY());
         telemetry.addData("heading", cPos.getHeading());
         telemetry.addData("corrected heading ", CorrectedHeading);
-        telemetry.addData("TurretFieldHeading ", TurretFieldHeading);
-        telemetry.addData("turret heading error ", turretHeadingError);
-        telemetry.addData("target turret heading ", targetTurretPosRad);
         telemetry.update();
         super.run();
+    }
+
+    public double angleWrap(double radians) {
+        while (radians > Math.PI) {
+            radians -= 2 * Math.PI;
+        }
+        while (radians < -Math.PI) {
+            radians += 2 * Math.PI;
+        }
+        return radians;
     }
 }

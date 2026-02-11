@@ -24,6 +24,7 @@ public class limelight extends OpMode {
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
+        telemetry.setMsTransmissionInterval(40);
     }
     @Override
     public void start(){
@@ -36,7 +37,6 @@ public class limelight extends OpMode {
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
 
-        llresult.getColorResults();
         if (llresult != null && llresult.isValid()) {
             Pose3D botPose = llresult.getBotpose_MT2();
             telemetry.addData("distance", getDistanceFromTag(llresult.getTa()));
