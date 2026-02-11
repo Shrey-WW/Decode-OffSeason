@@ -5,14 +5,8 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
-import com.pedropathing.paths.PathChain;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-
-import org.firstinspires.ftc.robotcore.internal.network.RobotCoreCommandList;
 import org.firstinspires.ftc.teamcode.Globals.Paradigms.Paths;
-import org.firstinspires.ftc.teamcode.Globals.Paradigms.ShootingCMD;
 import org.firstinspires.ftc.teamcode.Globals.States.AutoType;
-import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Intake;
 
 public class BluePaths extends Paths {
 
@@ -282,6 +276,7 @@ public class BluePaths extends Paths {
     public void buildAutoTheory12(){
         startPose = new Pose(19, 121);
         gatePose = new Pose(23, 74);
+
         ShootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
                                 startPose,
@@ -296,7 +291,7 @@ public class BluePaths extends Paths {
                                 new Pose(23, 74)
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(0, .8, HeadingInterpolator.tangent),
                 new HeadingInterpolator.PiecewiseNode(.8, 1, HeadingInterpolator.constant(Math.toRadians(180))
                 ))).build();
 
@@ -320,8 +315,23 @@ public class BluePaths extends Paths {
                         new Pose(62, 91.5)
                 )
         ).setLinearHeadingInterpolation(-2.49, 2.58).build();
-    }
 
+        Intake3 = follower.pathBuilder().addPath(
+                new BezierCurve(
+                        new Pose(62, 91.5),
+                        new Pose(59.4, 35),
+                        new Pose(59.4, 35),
+                        new Pose(22, 35)
+                )).setTangentHeadingInterpolation().build();
+        goToScore3 = follower.pathBuilder().addPath(
+                new BezierLine(
+                        new Pose(22, 35),
+                        new Pose(57, 115)
+                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                new HeadingInterpolator.PiecewiseNode(0, .8, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.8, 1, HeadingInterpolator.constant(Math.toRadians(180))
+                ))).build();
+    }
 
     public void buildCloseFifteen(){
         startPose = new Pose(19, 121);

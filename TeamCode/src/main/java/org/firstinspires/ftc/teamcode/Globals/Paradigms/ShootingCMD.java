@@ -20,7 +20,7 @@ public abstract class ShootingCMD extends CommandBase {
     protected final Turret turret;
     protected Limelight3A limelight;
 
-    protected static final double DefaultTargetVel = 980;
+    protected static final double DefaultTargetVel = 1100;
     protected double TargetVel = 0;
 
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
@@ -58,19 +58,19 @@ public abstract class ShootingCMD extends CommandBase {
                 intake.Spin(1);
             }
             else{
-                transfer.Spin(-.5);
+                transfer.Spin(-.6);
                 intake.Spin(.7);
             }
         }
         else{
             double currentVel = shooter.getVelo();
-            shooter.setTo(.44);
-            if (currentVel > DefaultTargetVel - 75) {
+            shooter.setTo(.45);
+            if (currentVel > DefaultTargetVel - 30) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
-                transfer.Spin(0);
+                transfer.Spin(-.6);
                 intake.Spin(.7);
             }
         }
@@ -80,8 +80,8 @@ public abstract class ShootingCMD extends CommandBase {
         double Tx = lr.getTx();
         double Ta = lr.getTa();
         if (Ta < .45)
-            return Math.abs(Tx) < 7;
-        return Math.abs(lr.getTx()) < 6;
+            return Math.abs(Tx) < 9;
+        return Math.abs(Tx) < 6;
     }
 
     protected double getTargetVel(){
@@ -90,6 +90,6 @@ public abstract class ShootingCMD extends CommandBase {
             double pwr = VELO.get(lr.getTa());
             return pwr * 2500 - 50;
         }
-        return -1;
+        return DefaultTargetVel;
     }
 }

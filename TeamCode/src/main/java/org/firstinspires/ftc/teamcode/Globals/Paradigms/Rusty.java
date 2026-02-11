@@ -46,8 +46,9 @@ public class Rusty extends Robot {
 
     /// class Variables
     private double GoalX;
-    private int GoalY;
+    private int GoalY = 135;
     boolean Reseting = false;
+    private int loopCounter = 0;
     private final OpMode opmode;
     public static LaunchState launchState;
     private final Alliance alliance;
@@ -65,12 +66,10 @@ public class Rusty extends Robot {
         if (alliance == Alliance.BLUE) {
             limelight.pipelineSwitch(0);
             GoalX = 13;
-            GoalY = 135;
         }
         else {
             limelight.pipelineSwitch(1);
             GoalX = 132.5;
-            GoalY = 135;
         }
     }
 
@@ -130,14 +129,15 @@ public class Rusty extends Robot {
 
     @Override
     public void run() {
+        double turretPos = turret.getPos();
 
         if (!Reseting) {
-            ARC();
+            ARC(turretPos);
         }
 
         if (Reseting){
             turret.PIDto(0);
-            if (Math.abs(0 - turret.getPos()) < .3){
+            if (Math.abs(0 - turretPos) < .3){
                 Reseting = false;
                 turret.pwrOff();
             }
@@ -158,21 +158,24 @@ public class Rusty extends Robot {
         follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, true);
         follower.update();
 
-        opmode.telemetry.addData("flywheel velo", shooter.getVelo());
-        opmode.telemetry.addData("turretheading deg", turret.getTurretHeadingDeg());
-        opmode.telemetry.update();
+        if (loopCounter % 8 == 0) {
+            opmode.telemetry.addData("flywheel velo", shooter.getVelo());
+            opmode.telemetry.addData("turret heading deg", turret.getTurretHeadingDeg());
+            opmode.telemetry.update();
+        }
+        loopCounter++;
         CommandScheduler.getInstance().run();
     }
 
     /**
      * Autonomous Rotational Correction!!!
      */
-    public void ARC(){
+    public void ARC(double currentTurretPos){
         LLResult llresult = limelight.getLatestResult();
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
             double RadianTx = -Math.toRadians(Tx);
-            double targetPosition = RadianTx * 2 + turret.getPos();
+            double targetPosition = RadianTx * 2 + currentTurretPos;
             if (targetPosition >= 4.5 || targetPosition <= -3.3) {
                 turret.pwrOff();
             } else {
@@ -180,7 +183,7 @@ public class Rusty extends Robot {
             }
         }
 
-        if (turret.getPos() <= -2.7 && turret.getPos() >= 5){
+        if (currentTurretPos <= -2.7 || currentTurretPos >= 5){
             turret.pwrOff();
         }
     }
@@ -198,5 +201,6 @@ public class Rusty extends Robot {
 //                turret.pwrOff();
 
 }
+
 
 

@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Turret;
 public class TeleShootingCMD extends ShootingCMD {
 
     public TeleShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll) {
-        super(s,t,i, tt, ll);
-        addRequirements(shooter, transfer, intake);
+        super(s, t, i, tt, ll);
+        addRequirements(shooter, transfer, intake, turret);
     }
 
     @Override

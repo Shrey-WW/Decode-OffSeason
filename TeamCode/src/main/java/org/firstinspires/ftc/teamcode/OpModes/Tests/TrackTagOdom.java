@@ -42,11 +42,11 @@ public class TrackTagOdom extends CommandOpMode {
         double TurretFieldHeading = turret.getTurretHeadingRad() + cPos.getHeading();
         double turretHeadingError = TurretFieldHeading - CorrectedHeading;
         double targetTurretPosRad = (turret.getTurretHeadingRad() - turretHeadingError);
-        turret.PIDto(targetTurretPosRad * 2.5);
+        turret.PIDto(targetTurretPosRad * Math.PI);
 
         telemetry.addData("X: ", cPos.getX());
         telemetry.addData("Y: ", cPos.getY());
-        telemetry.addData("y diff", cPos.getY() - GoalY);
+        telemetry.addData("y diff", GoalY - cPos.getY());
         telemetry.addData("heading", cPos.getHeading());
         telemetry.addData("corrected heading ", CorrectedHeading);
         telemetry.addData("TurretFieldHeading ", TurretFieldHeading);
