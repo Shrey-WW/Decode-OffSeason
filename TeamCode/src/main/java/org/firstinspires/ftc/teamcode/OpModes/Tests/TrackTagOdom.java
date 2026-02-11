@@ -16,14 +16,13 @@ public class TrackTagOdom extends CommandOpMode {
 
     private double GoalX = 132.5;
     private int GoalY = 135;
-    public static double kV = 0;
     Turret turret;
     Follower follower;
     @Override
     public void initialize(){
         turret = new Turret(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(100, 135.1, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(100, 135, Math.toRadians(0)));
         follower.startTeleopDrive();
         register(turret);
     }
@@ -46,9 +45,10 @@ public class TrackTagOdom extends CommandOpMode {
 
         turret.PIDto(TargetTurretRad * 2.5);
 
+        telemetry.addData("rVelocity", follower.getVelocity().getMagnitude());
+        telemetry.addData("rVelocity direction", Math.toDegrees(follower.getVelocity().getTheta()));
         telemetry.addData("X: ", cPos.getX());
         telemetry.addData("Y: ", cPos.getY());
-        telemetry.addData("y diff", GoalY - cPos.getY());
         telemetry.addData("heading", cPos.getHeading());
         telemetry.addData("corrected heading ", CorrectedHeading);
         telemetry.update();
