@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class limelight extends OpMode {
     private static final double HEIGHT_LIMELIGHT = 16;
     private static final double LIMELIGHT_MOUNT_ANGLE = 15;
-    private static final double HEIGHT_OF_APRILTAG = 33.5;
+    private static final double HEIGHT_OF_APRILTAG = 29.5;
     private Limelight3A limelight;
     private Follower follower;
 
