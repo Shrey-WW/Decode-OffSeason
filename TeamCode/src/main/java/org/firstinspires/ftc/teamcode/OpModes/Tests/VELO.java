@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.geometry.Translation2d;
 import com.seattlesolvers.solverslib.util.InterpLUT;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -20,7 +19,7 @@ import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Transfer;
 
 @Config
 @TeleOp (group = "tests")
-public class VELOTesting extends CommandOpMode {
+public class VELO extends CommandOpMode {
 
     Shooter shooter;
     Intake intake;

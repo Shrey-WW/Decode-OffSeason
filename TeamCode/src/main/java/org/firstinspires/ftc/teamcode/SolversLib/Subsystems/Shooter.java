@@ -12,9 +12,6 @@ import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 public class Shooter extends SubsystemBase {
     private final MotorGroup ShootingMotors;
     private final ServoEx servo;
-    public static double Kp, Kv;
-    public double kp, kv;
-    public double t;
 
 
     public Shooter(final HardwareMap hw){
@@ -42,28 +39,8 @@ public class Shooter extends SubsystemBase {
         servo.set(pos);
     }
 
-    public void tune(double input){
-        t = input;
-        ShootingMotors.set(t);
-    }
-
     public double getVelo(){
         return ShootingMotors.getVelocity();
-    }
-
-    public void setPIDs(){
-        kp = Kp;
-        kv = Kv;
-        ShootingMotors.setVeloCoefficients(kp, 0, 0);
-        ShootingMotors.setFeedforwardCoefficients(0, kv);
-    }
-
-    public double[] getPIDs(){
-        return ShootingMotors.getVeloCoefficients();
-    }
-
-    public double[] getFF(){
-        return ShootingMotors.getFeedforwardCoefficients();
     }
 
 

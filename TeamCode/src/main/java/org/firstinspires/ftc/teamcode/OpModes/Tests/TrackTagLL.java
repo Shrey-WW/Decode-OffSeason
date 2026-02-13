@@ -16,9 +16,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Config
 @TeleOp (group = "tests")
 public class TrackTagLL extends CommandOpMode {
-    private double goalX = 132.5;
-    private int goalY = 135;
-    public static double kV = 0;
     private Limelight3A limelight;
     private IMU imu;
     Turret turret;
@@ -47,10 +44,6 @@ public class TrackTagLL extends CommandOpMode {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llresult = limelight.getLatestResult();
-//        double vOmega = follower.getAngularVelocity();
-//        double requiredTurretSpeed = -vOmega;
-//
-//        double feedforwardPower = requiredTurretSpeed * kA;
 
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
@@ -68,9 +61,6 @@ public class TrackTagLL extends CommandOpMode {
             double HeadingFF = parallax * .05;
             turret.setTo(HeadingFF);
         }
-
-//        telemetry.addData("ffpwr", feedforwardPower);
-//        turret.setTo(feedforwardPower);
         follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
         follower.update();
         telemetry.addData("current pos", turret.getPos());

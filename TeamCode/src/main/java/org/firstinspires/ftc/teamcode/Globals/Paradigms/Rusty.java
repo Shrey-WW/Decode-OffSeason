@@ -1,27 +1,18 @@
 package org.firstinspires.ftc.teamcode.Globals.Paradigms;
 
-
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
-import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Globals.States.LaunchState;
 import org.firstinspires.ftc.teamcode.Globals.States.Alliance;
+import org.firstinspires.ftc.teamcode.Globals.States.LaunchState;
 import org.firstinspires.ftc.teamcode.SolversLib.CMDs.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.SolversLib.Subsystems.Shooter;
@@ -31,56 +22,45 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Rusty extends Robot {
 
-    /// limelight
+    private static final double TURRET_LIMIT_CW = 4.5;
+    private static final double TURRET_LIMIT_CCW = -3.3;
+    private static final double TURRET_RESET_TOLERANCE = 0.3;
+    private static final double TX_TO_TURRET_GAIN = 2.0;
+
+    private static final double SHOOTER_IDLE_POWER = 0.35;
+    private static final double TRIGGER_DEADZONE = 0.05;
+
+    // Hardware
     private final Limelight3A limelight;
+    private final OpMode opmode;
 
-
-    /// Subsystems
+    // Subsystems
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
     private Turret turret;
-    private IMU imu;
     private Follower follower;
 
-
-    /// class Variables
-    private double GoalX;
-    private int GoalY = 135;
-    boolean Reseting = false;
-    private int loopCounter = 0;
-    private final OpMode opmode;
+    // State
     public static LaunchState launchState;
-    private final Alliance alliance;
-    DcMotor fL, bL, fR, bR;
-    DcMotor[] motors;
-
-
-
-
+    private boolean resettingTurret = false;
+    private int loopCounter = 0;
 
     public Rusty(OpMode op, Alliance a) {
         opmode = op;
-        alliance = a;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
-        if (alliance == Alliance.BLUE) {
-            limelight.pipelineSwitch(0);
-            GoalX = 13;
-        }
-        else {
-            limelight.pipelineSwitch(1);
-            GoalX = 132.5;
-        }
+        limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
     }
 
-    public void init(){
+    public void init() {
         initSubsystems();
         initControls();
         launchState = LaunchState.IDLE;
         follower = Constants.createFollower(opmode.hardwareMap);
         follower.setStartingPose(new Pose(19, 135, Math.toRadians(0)));
         follower.startTeleopDrive();
-        schedule(new InstantCommand(() -> shooter.moveServo(.8)).alongWith(new InstantCommand(() -> transfer.setPos(0))));
+        schedule(new InstantCommand(() -> shooter.moveServo(.8))
+                .alongWith(new InstantCommand(() -> transfer.setPos(0))));
         register(intake, transfer, shooter, turret);
     }
 
@@ -88,75 +68,39 @@ public class Rusty extends Robot {
         intake = new Intake(opmode.hardwareMap);
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
-        turret = new Turret((opmode.hardwareMap));
-
-        fL = opmode.hardwareMap.get(DcMotor.class, "fl");
-        fR = opmode.hardwareMap.get(DcMotor.class, "fr");
-        bL = opmode.hardwareMap.get(DcMotor.class, "bl");
-        bR = opmode.hardwareMap.get(DcMotor.class, "br");
-        fL.setDirection(DcMotorSimple.Direction.REVERSE);
-        bL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motors = new DcMotor[]{fL, bL, fR, bR};
-
-        imu = opmode.hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
+        turret = new Turret(opmode.hardwareMap);
         limelight.start();
     }
 
-
     private void initControls() {
         GamepadEx driver = new GamepadEx(opmode.gamepad1);
-
         TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, turret, limelight);
 
-        Button rBumper = (new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER))
+        new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)
                 .whenHeld(shootingCMD);
 
-        Button lBumper = (new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER))
+        new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)
                 .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
-                .whenReleased((new InstantCommand(transfer::PwrOff)));
+                .whenReleased(new InstantCommand(transfer::PwrOff));
 
+        new GamepadButton(driver, GamepadKeys.Button.A)
+                .whenPressed(() -> resettingTurret = true);
 
-        Button a = (new GamepadButton(driver, GamepadKeys.Button.A))
-                .whenPressed(() -> Reseting = true);
-
-        Button b = (new GamepadButton(driver, GamepadKeys.Button.B))
+        new GamepadButton(driver, GamepadKeys.Button.B)
                 .whenPressed(() -> turret.resetPos());
     }
 
     @Override
     public void run() {
+        super.run();
+        follower.update();
+
         double turretPos = turret.getPos();
 
-        if (!Reseting) {
-            ARC(turretPos);
-        }
-
-        if (Reseting){
-            turret.PIDto(0);
-            if (Math.abs(0 - turretPos) < .3){
-                Reseting = false;
-                turret.pwrOff();
-            }
-        }
-
-        if (opmode.gamepad1.right_trigger > .05) {
-            intake.Spin(1);
-        }
-        else if (opmode.gamepad1.right_trigger <= 0.3 && !opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
-            intake.PwrOff();
-            transfer.PwrOff();
-        }
-
-        if (launchState == LaunchState.IDLE) {
-            shooter.setTo(.35);
-        }
-
-        follower.setTeleOpDrive(-opmode.gamepad1.left_stick_y, -opmode.gamepad1.left_stick_x, -opmode.gamepad1.right_stick_x, true);
-        follower.update();
+        ARC(turretPos);
+        updateIntake();
+        updateShooter();
+        updateDrive();
 
         if (loopCounter % 8 == 0) {
             opmode.telemetry.addData("flywheel velo", shooter.getVelo());
@@ -164,43 +108,61 @@ public class Rusty extends Robot {
             opmode.telemetry.update();
         }
         loopCounter++;
-        CommandScheduler.getInstance().run();
     }
 
     /**
-     * Autonomous Rotational Correction!!!
+     * Autonomous Rotational Correction — tracks the Limelight target by
+     * converting tx offset into a turret position adjustment via PID.
      */
-    public void ARC(double currentTurretPos){
-        LLResult llresult = limelight.getLatestResult();
-        if (llresult != null && llresult.isValid()) {
-            double Tx = llresult.getTx();
-            double RadianTx = -Math.toRadians(Tx);
-            double targetPosition = RadianTx * 2 + currentTurretPos;
-            if (targetPosition >= 4.5 || targetPosition <= -3.3) {
+    private void ARC(double turretPos) {
+        // Hard safety cutoff regardless of mode
+        if (turretPos >= TURRET_LIMIT_CW || turretPos <= TURRET_LIMIT_CCW) {
+            turret.pwrOff();
+            return;
+        }
+
+        if (resettingTurret) {
+            turret.PIDto(0);
+            if (Math.abs(turretPos) < TURRET_RESET_TOLERANCE) {
+                resettingTurret = false;
+                turret.pwrOff();
+            }
+            return;
+        }
+
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            double txRadians = -Math.toRadians(result.getTx());
+            double targetPosition = txRadians * TX_TO_TURRET_GAIN + turretPos;
+            if (targetPosition >= TURRET_LIMIT_CW || targetPosition <= TURRET_LIMIT_CCW) {
                 turret.pwrOff();
             } else {
                 turret.PIDto(targetPosition);
             }
         }
+    }
 
-        if (currentTurretPos <= -2.7 || currentTurretPos >= 5){
-            turret.pwrOff();
+    private void updateIntake() {
+        if (opmode.gamepad1.right_trigger > TRIGGER_DEADZONE) {
+            intake.Spin(1);
+        } else if (!opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
+            intake.PwrOff();
+            transfer.PwrOff();
         }
     }
-//        else {
-//            Pose cPos = follower.getPose();
-//            double CorrectedHeading = Math.atan((GoalY - cPos.getY())/(GoalX - cPos.getX()));
-//            if (CorrectedHeading < 0){
-//                CorrectedHeading = Math.PI - CorrectedHeading;
-//            }
-//            double TurretFieldHeading = turret.getTurretHeadingRad() + cPos.getHeading();
-//            double turretHeadingError = TurretFieldHeading - CorrectedHeading;
-//            double targetTurretRad = (turret.getTurretHeadingRad() - turretHeadingError);
-//            double targetPosition = targetTurretRad * 2.6;
-//            if (targetPosition >= 5 || targetPosition <= -2.7){
-//                turret.pwrOff();
 
+    private void updateShooter() {
+        if (launchState == LaunchState.IDLE) {
+            shooter.setTo(SHOOTER_IDLE_POWER);
+        }
+    }
+
+    private void updateDrive() {
+        follower.setTeleOpDrive(
+                -opmode.gamepad1.left_stick_y,
+                -opmode.gamepad1.left_stick_x,
+                -opmode.gamepad1.right_stick_x,
+                true
+        );
+    }
 }
-
-
-

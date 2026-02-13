@@ -50,7 +50,7 @@ public abstract class ShootingCMD extends CommandBase {
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
             double pwr = VELO.get(llResult.getTa());
-            TargetVel = getTargetVel();
+            TargetVel = pwr * 2500 - 50;
             shooter.setTo(pwr);
             double currentVel = shooter.getVelo();
             if (currentVel > TargetVel - 40 && turretAligned(llResult)) {
@@ -85,11 +85,6 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     protected double getTargetVel(){
-        LLResult lr = limelight.getLatestResult();
-        if (lr != null && lr.isValid()) {
-            double pwr = VELO.get(lr.getTa());
-            return pwr * 2500 - 50;
-        }
-        return DefaultTargetVel;
+        return TargetVel;
     }
 }

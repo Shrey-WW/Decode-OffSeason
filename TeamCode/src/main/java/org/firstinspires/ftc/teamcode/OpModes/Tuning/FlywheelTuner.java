@@ -10,7 +10,7 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 
 @TeleOp (group = "tuning")
 @Config
-public class VelMotor extends CommandOpMode{
+public class FlywheelTuner extends CommandOpMode{
     public static double velo;
     MotorGroup ShootingMotors;
     public static double kP, kV;

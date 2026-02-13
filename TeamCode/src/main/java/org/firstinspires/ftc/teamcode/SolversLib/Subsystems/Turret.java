@@ -6,14 +6,16 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
+import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import com.seattlesolvers.solverslib.util.MathUtils;
 
 public class Turret extends SubsystemBase {
 
 
-    private CRServoEx servo1, servo2;
-    private AbsoluteAnalogEncoder encoder;
-    private double kP = 1, kI = 0, kD = 0, kF = .12;
+    private final CRServoEx servo1, servo2;
+    private final MotorEx RevBoreEncoder;
+    private final AbsoluteAnalogEncoder encoder;
+    private final double kP = 1, kI = 0, kD = 0, kF = .12;
     private double truePosition;
     private double lastPos;
 
@@ -21,6 +23,7 @@ public class Turret extends SubsystemBase {
 
 
     public Turret(final HardwareMap hw){
+        RevBoreEncoder = new MotorEx(hw , "shooter1");
         encoder = new AbsoluteAnalogEncoder(hw, "turretEncoder");
         servo1 = new CRServoEx(hw, "turret1").setCachingTolerance(.0005);
         servo2 = new CRServoEx(hw, "turret2").setCachingTolerance(.0005);
@@ -46,6 +49,9 @@ public class Turret extends SubsystemBase {
         servo2.set(output);
     }
 
+    /**
+     * @param pwr Power to send Servos
+     */
     public void setTo(double pwr){
         servo2.set(pwr);
         servo1.set(pwr);
@@ -89,7 +95,7 @@ public class Turret extends SubsystemBase {
         return Math.toDegrees(truePosition * 0.383121055316);
     }
 
-    public void measureTruePos(){
+    private void measureTruePos(){
         double currentPos = MathUtils.normalizeRadians(encoder.getCurrentPosition(), false);
 
         if (currentPos < 0){
