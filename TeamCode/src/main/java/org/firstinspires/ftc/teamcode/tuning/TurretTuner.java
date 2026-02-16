@@ -24,17 +24,15 @@ public class TurretTuner extends CommandOpMode {
 
     public static boolean Tuning = true;
 
-    private static final double TICKS_PER_DEGREE = (double) 69632 /360;
+    private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
     public CRServoEx servo1;
     public CRServoEx servo2;
-    Shooter shooter;
     TurretController turretController;
 
     public static double pwr;
     @Override
     public void initialize(){
         RevEncoder = new MotorEx(hardwareMap, "shooter1");
-        shooter = new Shooter(hardwareMap);
         servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
         servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
         servo1.setInverted(true);

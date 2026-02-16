@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
-import org.firstinspires.ftc.teamcode.auto.base.Rusty;
+import org.firstinspires.ftc.teamcode.subsystems.Rusty;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;

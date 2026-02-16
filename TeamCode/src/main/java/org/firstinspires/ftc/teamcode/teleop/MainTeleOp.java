@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 
-import org.firstinspires.ftc.teamcode.auto.base.Rusty;
+import org.firstinspires.ftc.teamcode.subsystems.Rusty;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
 
 @Config

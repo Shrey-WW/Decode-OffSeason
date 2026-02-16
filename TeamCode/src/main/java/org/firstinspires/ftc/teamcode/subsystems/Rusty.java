@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.base;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -14,10 +14,6 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.teamcode.commands.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Rusty extends Robot {

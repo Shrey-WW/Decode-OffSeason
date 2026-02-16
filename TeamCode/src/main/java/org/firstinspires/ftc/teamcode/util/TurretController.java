@@ -57,7 +57,7 @@ public class TurretController {
         posIntegral += posError * dt;
         posIntegral = clamp(posIntegral, -posIntegralLimit, posIntegralLimit);
 
-        // Derivative on measurement (avoids spikes on setpoint changes)
+
         double posDerivative = 0;
         if (!Double.isNaN(lastPosMeasurement)) {
             posDerivative = -(currentAngleDeg - lastPosMeasurement) / dt;
@@ -101,14 +101,12 @@ public class TurretController {
 
     // Integral windup limits
 
-    public TurretController setPosIntegralLimit(double limit) {
+    public void setPosIntegralLimit(double limit) {
         this.posIntegralLimit = Math.abs(limit);
-        return this;
     }
 
-    public TurretController setVelIntegralLimit(double limit) {
+    public void setVelIntegralLimit(double limit) {
         this.velIntegralLimit = Math.abs(limit);
-        return this;
     }
 
     // Coefficient setter methods
@@ -141,8 +139,7 @@ public class TurretController {
     public double getVelIntegral() { return velIntegral; }
 
     /**
-     * Resets all accumulated state. Call when re-enabling or switching modes
-     * to prevent stale integral/derivative values from spiking the output.
+     * Resets all accumulated state.
      */
     public void reset() {
         posIntegral = 0;
