@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.seattlesolvers.solverslib.util.MathUtils;
 
 public class TurretController {
 
     // POSITION LOOP (Outer)
     private double pPos, iPos, dPos;
-    public static final double maxTargetVelocity = 0;
+    public static final double maxTargetVelocity = Double.MAX_VALUE;
 
     // VELOCITY LOOP (Inner)
     private double pVel, iVel, dVel;
@@ -55,7 +56,7 @@ public class TurretController {
         double posError = targetAngleDeg - currentAngleDeg;
 
         posIntegral += posError * dt;
-        posIntegral = clamp(posIntegral, -posIntegralLimit, posIntegralLimit);
+        posIntegral = MathUtils.clamp(posIntegral, -posIntegralLimit, posIntegralLimit);
 
 
         double posDerivative = 0;
@@ -75,9 +76,9 @@ public class TurretController {
         double velError = targetVelocity - currentVelDegPerSec;
 
         velIntegral += velError * dt;
-        velIntegral = clamp(velIntegral, -velIntegralLimit, velIntegralLimit);
+        velIntegral = MathUtils.clamp(velIntegral, -velIntegralLimit, velIntegralLimit);
 
-        // Derivative on measurement (avoids spikes on target velocity changes)
+        // Derivative on measurement
         double velDerivative = 0;
         if (!Double.isNaN(lastVelMeasurement)) {
             velDerivative = -(currentVelDegPerSec - lastVelMeasurement) / dt;
@@ -94,7 +95,37 @@ public class TurretController {
 
 
         // Clamp Motor Power
-        lastOutput = clamp(output, -1.0, 1.0);
+        lastOutput = MathUtils.clamp(output, -1.0, 1.0);
+
+        return lastOutput;
+    }
+
+    /**
+     * Only runs the inner velocity loop
+     * @param targetVelDegPerSec Target velocity in degrees/s
+     * @param currentVelDegPerSec Current velocity in degrees/s
+     */
+    public double calculateVelocityOnly(double targetVelDegPerSec, double currentVelDegPerSec) {
+        double dt = timer.seconds();
+        timer.reset();
+        if (dt > 0.2 || dt <= 0) dt = 0.01;
+
+        double velError = targetVelDegPerSec - currentVelDegPerSec;
+
+        velIntegral += velError * dt;
+        velIntegral = MathUtils.clamp(velIntegral, -velIntegralLimit, velIntegralLimit);
+
+        double velDerivative = 0;
+        if (!Double.isNaN(lastVelMeasurement)) {
+            velDerivative = -(currentVelDegPerSec - lastVelMeasurement) / dt;
+        }
+        lastVelMeasurement = currentVelDegPerSec;
+
+        double output = (pVel * velError) + (iVel * velIntegral) + (dVel * velDerivative) + (kV * targetVelDegPerSec);
+
+        lastTargetVelocity = targetVelDegPerSec;
+        lastVelErrorOut = velError;
+        lastOutput = MathUtils.clamp(output, -1.0, 1.0);
 
         return lastOutput;
     }
@@ -151,9 +182,5 @@ public class TurretController {
         lastPosErrorOut = 0;
         lastVelErrorOut = 0;
         timer.reset();
-    }
-
-    private static double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
     }
 }

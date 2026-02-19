@@ -4,6 +4,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
@@ -16,6 +17,8 @@ import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+import java.util.List;
+
 public class Rusty extends Robot {
 
     private static final double TURRET_LIMIT_CW = 4.5;
@@ -23,10 +26,9 @@ public class Rusty extends Robot {
     private static final double TURRET_RESET_TOLERANCE = 0.3;
     private static final double TX_TO_TURRET_GAIN = 2.0;
 
-    private static final double SHOOTER_IDLE_POWER = 0.35;
+    private static final double SHOOTER_IDLE_POWER = 800;
     private static final double TRIGGER_DEADZONE = 0.05;
 
-    // Hardware
     private final Limelight3A limelight;
     private final OpMode opmode;
 
@@ -36,6 +38,7 @@ public class Rusty extends Robot {
     private Shooter shooter;
     private Turret turret;
     private Follower follower;
+    private List<LynxModule> Hubs;
 
     // State
     public static LaunchState launchState;
@@ -55,8 +58,11 @@ public class Rusty extends Robot {
         follower = Constants.createFollower(opmode.hardwareMap);
         follower.setStartingPose(new Pose(19, 135, Math.toRadians(0)));
         follower.startTeleopDrive();
-        schedule(new InstantCommand(() -> shooter.moveServo(.8))
-                .alongWith(new InstantCommand(() -> transfer.setPos(0))));
+        Hubs = opmode.hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : Hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+        schedule(new InstantCommand(() -> shooter.moveServo(.8)));
         register(intake, transfer, shooter, turret);
     }
 
@@ -81,26 +87,27 @@ public class Rusty extends Robot {
 
         new GamepadButton(driver, GamepadKeys.Button.A)
                 .whenPressed(() -> resettingTurret = true);
-
-        new GamepadButton(driver, GamepadKeys.Button.B)
-                .whenPressed(() -> turret.resetPos());
     }
 
     @Override
     public void run() {
         super.run();
         follower.update();
+        limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
 
-        double turretPos = turret.getPos();
+        for (LynxModule hub : Hubs) {
+            hub.clearBulkCache();
+        }
 
-        ARC(turretPos);
+        double turretPos = turret.getPosTicks();
+
         updateIntake();
         updateShooter();
         updateDrive();
 
         if (loopCounter % 8 == 0) {
             opmode.telemetry.addData("flywheel velo", shooter.getVelo());
-            opmode.telemetry.addData("turret heading deg", turret.getTurretHeadingDeg());
+            opmode.telemetry.addData("turret heading deg", turret.getPosDeg());
             opmode.telemetry.update();
         }
         loopCounter++;
@@ -143,13 +150,13 @@ public class Rusty extends Robot {
             intake.Spin(1);
         } else if (!opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
             intake.PwrOff();
-            transfer.PwrOff();
+            transfer.Spin(-.5);
         }
     }
 
     private void updateShooter() {
         if (launchState == LaunchState.IDLE) {
-            shooter.setTo(SHOOTER_IDLE_POWER);
+            shooter.setVelocity(SHOOTER_IDLE_POWER);
         }
     }
 

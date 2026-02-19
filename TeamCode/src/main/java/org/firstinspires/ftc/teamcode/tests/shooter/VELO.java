@@ -71,10 +71,10 @@ public class VELO extends CommandOpMode {
         }
         else if (LutMode) {
             shooter.moveServo(.8);
-            shooter.setTo(veloLUT.get(limelight.getLatestResult().getTa()));
+            shooter.setVelocity(veloLUT.get(limelight.getLatestResult().getTa()));
         }
         else {
-            shooter.setTo(number);
+            shooter.setVelocity(number);
         }
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation(orientation.getYaw());

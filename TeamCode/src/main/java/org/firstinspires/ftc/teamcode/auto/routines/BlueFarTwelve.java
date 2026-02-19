@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode.auto.routines;
 
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import com.seattlesolvers.solverslib.util.InterpLUT;
 
 import org.firstinspires.ftc.teamcode.auto.base.AutoBase;
-import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
-import org.firstinspires.ftc.teamcode.constants.AutoStates;
+import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous (group = "a. New")
 public class BlueFarTwelve extends AutoBase {
@@ -43,7 +39,7 @@ public class BlueFarTwelve extends AutoBase {
                     new FollowPathCommand(follower, paths.ShootPreloads),
                     new InstantCommand(() -> AutoState.launchstate = LaunchState.SHOOTING),
                     new WaitCommand(3000),
-                    new InstantCommand(() -> AutoStates.launchstate = LaunchState.IDLE),
+                    new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                     new FollowPathCommand(follower, paths.Intake1_),
                     new FollowPathCommand(follower, paths.Intake2_),
                     new FollowPathCommand(follower, paths.Intake3),
@@ -52,36 +48,35 @@ public class BlueFarTwelve extends AutoBase {
                     new FollowPathCommand(follower, paths.goToScore3),
                     new InstantCommand(() -> AutoState.launchstate = LaunchState.SHOOTING),
                     new WaitCommand(3000),
-                    new InstantCommand(() -> AutoStates.launchstate = LaunchState.IDLE),
+                    new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                     new FollowPathCommand(follower, paths.Intake1),
                     new FollowPathCommand(follower, paths.goToScore1),
-                    new InstantCommand(() -> AutoStates.launchstate = LaunchState.SHOOTING),
+                    new InstantCommand(() -> AutoState.launchstate = LaunchState.SHOOTING),
                     new WaitCommand(3000),
-                    new InstantCommand(() -> AutoStates.launchstate = LaunchState.IDLE),
+                    new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                     new FollowPathCommand(follower, paths.leave)
             );
             schedule(AutoSequence
-                    .alongWith(new InstantCommand(() -> transfer.setPos(0))
-                            .alongWith(new InstantCommand( () -> shooter.moveServo(.8)))));
+                            .alongWith(new InstantCommand( () -> shooter.moveServo(.8))));
         }
 
         @Override
         public void run(){
-            if (AutoStates.launchstate == LaunchState.SHOOTING){
+            if (AutoState.launchstate == LaunchState.SHOOTING){
                 shooting();
             }
-            else if (AutoStates.launchstate == LaunchState.IDLE){
-                shooter.setTo(.45);
+            else if (AutoState.launchstate == LaunchState.IDLE){
+                shooter.setVelocity(.45);
                 intake.Spin(1);
                 transfer.Spin(-.6);
             }
-            telemetry.addData("turret pos", turret.getPos());
+            telemetry.addData("turret pos", turret.getPosTicks());
             telemetry.addData("tx", limelight.getLatestResult().getTx());
             super.run();
         }
 
         public void shooting(){
-            shooter.setTo(.62);
+            shooter.setVelocity(.62);
             TargetVel = pwr2velo.get(.62);
             double currentVel = shooter.getVelo();
             if (currentVel > TargetVel - 30){

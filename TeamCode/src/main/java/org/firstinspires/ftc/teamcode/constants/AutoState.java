@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.constants;
 
-public class AutoStates {
+public class AutoState {
     public static LaunchState launchstate;
 
-    public AutoStates()
+    public AutoState()
     {
         launchstate = LaunchState.IDLE;
     }

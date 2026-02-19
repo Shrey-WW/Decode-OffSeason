@@ -8,10 +8,9 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.util.TurretController;
 
-@TeleOp
+@TeleOp (group = "tuning")
 @Config
 public class TurretTuner extends CommandOpMode {
 
@@ -23,6 +22,8 @@ public class TurretTuner extends CommandOpMode {
     public static double kF;
 
     public static boolean Tuning = true;
+    public static boolean VelTuning = false;
+    public static double TargetVelocity = 0;
 
     private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
     public CRServoEx servo1;
@@ -55,7 +56,22 @@ public class TurretTuner extends CommandOpMode {
             telemetry.addData("current Angle", TurretPosDegrees);
             telemetry.addData("current velocity", TurretVelDegrees);
         }
-        else{
+        else if (VelTuning) {
+            turretController.setVelCoefficients(pVel, iVel, dVel);
+            turretController.setFeedForward(kF);
+            double output = turretController.calculateVelocityOnly(TargetVelocity, TurretVelDegrees);
+
+            servo1.set(output);
+            servo2.set(output);
+
+            telemetry.addData("output", turretController.getOutput());
+            telemetry.addLine();
+            telemetry.addData("Target Velocity", TargetVelocity);
+            telemetry.addData("current velocity", TurretVelDegrees);
+            telemetry.addData("Velocity error", turretController.getVelocityError());
+            telemetry.addLine();
+
+        } else {
             turretController.setCoefficients(pPos, iPos, dPos, pVel, iVel, dVel, kF);
             double output = turretController.calculate(TargetAngle,
                     TicksToDegrees(TurretVelDegrees),

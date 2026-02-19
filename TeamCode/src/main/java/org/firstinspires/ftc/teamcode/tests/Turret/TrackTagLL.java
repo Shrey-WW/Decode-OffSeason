@@ -48,25 +48,14 @@ public class TrackTagLL extends CommandOpMode {
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
             telemetry.addData("Tx", Tx);
-            double RadianTx = -Math.toRadians(Tx);
-            double targetPosition = RadianTx + turret.getPos();
+            double targetPosition = Tx + turret.getPosDeg();
             telemetry.addData("target pos", targetPosition);
-            double parallax = follower.getAngularVelocity();
-            double HeadingFF = parallax * .05;
-            turret.PIDto(targetPosition, HeadingFF);
-        }
-        else {
-
-            double parallax = follower.getAngularVelocity();
-            double HeadingFF = parallax * .05;
-            turret.setTo(HeadingFF);
+            turret.PIDto(targetPosition);
         }
         follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
         follower.update();
-        telemetry.addData("current pos", turret.getPos());
+        telemetry.addData("current pos", turret.getPosDeg());
         telemetry.update();
         super.run();
     }
-
-
 }

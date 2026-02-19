@@ -4,6 +4,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.auto.paths.Paths;
 import org.firstinspires.ftc.teamcode.auto.paths.RedPaths;
 import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
-import org.firstinspires.ftc.teamcode.constants.AutoStates;
+import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -20,6 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.List;
 
 public abstract class AutoBase extends CommandOpMode {
 
@@ -38,7 +41,8 @@ public abstract class AutoBase extends CommandOpMode {
     protected Limelight3A limelight;
     protected Follower follower;
 
-    // Auto config (set by subclass before calling initialize)
+    // Auto config
+    private List<LynxModule> Hubs;
     protected AutoType autoType;
     protected Alliance alliance;
     protected Paths paths;
@@ -51,13 +55,17 @@ public abstract class AutoBase extends CommandOpMode {
     public void initialize() {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
-        AutoStates.launchstate = LaunchState.IDLE;
+        AutoState.launchstate = LaunchState.IDLE;
 
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
         turret = new Turret(hardwareMap);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+
+        for (LynxModule hub : Hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
 
         if (alliance == Alliance.RED) {
             limelight.pipelineSwitch(1);
@@ -78,6 +86,10 @@ public abstract class AutoBase extends CommandOpMode {
 
         limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
 
+        for (LynxModule hub : Hubs) {
+            hub.clearBulkCache();
+        }
+
         updateShooter();
 
         if (loopCounter % 8 == 0) {
@@ -85,7 +97,7 @@ public abstract class AutoBase extends CommandOpMode {
             telemetry.addData("x", currentPose.getX());
             telemetry.addData("y", currentPose.getY());
             telemetry.addData("heading", currentPose.getHeading());
-            telemetry.addData("turret heading", turret.getTurretHeadingDeg());
+            telemetry.addData("turret heading", turret.getPosDeg());
             telemetry.addData("balls shot", AutoShootingCMD.numBallsShot);
             telemetry.update();
         }
@@ -93,10 +105,10 @@ public abstract class AutoBase extends CommandOpMode {
     }
 
     private void updateShooter() {
-        if (AutoStates.launchstate == LaunchState.IDLE) {
-            shooter.setTo(SHOOTER_IDLE_POWER);
-        } else if (AutoStates.launchstate == LaunchState.END) {
-            shooter.setTo(SHOOTER_END_POWER);
+        if (AutoState.launchstate == LaunchState.IDLE) {
+            shooter.setVelocity(SHOOTER_IDLE_POWER);
+        } else if (AutoState.launchstate == LaunchState.END) {
+            shooter.setVelocity(SHOOTER_END_POWER);
             turret.PIDto(0);
         }
     }
@@ -106,7 +118,7 @@ public abstract class AutoBase extends CommandOpMode {
      * converting tx offset into a turret position adjustment via PID.
      */
     protected void ARC() {
-        double turretPos = turret.getPos();
+        double turretPos = turret.getPosTicks();
 
         // Hard safety cutoff regardless of mode
         if (turretPos >= TURRET_LIMIT_CW || turretPos <= TURRET_LIMIT_CCW) {

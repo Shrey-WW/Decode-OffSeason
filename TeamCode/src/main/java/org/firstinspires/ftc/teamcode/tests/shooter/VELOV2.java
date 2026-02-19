@@ -3,37 +3,35 @@ package org.firstinspires.ftc.teamcode.tests.shooter;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.Vector;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.util.InterpLUT;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-import java.util.List;
 
 @Config
 @TeleOp
 public class VELOV2 extends CommandOpMode {
 
-    public static double pwr;
+    public static double velo;
+
+    private static final double HEIGHT_LIMELIGHT = 16.5;
+    private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
+    private static final double HEIGHT_OF_APRILTAG = 29.5;
 
     private Shooter shooter;
-    private Follower follower;
     Transfer transfer;
     Intake intake;
     IMU imu;
 
+    InterpLUT veloLUT = new InterpLUT();
     private Limelight3A limelight;
 
     private static final double GOAL_X = 13;
@@ -42,10 +40,14 @@ public class VELOV2 extends CommandOpMode {
 
     @Override
     public void initialize() {
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 72));
-
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        veloLUT.add(24, 1000);
+        veloLUT.add(50, 1100);
+        veloLUT.add(67, 1220);
+        veloLUT.add(90, 1390);
+        veloLUT.add(110, 1480);
+        veloLUT.add(150, 1860);
+        veloLUT.createLUT();
 
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
@@ -64,41 +66,21 @@ public class VELOV2 extends CommandOpMode {
 
     @Override
     public void run() {
-        follower.update();
         super.run();
-
-        shooter.setTo(pwr);
-
-        Pose currentPose = follower.getPose();
-
-        telemetry.addData("distance to goal", getDistanceFromTag(limelight.getLatestResult()));
-        telemetry.addData("shooter pwr", pwr);
+        LLResult llresult = limelight.getLatestResult();
+        shooter.setVelocity(velo);
+        if (llresult != null && llresult.isValid()) {
+            telemetry.addData("distance from tag", getDistanceFromTag(llresult));
+            telemetry.addData("Tx", llresult.getTx());
+            telemetry.addData("Ty", llresult.getTy());
+            telemetry.addData("Ta", llresult.getTa());
+        }
+        telemetry.addData("shooter velo", velo);
         telemetry.addData("shooter velo", shooter.getVelo());
         telemetry.update();
     }
 
-
-    public double getDistanceFromTag(LLResult llresult) {
-        List<LLResultTypes.FiducialResult> r = llresult.getFiducialResults();
-
-        if (r.isEmpty()) return 0;
-
-        LLResultTypes.FiducialResult target = null;
-        for (LLResultTypes.FiducialResult i : r) {
-            if (i != null && i.getFiducialId() == 20) {
-                target = i;
-                break;
-            }
-        }
-
-        if (target != null) {
-            double x = (target.getCameraPoseTargetSpace().getPosition().x / DistanceUnit.mPerInch) + 8; // right/left from tag
-            double z = (target.getCameraPoseTargetSpace().getPosition().z / DistanceUnit.mPerInch) + 8; // forward/back from tag
-
-            Vector e = new Vector();
-            e.setOrthogonalComponents(x, z);
-            return e.getMagnitude();
-        }
-        return 0;
+    private double getDistanceFromTag(LLResult lr){
+        return (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) / Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy()));
     }
 }

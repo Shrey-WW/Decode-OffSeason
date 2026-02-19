@@ -38,7 +38,7 @@ public class DidBallShoot extends CommandOpMode {
         didShoot(currentVel);
 
 
-        shooter.setTo(.45);
+        shooter.setVelocity(.45);
 
         if (gamepad1.a){
             numBallsShot = 0;

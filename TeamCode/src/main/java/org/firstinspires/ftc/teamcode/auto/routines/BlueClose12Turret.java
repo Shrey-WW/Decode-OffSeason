@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.auto.routines;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -12,9 +11,7 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.auto.base.AutoBase;
 import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
-import org.firstinspires.ftc.teamcode.constants.AutoStates;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
-import org.firstinspires.ftc.teamcode.constants.LaunchState;
 
 
 @Autonomous

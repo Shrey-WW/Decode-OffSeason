@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests.vision;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
@@ -12,8 +14,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp (group = "tests")
 public class limelight extends OpMode {
-    private static final double HEIGHT_LIMELIGHT = 16;
-    private static final double LIMELIGHT_MOUNT_ANGLE = 15;
+    private static final double HEIGHT_LIMELIGHT = 16.5;
+    private static final double LIMELIGHT_MOUNT_ANGLE = 12.67;
     private static final double HEIGHT_OF_APRILTAG = 29.5;
     private Limelight3A limelight;
     private Follower follower;
@@ -24,6 +26,7 @@ public class limelight extends OpMode {
         limelight.pipelineSwitch(0);
         telemetry.setMsTransmissionInterval(40);
         follower = Constants.createFollower(hardwareMap);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override

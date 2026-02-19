@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
-import com.seattlesolvers.solverslib.util.MathUtils;
+
+import org.firstinspires.ftc.teamcode.util.TurretController;
 
 public class Turret extends SubsystemBase {
 
@@ -15,11 +14,10 @@ public class Turret extends SubsystemBase {
     private final CRServoEx servo1, servo2;
     private final MotorEx RevBoreEncoder;
     private final AbsoluteAnalogEncoder encoder;
-    private final double kP = 1, kI = 0, kD = 0, kF = .12;
-    private double truePosition;
-    private double lastPos;
+    private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
+    private double pPos, iPos, dPos, pVel, iVel, dVel, kV;
 
-    PIDFController PID = new PIDFController(kP,kI, kD, kF);
+    private final TurretController TurretController = new TurretController(pPos, iPos, dPos, pVel, iVel, dVel, kV);
 
 
     public Turret(final HardwareMap hw){
@@ -30,21 +28,20 @@ public class Turret extends SubsystemBase {
     }
 
     /**
-     @param setPoint Target Position
+     @param setPoint Target Position in Degrees
      @param pFF prediction value
     **/
     public void PIDto(double setPoint, double pFF){
-        double output = PID.calculate(truePosition, setPoint);
+        double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec());
         servo1.set(output + pFF);
         servo2.set(output + pFF);
     }
 
     /**
-     @param setPoint Target Position
+     @param setPoint Target Position in Degrees
      **/
     public void PIDto(double setPoint){
-        PID.setCoefficients(new PIDFCoefficients(kP, kI, kD, kF));
-        double output = PID.calculate(truePosition, setPoint);
+        double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec());
         servo1.set(output);
         servo2.set(output);
     }
@@ -57,10 +54,6 @@ public class Turret extends SubsystemBase {
         servo1.set(pwr);
     }
 
-    public void resetPos(){
-        truePosition = 0;
-    }
-
     /**
      * Sets the servo powers to 0
      */
@@ -69,57 +62,30 @@ public class Turret extends SubsystemBase {
         servo2.set(0);
     }
 
-    @Override
-    public void periodic(){
-        measureTruePos();
+    /**
+     * @return returns the position of the turret in Ticks
+     */
+    public double getPosTicks(){
+        return RevBoreEncoder.getCurrentPosition();
+    }
+    /**
+     * @return returns the position of the turret in Degrees
+     */
+    public double getPosDeg(){
+        return encoder.getCurrentPosition() / TICKS_PER_DEGREE;
     }
 
     /**
-     * @return returns the true position of the turret
+     * @return returns the velocity of the turret in Ticks/s
      */
-    public double getPos(){
-        return truePosition;
+    public double getVelocityTicksPerSec(){
+        return encoder.getVelocity();
     }
-
     /**
-     * @return returns the Turret Heading in Radians
+     * @return returns the velocity of the turret in Degrees/s
      */
-    public double getTurretHeadingRad(){
-        return truePosition * 0.383121055316;
-    }
-
-    /**
-     * @return returns the Turret Heading in Degrees
-     */
-    public double getTurretHeadingDeg(){
-        return Math.toDegrees(truePosition * 0.383121055316);
-    }
-
-    private void measureTruePos(){
-        double currentPos = MathUtils.normalizeRadians(encoder.getCurrentPosition(), false);
-
-        if (currentPos < 0){
-            if (lastPos < 0){
-                truePosition += currentPos - lastPos;
-            }
-            else if (lastPos > 3){
-                double delta1 = -(-Math.PI - currentPos);
-                double delta2 = Math.PI - lastPos;
-                truePosition += delta1 + delta2;
-            }
-
-        }
-        else if (currentPos >= 0) {
-            if (lastPos > 0){
-                truePosition += currentPos - lastPos;
-            }
-            else if(lastPos < -3){
-                double delta1 = -(-Math.PI - lastPos);
-                double delta2 = Math.PI - currentPos;
-                truePosition += delta1 + delta2;
-            }
-        }
-        lastPos = currentPos;
+    public double getVelocityDegPerSec(){
+        return encoder.getVelocity() / TICKS_PER_DEGREE;
     }
 
 }

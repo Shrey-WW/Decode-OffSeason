@@ -10,7 +10,7 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.auto.base.AutoBase;
 import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
-import org.firstinspires.ftc.teamcode.constants.AutoStates;
+import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 
@@ -50,10 +50,9 @@ public class Red12Close extends AutoBase {
                 /// Shooting
                 new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
-                new InstantCommand(() -> AutoStates.launchstate = LaunchState.END)
+                new InstantCommand(() -> AutoState.launchstate = LaunchState.END)
         );
-        schedule(AutoSequence.alongWith((new InstantCommand(() -> shooter.moveServo(.8))))
-                .alongWith(new InstantCommand(() -> transfer.setPos(0))));
+        schedule(AutoSequence.alongWith((new InstantCommand(() -> shooter.moveServo(.8)))));
 
     }
 

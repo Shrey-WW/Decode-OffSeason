@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.constants.AutoStates;
+import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -40,7 +40,7 @@ public class AutoShootingCMD extends ShootingCMD {
         numBallsShot = 0;
         timer.reset();
         ShotChecker.reset();
-        AutoStates.launchstate = LaunchState.SHOOTING;
+        AutoState.launchstate = LaunchState.SHOOTING;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AutoShootingCMD extends ShootingCMD {
     public void end(boolean interrupted) {
         transfer.Spin(-.6);
         intake.Spin(1);
-        AutoStates.launchstate = LaunchState.IDLE;
+        AutoState.launchstate = LaunchState.IDLE;
     }
 
     @Override
