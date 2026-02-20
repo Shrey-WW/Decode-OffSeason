@@ -26,7 +26,7 @@ public class Rusty extends Robot {
     private static final double TURRET_RESET_TOLERANCE = 0.3;
     private static final double TX_TO_TURRET_GAIN = 2.0;
 
-    private static final double SHOOTER_IDLE_POWER = 800;
+    private static final double SHOOTER_IDLE_VELOCITY = 800;
     private static final double TRIGGER_DEADZONE = 0.05;
 
     private final Limelight3A limelight;
@@ -156,7 +156,7 @@ public class Rusty extends Robot {
 
     private void updateShooter() {
         if (launchState == LaunchState.IDLE) {
-            shooter.setVelocity(SHOOTER_IDLE_POWER);
+            shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
         }
     }
 

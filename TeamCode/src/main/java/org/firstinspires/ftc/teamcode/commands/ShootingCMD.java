@@ -27,6 +27,9 @@ public abstract class ShootingCMD extends CommandBase {
     protected static final double DefaultTargetVel = 1100;
     protected double TargetVel = 0;
 
+    private static final double DISTANCE_FILTER_ALPHA = 0.20;
+    private double filteredDistance = Double.NaN;
+
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
 
         shooter = s;
@@ -48,27 +51,29 @@ public abstract class ShootingCMD extends CommandBase {
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
             double velo = VELO.get(getDistanceFromTag(llResult));
+            TargetVel = velo;
             shooter.setVelocity(velo);
             double currentVel = shooter.getVelo();
-            if (currentVel > velo - 100) {
+            if (currentVel > velo - 80) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
-                transfer.Spin(-.7);
-                intake.Spin(.6);
+                transfer.Spin(.4);
+                intake.Spin(0);
             }
         }
         else{
+            TargetVel = DefaultTargetVel;
             double currentVel = shooter.getVelo();
-            shooter.setVelocity(800);
-            if (currentVel > 800 - 100) {
+            shooter.setVelocity(DefaultTargetVel);
+            if (currentVel > DefaultTargetVel - 80) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
-                transfer.Spin(-7);
-                intake.Spin(6);
+                transfer.Spin(.4);
+                intake.Spin(0);
             }
         }
     }
@@ -78,11 +83,18 @@ public abstract class ShootingCMD extends CommandBase {
         double Ta = lr.getTa();
         if (Ta < .45)
             return Math.abs(Tx) < 9;
-        return Math.abs(Tx) < 6;
+        return Math.abs(Tx) < 4;
     }
 
     private double getDistanceFromTag(LLResult lr){
-        return (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) / Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy()));
+        double raw = (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) /
+                (Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy())) * Math.cos(Math.toRadians(lr.getTx())));
+        if (Double.isNaN(filteredDistance)) {
+            filteredDistance = raw;
+        } else {
+            filteredDistance = DISTANCE_FILTER_ALPHA * raw + .8 * filteredDistance;
+        }
+        return filteredDistance;
     }
 
     protected double getTargetVel(){

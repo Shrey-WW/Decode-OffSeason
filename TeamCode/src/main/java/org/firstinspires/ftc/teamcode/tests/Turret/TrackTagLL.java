@@ -5,19 +5,16 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Config
 @TeleOp (group = "tests")
 public class TrackTagLL extends CommandOpMode {
+
     private Limelight3A limelight;
-    private IMU imu;
     Turret turret;
     Follower follower;
 
@@ -31,31 +28,29 @@ public class TrackTagLL extends CommandOpMode {
         follower.setStartingPose(new Pose(125, 135, 0));
         follower.startTeleopDrive();
 
-        imu = hardwareMap.get(IMU.class, "imu");
-        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP);
-        imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
         register(turret);
         limelight.start();
     }
 
     @Override
     public void run(){
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight.updateRobotOrientation(orientation.getYaw());
+        follower.update();
+        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+        super.run();
+
+        limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
         LLResult llresult = limelight.getLatestResult();
 
         if (llresult != null && llresult.isValid()) {
             double Tx = llresult.getTx();
+            double targetPosition = -Tx + turret.getPosDeg();
             telemetry.addData("Tx", Tx);
-            double targetPosition = Tx + turret.getPosDeg();
             telemetry.addData("target pos", targetPosition);
             turret.PIDto(targetPosition);
         }
-        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
-        follower.update();
+
         telemetry.addData("current pos", turret.getPosDeg());
         telemetry.update();
-        super.run();
+
     }
 }

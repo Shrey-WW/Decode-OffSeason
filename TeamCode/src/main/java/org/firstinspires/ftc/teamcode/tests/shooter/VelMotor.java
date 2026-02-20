@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
-@TeleOp
+@TeleOp (group = "tests")
 public class VelMotor extends OpMode {
 
     DcMotor motor;

@@ -51,6 +51,7 @@ public class limelight extends OpMode {
     }
 
     private double getDistanceFromTag(LLResult lr){
-        return (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) / Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy()));
+        return (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) /
+                (Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy())) * Math.cos(Math.toRadians(lr.getTx())));
     }
 }

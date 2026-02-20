@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.base;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -30,8 +30,8 @@ public abstract class AutoBase extends CommandOpMode {
     private static final double TURRET_LIMIT_CCW = -3.3;
     private static final double TX_TO_TURRET_GAIN = 2.0;
 
-    private static final double SHOOTER_IDLE_POWER = 0.35;
-    private static final double SHOOTER_END_POWER = 0.2;
+    private static final double SHOOTER_IDLE_VELOCITY = 800;
+    private static final double SHOOTER_END_VELOCITY = 500;
 
     // Subsystems
     protected Intake intake;
@@ -62,6 +62,8 @@ public abstract class AutoBase extends CommandOpMode {
         transfer = new Transfer(hardwareMap);
         turret = new Turret(hardwareMap);
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+
+        Hubs = hardwareMap.getAll(LynxModule.class);
 
         for (LynxModule hub : Hubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -106,9 +108,9 @@ public abstract class AutoBase extends CommandOpMode {
 
     private void updateShooter() {
         if (AutoState.launchstate == LaunchState.IDLE) {
-            shooter.setVelocity(SHOOTER_IDLE_POWER);
+            shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
         } else if (AutoState.launchstate == LaunchState.END) {
-            shooter.setVelocity(SHOOTER_END_POWER);
+            shooter.setVelocity(SHOOTER_END_VELOCITY);
             turret.PIDto(0);
         }
     }

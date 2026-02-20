@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 
 
 @Config
-@TeleOp
+@TeleOp (group = "tests")
 public class VELOV2 extends CommandOpMode {
 
     public static double velo;
@@ -33,10 +33,6 @@ public class VELOV2 extends CommandOpMode {
 
     InterpLUT veloLUT = new InterpLUT();
     private Limelight3A limelight;
-
-    private static final double GOAL_X = 13;
-    private static final double GOAL_Y = 135;
-    private double lastPwr = Double.NaN;
 
     @Override
     public void initialize() {
