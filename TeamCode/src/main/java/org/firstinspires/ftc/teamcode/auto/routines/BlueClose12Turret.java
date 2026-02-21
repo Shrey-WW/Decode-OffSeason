@@ -51,6 +51,10 @@ public class BlueClose12Turret extends AutoBase {
                 new FollowPathCommand(follower, paths.Intake3),
                 new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
+                new FollowPathCommand(follower, paths.Intake4_),
+                new FollowPathCommand(follower, paths.Intake4),
+                new FollowPathCommand(follower, paths.goToScore4),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new FollowPathCommand(follower, paths.leave)
             );
 

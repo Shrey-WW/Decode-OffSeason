@@ -28,6 +28,7 @@ public abstract class ShootingCMD extends CommandBase {
     protected double TargetVel = 0;
 
     private static final double DISTANCE_FILTER_ALPHA = 0.20;
+    private static final double ARBITRARY_CONSTANT = 35000;
     private double filteredDistance = Double.NaN;
 
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
@@ -41,9 +42,10 @@ public abstract class ShootingCMD extends CommandBase {
         VELO.add(24, 1000);
         VELO.add(50, 1100);
         VELO.add(67, 1220);
-        VELO.add(90, 1390);
-        VELO.add(110, 1480);
-        VELO.add(150, 1860);
+        VELO.add(90, 1540);
+        VELO.add(98, 1560);
+        VELO.add(110, 1700);
+        VELO.add(150, 1900);
         VELO.createLUT();
     }
 
@@ -54,7 +56,7 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = velo;
             shooter.setVelocity(velo);
             double currentVel = shooter.getVelo();
-            if (currentVel > velo - 80) {
+            if (currentVel > velo - ARBITRARY_CONSTANT/velo) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
@@ -67,7 +69,7 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = DefaultTargetVel;
             double currentVel = shooter.getVelo();
             shooter.setVelocity(DefaultTargetVel);
-            if (currentVel > DefaultTargetVel - 80) {
+            if (currentVel > DefaultTargetVel - ARBITRARY_CONSTANT/DefaultTargetVel) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }

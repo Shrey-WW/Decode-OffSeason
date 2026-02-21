@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp (group = "tests")
 public class TrackTagOdom extends CommandOpMode {
 
-    private double GoalX = 132.5;
-    private int GoalY = 135;
+    private double GoalX = 130;
+    private int GoalY = 140;
     Turret turret;
     Follower follower;
 
@@ -51,13 +51,9 @@ public class TrackTagOdom extends CommandOpMode {
         super.run();
     }
 
-    public double angleWrap(double radians) {
-        while (radians > Math.PI) {
-            radians -= 2 * Math.PI;
-        }
-        while (radians < -Math.PI) {
-            radians += 2 * Math.PI;
-        }
+    private double angleWrap(double radians) {
+        if (radians > Math.PI) radians -= 2 * Math.PI;
+        if (radians < -Math.PI) radians += 2 * Math.PI;
         return radians;
     }
 }
