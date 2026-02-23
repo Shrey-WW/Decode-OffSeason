@@ -10,95 +10,99 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.teamcode.util.TurretController;
 
-@TeleOp (group = "tuning")
+/**
+ * Tuning modes
+ *   0 - Manual:      direct power mode                  : pwr
+ *   1 - Vel Only:    inner velocity loop                : TargetVelocity
+ *   2 - Full:        full cascade (position → velocity) : TargetAngle
+ */
+@TeleOp(group = "tuning")
 @Config
 public class TurretTuner extends CommandOpMode {
 
-    private MotorEx RevEncoder;
-    public static double TargetAngle;
+    // 0 = Manual | 1 = Vel Only | 2 = Full Cascade
+    public static int Mode = 0;
 
-    public static double pPos, iPos, dPos;
-    public static double pVel, iVel, dVel;
-    public static double kF;
+    // Manual
+    public static double pwr = 0;
 
-    public static boolean Tuning = true;
-    public static boolean VelTuning = false;
-    public static double TargetVelocity = 0;
+    // Velocity loop — used in modes 1 and 2
+    public static double kF = 0, pVel = 0, iVel = 0, dVel = 0;
+
+    // Position loop — used in mode 2 only
+    public static double pPos = 0, iPos = 0, dPos = 0;
+
+    // Targets
+    public static double TargetVelocity = 0;  // ONLY VEL MODE
+    public static double TargetAngle    = 0;  // FULL CASCADE
 
     private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
-    public CRServoEx servo1;
-    public CRServoEx servo2;
-    TurretController turretController;
+    private static final String[] MODE_NAMES = {"Manual", "Vel Only", "Full Cascade"};
 
-    public static double pwr;
+    private MotorEx RevEncoder;
+    private CRServoEx servo1, servo2;
+    private TurretController turretController;
+
     @Override
-    public void initialize(){
+    public void initialize() {
         RevEncoder = new MotorEx(hardwareMap, "shooter1");
         servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
         servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
         servo1.setInverted(true);
+        RevEncoder.stopAndResetEncoder();
 
         turretController = new TurretController(pPos, iPos, dPos, pVel, iVel, dVel, kF);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        RevEncoder.stopAndResetEncoder();
     }
 
     @Override
-    public void run(){
-        double TurretVelDegrees = TicksToDegrees(RevEncoder.getVelocity());
-        double TurretPosDegrees = TicksToDegrees(RevEncoder.getCurrentPosition());
+    public void run() {
+        double posDeg = ticksToDegrees(RevEncoder.getCurrentPosition());
+        double velDeg = ticksToDegrees(RevEncoder.getVelocity());
 
-        if (!Tuning) {
-            servo1.set(pwr);
-            servo2.set(pwr);
+        // Always-visible state
+        telemetry.addData("Mode",          MODE_NAMES[Mode]);
+        telemetry.addData("Position (deg)", posDeg);
+        telemetry.addData("Velocity (deg/s)", velDeg);
+        telemetry.addLine();
 
-            telemetry.addData("current Angle", TurretPosDegrees);
-            telemetry.addData("current velocity", TurretVelDegrees);
+        switch (Mode) {
+            case 0: // Manual
+                servo1.set(pwr);
+                servo2.set(pwr);
+                telemetry.addData("Power", pwr);
+                break;
+
+            case 1: // Velocity Only
+                turretController.setVelCoefficients(pVel, iVel, dVel);
+                turretController.setFeedForward(kF);
+                double velOutput = turretController.calculateVelocityOnly(TargetVelocity, velDeg);
+                servo1.set(velOutput);
+                servo2.set(velOutput);
+                telemetry.addData("Target Velocity (deg/s)", TargetVelocity);
+                telemetry.addData("Velocity Error",          turretController.getVelocityError());
+                telemetry.addData("Output",                  velOutput);
+                break;
+
+            case 2: // Full Cascade
+                turretController.setCoefficients(pPos, iPos, dPos, pVel, iVel, dVel, kF);
+                double fullOutput = turretController.calculate(TargetAngle, posDeg, velDeg);
+                servo1.set(fullOutput);
+                servo2.set(fullOutput);
+                telemetry.addData("Target Angle (deg)",      TargetAngle);
+                telemetry.addData("Position Error",          turretController.getPositionError());
+                telemetry.addLine();
+                telemetry.addData("Target Velocity (deg/s)", turretController.getTargetVelocity());
+                telemetry.addData("Velocity Error",          turretController.getVelocityError());
+                telemetry.addData("Output",                  fullOutput);
+                break;
         }
-        else if (VelTuning) {
-            turretController.setVelCoefficients(pVel, iVel, dVel);
-            turretController.setFeedForward(kF);
-            double output = turretController.calculateVelocityOnly(TargetVelocity, TurretVelDegrees);
 
-            servo1.set(output);
-            servo2.set(output);
-
-            telemetry.addData("output", turretController.getOutput());
-            telemetry.addLine();
-            telemetry.addData("Target Velocity", TargetVelocity);
-            telemetry.addData("current velocity", TurretVelDegrees);
-            telemetry.addData("Velocity error", turretController.getVelocityError());
-            telemetry.addLine();
-
-        } else {
-            turretController.setCoefficients(pPos, iPos, dPos, pVel, iVel, dVel, kF);
-            double output = turretController.calculate(TargetAngle,
-                    TicksToDegrees(TurretVelDegrees),
-                    TicksToDegrees(TurretPosDegrees)
-            );
-
-            servo1.set(output);
-            servo2.set(output);
-
-            telemetry.addData("output ", turretController.getOutput());
-            telemetry.addLine();
-            telemetry.addData("Target Angle", TargetAngle);
-            telemetry.addData("current Angle", TurretPosDegrees);
-            telemetry.addData("Position error", turretController.getPositionError());
-            telemetry.addLine();
-            telemetry.addData("Target Velocity", turretController.getTargetVelocity());
-            telemetry.addData("current velocity", TurretVelDegrees);
-            telemetry.addData("Velocity error", turretController.getVelocityError());
-            telemetry.addLine();
-
-        }
         telemetry.update();
         super.run();
     }
 
-    private double TicksToDegrees(double Ticks){
-        return Ticks / TICKS_PER_DEGREE;
+    private double ticksToDegrees(double ticks) {
+        return ticks / TICKS_PER_DEGREE;
     }
-
 }

@@ -16,7 +16,7 @@ public abstract class Paths {
     public PathChain Intake1, goToScore1, Intake2, goToScore2, Intake3, goToScore3, Intake4, goToScore4;
     public PathChain Intake2_, Intake1_, ShootPreloads, Intake4_;
 
-    public  PathChain fillerPath, fillerPath2, leave, openGate, openGate2;
+    public PathChain fillerPath, fillerPath2, leave, openGate, openGate2, openGate3;
 
 
     public Paths(AutoType type, Follower f){

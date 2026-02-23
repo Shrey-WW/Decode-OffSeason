@@ -32,7 +32,7 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-        this(s, t, i, tt, ll, 2000);
+        this(s, t, i, tt, ll, 2500);
     }
 
     @Override

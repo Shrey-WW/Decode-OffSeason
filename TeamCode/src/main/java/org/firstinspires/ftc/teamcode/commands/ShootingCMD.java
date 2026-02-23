@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.seattlesolvers.solverslib.command.CommandBase;
@@ -24,7 +26,7 @@ public abstract class ShootingCMD extends CommandBase {
     private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
     private static final double HEIGHT_OF_APRILTAG = 29.5;
 
-    protected static final double DefaultTargetVel = 1100;
+    protected static final double DefaultTargetVel = 1200;
     protected double TargetVel = 0;
 
     private static final double DISTANCE_FILTER_ALPHA = 0.20;
@@ -32,7 +34,6 @@ public abstract class ShootingCMD extends CommandBase {
     private double filteredDistance = Double.NaN;
 
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-
         shooter = s;
         transfer = t;
         intake = i;
@@ -80,7 +81,7 @@ public abstract class ShootingCMD extends CommandBase {
         }
     }
 
-    protected boolean turretAligned(LLResult lr){
+    protected boolean turretAligned(@NonNull LLResult lr){
         double Tx = lr.getTx();
         double Ta = lr.getTa();
         if (Ta < .45)
@@ -88,7 +89,7 @@ public abstract class ShootingCMD extends CommandBase {
         return Math.abs(Tx) < 4;
     }
 
-    private double getDistanceFromTag(LLResult lr){
+    private double getDistanceFromTag(@NonNull LLResult lr){
         double raw = (HEIGHT_OF_APRILTAG - HEIGHT_LIMELIGHT) /
                 (Math.tan(Math.toRadians(LIMELIGHT_MOUNT_ANGLE + lr.getTy())) * Math.cos(Math.toRadians(lr.getTx())));
         if (Double.isNaN(filteredDistance)) {
