@@ -24,26 +24,26 @@ public class Blue12close extends AutoBase {
 
         AutoSequence = new SequentialCommandGroup(
                 /// Shooting preloads
-                new FollowPathCommand(follower, paths.ShootPreloads),
+                new FollowPathCommand(follower, paths.shootPreloads),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
-                new FollowPathCommand(follower, paths.Intake1),
+                new FollowPathCommand(follower, paths.intake1),
                 new FollowPathCommand(follower, paths.openGate),
                 /// Shooting
                 new FollowPathCommand(follower, paths.goToScore1),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
-                new FollowPathCommand(follower, paths.Intake1_),
+                new FollowPathCommand(follower, paths.preIntake2),
                 new InstantCommand(() -> follower.setMaxPower(.6)),
-                new FollowPathCommand(follower, paths.Intake2),
+                new FollowPathCommand(follower, paths.intake2),
                 new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, paths.goToScore2),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
-                new FollowPathCommand(follower, paths.Intake2_),
+                new FollowPathCommand(follower, paths.preIntake3),
                 new InstantCommand(() -> follower.setMaxPower(.6)),
-                new FollowPathCommand(follower, paths.Intake3),
+                new FollowPathCommand(follower, paths.intake3),
                 new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
                 new FollowPathCommand(follower, paths.goToScore3),

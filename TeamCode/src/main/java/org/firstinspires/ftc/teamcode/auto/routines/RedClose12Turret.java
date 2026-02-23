@@ -25,10 +25,10 @@ public class RedClose12Turret extends AutoBase {
         startingPose = new Pose(19, 123, Math.toRadians(144));
         super.initialize();
         AutoSequence = new SequentialCommandGroup(
-                new FollowPathCommand(follower, paths.ShootPreloads),
+                new FollowPathCommand(follower, paths.shootPreloads),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new ParallelCommandGroup(
-                        new FollowPathCommand(follower, paths.Intake1),
+                        new FollowPathCommand(follower, paths.intake1),
                         new WaitUntilCommand(() -> follower.atPose(new Pose(40.5, 62), 3, 3))
                                 .andThen(new InstantCommand(() -> follower.setMaxPower(.6)))
                 ),
@@ -38,14 +38,14 @@ public class RedClose12Turret extends AutoBase {
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new FollowPathCommand(follower, paths.openGate2),
                     new WaitCommand(200),
-                new FollowPathCommand(follower, paths.Intake2),
+                new FollowPathCommand(follower, paths.intake2),
                 new ParallelCommandGroup(
                         new WaitCommand(3000),
                         new InstantCommand(() -> intake.Spin(1))
                 ),
                 new FollowPathCommand(follower, paths.goToScore2),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
-                new FollowPathCommand(follower, paths.Intake3),
+                new FollowPathCommand(follower, paths.intake3),
                 new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new FollowPathCommand(follower, paths.leave)

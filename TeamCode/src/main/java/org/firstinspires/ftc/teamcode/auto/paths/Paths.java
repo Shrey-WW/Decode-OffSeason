@@ -8,39 +8,31 @@ import org.firstinspires.ftc.teamcode.constants.AutoType;
 
 public abstract class Paths {
     protected final AutoType autoType;
-
     protected final Follower follower;
 
-    protected Pose startPose, Spike1, Spike2, Spike3, scorePose, gatePose;
+    protected Pose startPose, spike1, spike2, spike3, gatePose;
 
-    public PathChain Intake1, goToScore1, Intake2, goToScore2, Intake3, goToScore3, Intake4, goToScore4;
-    public PathChain Intake2_, Intake1_, ShootPreloads, Intake4_;
+    public PathChain intake1, goToScore1, intake2, goToScore2, intake3, goToScore3, intake4, goToScore4;
+    public PathChain preIntake2, preIntake3, shootPreloads, preIntake4;
 
-    public PathChain fillerPath, fillerPath2, leave, openGate, openGate2, openGate3;
+    public PathChain intakeSweep1, intakeSweep2, leave, openGate, openGate2, openGate3;
 
-
-    public Paths(AutoType type, Follower f){
-        follower = f;
-        autoType = type;
+    public Paths(AutoType autoType, Follower follower) {
+        this.follower = follower;
+        this.autoType = autoType;
     }
 
-    public void buildPaths(){
-        if(autoType == AutoType.CLOSE_TWELVE_NO_TURRET) {
-            buildCloseTwelveNoTurret();
-        }
-        else if(autoType == AutoType.FAR_TWELVE_NO_TURRET) {
-            buildFarTwelveNoTurret();
-        }
-        else if (autoType == AutoType.CLOSE_TWELVE){
-            buildCloseTwelve();
-        }
-        else if(autoType == AutoType.AutoTheory12){
-            buildAutoTheory12();
+    public void buildPaths() {
+        switch (autoType) {
+            case CLOSE_TWELVE_NO_TURRET: buildCloseTwelveNoTurret(); break;
+            case FAR_TWELVE_NO_TURRET:   buildFarTwelveNoTurret();   break;
+            case CLOSE_TWELVE:           buildCloseTwelve();         break;
+            case BLUE_CLOSE_15:          buildCloseFifteen();        break;
         }
     }
 
     public abstract void buildCloseTwelveNoTurret();
     public abstract void buildFarTwelveNoTurret();
     public abstract void buildCloseTwelve();
-    public abstract void buildAutoTheory12();
+    public abstract void buildCloseFifteen();
 }

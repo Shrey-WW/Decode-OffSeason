@@ -8,37 +8,36 @@ import com.pedropathing.paths.HeadingInterpolator;
 
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 
-public class RedPaths extends Paths{
+public class RedPaths extends Paths {
 
-    public RedPaths(AutoType type, Follower f){
-        super(type, f);
+    public RedPaths(AutoType autoType, Follower follower) {
+        super(autoType, follower);
     }
 
-    public void buildPaths(){
+    public void buildPaths() {
         if (autoType == AutoType.CLOSE_TWELVE_NO_TURRET) {
             buildCloseTwelveNoTurret();
         }
     }
 
-
-    public void buildCloseTwelveNoTurret(){
+    public void buildCloseTwelveNoTurret() {
         startPose = new Pose(19, 121).mirror(144);
-        Spike1 = new Pose(24, 85.5).mirror(144);
+        spike1 = new Pose(24, 85.5).mirror(144);
         gatePose = new Pose(20, 72).mirror(144);
-        Spike2 = new Pose(22, 58).mirror(144);
-        Spike3 = new Pose(22, 40).mirror(144);
+        spike2 = new Pose(22, 58).mirror(144);
+        spike3 = new Pose(22, 40).mirror(144);
 
-        ShootPreloads = follower.pathBuilder().addPath(
+        shootPreloads = follower.pathBuilder().addPath(
                 new BezierLine(startPose, new Pose(55, 85.5).mirror(144))
         ).setConstantHeadingInterpolation(Math.toRadians(50)).build();
 
-        Intake1 = follower.pathBuilder().addPath(
-                new BezierLine(new Pose(55, 85.5).mirror(144), Spike1)
+        intake1 = follower.pathBuilder().addPath(
+                new BezierLine(new Pose(55, 85.5).mirror(144), spike1)
         ).setTangentHeadingInterpolation().build();
 
         openGate = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        Spike1,
+                        spike1,
                         new Pose(35, 80).mirror(144),
                         gatePose)
         ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
@@ -50,28 +49,28 @@ public class RedPaths extends Paths{
                 new HeadingInterpolator.PiecewiseNode(.8, 1, HeadingInterpolator.constant(Math.toRadians(49))
                 ))).build();
 
-        Intake1_ = follower.pathBuilder().addPath(
+        preIntake2 = follower.pathBuilder().addPath(
                 new BezierLine(
                         new Pose(55, 85.5).mirror(144),
                         new Pose(55, 59).mirror(144))
         ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
-        Intake2 = follower.pathBuilder().addPath(
+        intake2 = follower.pathBuilder().addPath(
                 new BezierLine(
                         new Pose(55, 59).mirror(144),
-                        Spike2)
+                        spike2)
         ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierLine(
-                        Spike2,
+                        spike2,
                         new Pose(55, 85.5).mirror(144))
         ).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
                 new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(52))
                 ))).build();
 
-        Intake2_ = follower.pathBuilder().addPath(
+        preIntake3 = follower.pathBuilder().addPath(
                 new BezierLine(
                         new Pose(55, 85.5).mirror(144),
                         new Pose(57, 40).mirror(144))
@@ -80,29 +79,29 @@ public class RedPaths extends Paths{
                 new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(0))
                 ))).build();
 
-        Intake3 = follower.pathBuilder().addPath(
+        intake3 = follower.pathBuilder().addPath(
                 new BezierLine(
                         new Pose(57, 40).mirror(144),
-                        Spike3)
+                        spike3)
         ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
         goToScore3 = follower.pathBuilder().addPath(
                 new BezierLine(
-                        Spike3,
+                        spike3,
                         new Pose(55, 115).mirror(144)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .7, HeadingInterpolator.tangent.reverse()),
                 new HeadingInterpolator.PiecewiseNode(.7, 1, HeadingInterpolator.constant(Math.toRadians(15))
                 ))).build();
-
     }
+
     public void buildCloseTwelve() {
         startPose = new Pose(19, 121).mirror();
-        Spike1 = new Pose(21, 84).mirror();
-        Spike2 = new Pose(21, 55).mirror();
-        Spike3 = new Pose(21, 42).mirror();
+        spike1 = new Pose(21, 84).mirror();
+        spike2 = new Pose(21, 55).mirror();
+        spike3 = new Pose(21, 42).mirror();
 
-        ShootPreloads = follower.pathBuilder().addPath(
+        shootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
                                 startPose,
                                 new Pose(55.500, 85.500).mirror()
@@ -110,16 +109,16 @@ public class RedPaths extends Paths{
                 ).setLinearHeadingInterpolation(Math.toRadians(36), Math.toRadians(0))
                 .build();
 
-        Intake1 = follower.pathBuilder().addPath(
+        intake1 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(55.5, 85.5).mirror(),
                         new Pose(55.5, 59).mirror(),
-                        Spike2
+                        spike2
                 )).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
         openGate = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        Spike2,
+                        spike2,
                         new Pose(24.5, 61).mirror(),
                         new Pose(20, 68).mirror()
                 )).setConstantHeadingInterpolation(Math.toRadians(0)).build();
@@ -127,7 +126,7 @@ public class RedPaths extends Paths{
         goToScore1 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(18.5, 68).mirror(),
-                        new Pose(48,70).mirror(),
+                        new Pose(48, 70).mirror(),
                         new Pose(55.5, 85.5).mirror()
                 )).setTangentHeadingInterpolation().setReversed().build();
 
@@ -138,7 +137,7 @@ public class RedPaths extends Paths{
                         new Pose(20, 68).mirror()
                 )).setTangentHeadingInterpolation().build();
 
-        Intake2 = follower.pathBuilder().addPath(
+        intake2 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(20, 68).mirror(),
                         new Pose(23, 62).mirror(),
@@ -152,15 +151,15 @@ public class RedPaths extends Paths{
                         new Pose(58, 84).mirror()
                 )).setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(0)).build();
 
-        Intake3 = follower.pathBuilder().addPath(
+        intake3 = follower.pathBuilder().addPath(
                 new BezierLine(
                         new Pose(58, 84).mirror(),
-                        Spike1
+                        spike1
                 )).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
         goToScore3 = follower.pathBuilder().addPath(
                 new BezierLine(
-                        Spike1,
+                        spike1,
                         new Pose(38.5, 95).mirror()
                 )).setConstantHeadingInterpolation(Math.toRadians(0)).build();
 
@@ -169,9 +168,11 @@ public class RedPaths extends Paths{
                         new Pose(38.5, 95).mirror(),
                         new Pose(28, 95).mirror()
                 )).setConstantHeadingInterpolation(Math.toRadians(0)).build();
-
     }
-    public void buildFarTwelveNoTurret(){}
-    public void buildAutoTheory12(){}
 
+    public void buildFarTwelveNoTurret() {
+    }
+
+    public void buildCloseFifteen() {
+    }
 }
