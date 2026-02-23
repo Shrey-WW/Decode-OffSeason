@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp (group = "tests")
 public class TrackTagOdom extends CommandOpMode {
 
-    private double GoalX = 130;
-    private int GoalY = 140;
+    private static final double GoalX = 130;
+    private static final int GoalY = 140;
     Turret turret;
     Follower follower;
 

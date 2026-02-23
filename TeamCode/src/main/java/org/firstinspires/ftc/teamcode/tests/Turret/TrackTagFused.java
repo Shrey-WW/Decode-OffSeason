@@ -60,7 +60,6 @@ public class TrackTagFused extends CommandOpMode {
                 Math.atan2(GoalY - cPos.getY(), GoalX - cPos.getX()) - cPos.getHeading()
         ));
 
-        // --- Limelight-based target ---
         limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
         LLResult llResult = limelight.getLatestResult();
         Double llTarget = null;
@@ -69,7 +68,6 @@ public class TrackTagFused extends CommandOpMode {
             llTarget = -filteredTx + turret.getPosDeg();
         }
 
-        // --- Kalman filter ---
         if (kalman == null) {
             kalman = new TurretKalmanFilter(Q, R_odom, R_ll, odomTarget);
         } else {
