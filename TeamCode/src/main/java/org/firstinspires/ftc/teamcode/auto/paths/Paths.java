@@ -27,7 +27,7 @@ public abstract class Paths {
             case CLOSE_TWELVE_NO_TURRET: buildCloseTwelveNoTurret(); break;
             case FAR_TWELVE_NO_TURRET:   buildFarTwelveNoTurret();   break;
             case CLOSE_TWELVE:           buildCloseTwelve();         break;
-            case CLOSE_15:          buildCloseFifteen();        break;
+            case CLOSE_15:               buildCloseFifteen();        break;
         }
     }
 
