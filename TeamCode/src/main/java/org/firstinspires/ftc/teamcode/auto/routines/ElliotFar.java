@@ -26,13 +26,15 @@ public class ElliotFar extends CommandOpMode {
     public PathChain Path8;
     public PathChain Path9;
     public PathChain Path10;
+    public PathChain bennettsaddition;
+
     private Follower follower;
 
 
     @Override
     public void initialize(){
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(17.864, 117.345));
+        follower.setStartingPose(new Pose(56.000, 8.000, Math.toRadians(90)));
         Path1 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
@@ -70,7 +72,7 @@ public class ElliotFar extends CommandOpMode {
                         new BezierCurve(
                                 new Pose(53.943, 18.822),
                                 new Pose(32.722, 7.688),
-                                new Pose(8.868, 8.251)
+                                new Pose(8.868, 9)
                         )
                 )
                 .setTangentHeadingInterpolation()
@@ -79,8 +81,8 @@ public class ElliotFar extends CommandOpMode {
         Path5 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(8.868, 8.251),
-                                new Pose(19.138, 7.686)
+                                new Pose(8.868, 9),
+                                new Pose(19.138, 9)
                         )
                 )
                 .setTangentHeadingInterpolation()
@@ -90,8 +92,8 @@ public class ElliotFar extends CommandOpMode {
         Path6 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(19.138, 7.686),
-                                new Pose(8.782, 8.136)
+                                new Pose(19.138, 9),
+                                new Pose(8.782, 9)
                         )
                 )
                 .setTangentHeadingInterpolation()
@@ -100,8 +102,8 @@ public class ElliotFar extends CommandOpMode {
         Path7 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(8.782, 8.136),
-                                new Pose(55.875, 8.127)
+                                new Pose(8.782, 9),
+                                new Pose(55.875, 12)
                         )
                 )
                 .setTangentHeadingInterpolation()
@@ -111,18 +113,18 @@ public class ElliotFar extends CommandOpMode {
         Path8 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(55.875, 8.127),
+                                new Pose(55.875, 12),
                                 new Pose(16.335, 12.713),
-                                new Pose(8.905, 24.332)
+                                new Pose(9.5, 24.332)
                         )
                 )
-                .setTangentHeadingInterpolation()
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(110))
                 .build();
 
         Path9 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(8.905, 24.332),
+                                new Pose(9.5, 24.332),
                                 new Pose(53.952, 18.818)
                         )
                 )
@@ -135,24 +137,47 @@ public class ElliotFar extends CommandOpMode {
                         new BezierCurve(
                                 new Pose(53.952, 18.818),
                                 new Pose(16.338, 12.614),
-                                new Pose(8.778, 24.363)
+                                new Pose(9.5, 24.363)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(110))
+                .build();
+
+        PathChain Path11 = follower.pathBuilder()
+                .addPath(
+                        new BezierLine(
+                                new Pose(9.5, 24.363),
+                                new Pose(53.952, 18.818)
+                        )
+                )
+                .setTangentHeadingInterpolation().setReversed()
+                .build();
+        bennettsaddition = follower.pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(55.875 ,12 ),
+                                new Pose(10, 52.607),
+                                new Pose(9, 9)
                         )
                 )
                 .setTangentHeadingInterpolation()
                 .build();
 
 
+
         SequentialCommandGroup auto = new SequentialCommandGroup(
                 new FollowPathCommand(follower, Path1),
                 new FollowPathCommand(follower, Path2),
                 new FollowPathCommand(follower, Path3),
-                new FollowPathCommand(follower, Path4),
-                new FollowPathCommand(follower, Path5),
-                new FollowPathCommand(follower, Path6),
+//                new FollowPathCommand(follower, Path4),
+//                new FollowPathCommand(follower, Path5),
+//                new FollowPathCommand(follower, Path6),
+                new FollowPathCommand(follower, bennettsaddition),
                 new FollowPathCommand(follower, Path7),
                 new FollowPathCommand(follower, Path8),
                 new FollowPathCommand(follower, Path9),
-                new FollowPathCommand(follower, Path10)
+                new FollowPathCommand(follower, Path10),
+                new FollowPathCommand(follower, Path11)
         );
         schedule(auto);
     }

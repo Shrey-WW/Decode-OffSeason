@@ -35,7 +35,7 @@ public class ElliotClose extends CommandOpMode {
     @Override
     public void initialize(){
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(17.864, 117.345));
+        follower.setStartingPose(new Pose(17.864, 117.345, Math.toRadians(135)));
 
         Path1 = follower.pathBuilder()
                 .addPath(

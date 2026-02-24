@@ -26,7 +26,7 @@ public class BlueClose12Turret extends AutoBase {
         AutoSequence = new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new FollowPathCommand(follower, paths.shootPreloads),
-                        new InstantCommand(() -> turret.PIDto(-2.5))
+                        new WaitUntilCommand(() -> follower.atPose(new Pose(40.5, 62), 3, 3))
                 ),
 
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),

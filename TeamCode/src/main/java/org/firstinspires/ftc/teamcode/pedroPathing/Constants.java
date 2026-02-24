@@ -18,16 +18,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(14.7)
-            .forwardZeroPowerAcceleration(-49)
-            .lateralZeroPowerAcceleration(-75)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.11, 0, 0.009, 0.05))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.1, 0,.1, .05))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.005,0,0.001,0.6,0.2))
-            .useSecondaryDrivePIDF(true)
+            .forwardZeroPowerAcceleration(-43)
+            .lateralZeroPowerAcceleration(-73)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.12, 0, 0.009, 0.05))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.3, 0,.08, .06))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(.5,0,0.001,0.6,0.1))
+            .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.5,0,0,0.06))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.00002,0,0,0,0))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.05,0,0,.05));
+            .useSecondaryDrivePIDF(true)
+            .centripetalScaling(.5)
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.17,0,.07,.012))
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.3, 0, .05, .05))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(.001,0,.001,0,.2));
 
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
@@ -50,9 +52,9 @@ public class Constants {
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .xVelocity(71)
-            .yVelocity(38);
+            .yVelocity(39);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1.5, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
