@@ -28,6 +28,7 @@ public abstract class Paths {
             case FAR_TWELVE_NO_TURRET:   buildFarTwelveNoTurret();   break;
             case CLOSE_TWELVE:           buildCloseTwelve();         break;
             case CLOSE_15:               buildCloseFifteen();        break;
+            case ELLIOT_FAR:             buildElliotFar();           break;
         }
     }
 
@@ -35,4 +36,5 @@ public abstract class Paths {
     public abstract void buildFarTwelveNoTurret();
     public abstract void buildCloseTwelve();
     public abstract void buildCloseFifteen();
+    public abstract void buildElliotFar();
 }

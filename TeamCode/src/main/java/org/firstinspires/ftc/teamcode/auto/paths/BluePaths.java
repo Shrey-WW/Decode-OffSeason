@@ -351,4 +351,8 @@ public class BluePaths extends Paths {
                         new Pose(48, 110)
                 )).setTangentHeadingInterpolation().setReversed().build();
     }
+
+    public void buildElliotFar(){
+
+    }
 }

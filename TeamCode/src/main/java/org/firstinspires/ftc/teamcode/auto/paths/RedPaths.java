@@ -175,4 +175,7 @@ public class RedPaths extends Paths {
 
     public void buildCloseFifteen() {
     }
+
+    public void buildElliotFar(){
+    }
 }
