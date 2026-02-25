@@ -22,10 +22,11 @@ public class TrackTagFused extends CommandOpMode {
     public static double GoalY = 140;
 
     public static double Q = 1.0;
-    public static double R_odom = 5.0;
-    public static double R_ll = 20.0;
+    public static double R_odom = 5;
+    public static double R_ll = 4;
 
     private static final double TX_FILTER_ALPHA = 0.4;
+    private static final Pose startpose = new Pose(1000, 135, 0);
 
     private Limelight3A limelight;
     private Turret turret;
@@ -45,6 +46,12 @@ public class TrackTagFused extends CommandOpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(1);
         limelight.start();
+
+        double initialTarget = Math.toDegrees(angleWrap(
+                Math.atan2(GoalY - startpose.getY(), GoalX - startpose.getX()) - startpose.getHeading()
+        ));
+
+        kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
 
         register(turret);
     }
@@ -68,13 +75,9 @@ public class TrackTagFused extends CommandOpMode {
             llTarget = -filteredTx + turret.getPosDeg();
         }
 
-        if (kalman == null) {
-            kalman = new TurretKalmanFilter(Q, R_odom, R_ll, odomTarget);
-        } else {
-            kalman.setQ(Q);
-            kalman.setROdom(R_odom);
-            kalman.setRLl(R_ll);
-        }
+        kalman.setQ(Q);
+        kalman.setRLl(R_ll);
+        kalman.setROdom(R_odom);
 
         double fusedTarget = kalman.update(odomTarget, llTarget);
         turret.PIDto(fusedTarget);
@@ -82,7 +85,6 @@ public class TrackTagFused extends CommandOpMode {
         telemetry.addData("odom target (deg)", odomTarget);
         telemetry.addData("ll target (deg)", llTarget != null ? llTarget : "no target");
         telemetry.addData("fused target (deg)", fusedTarget);
-        telemetry.addData("covariance (P)", kalman.getCovariance());
         telemetry.addData("current pos (deg)", turret.getPosDeg());
         telemetry.update();
     }

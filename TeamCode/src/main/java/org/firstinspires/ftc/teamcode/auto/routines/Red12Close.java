@@ -35,20 +35,12 @@ public class Red12Close extends AutoBase {
                 new FollowPathCommand(follower, paths.goToScore1),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
-                new FollowPathCommand(follower, paths.preIntake2),
-                new InstantCommand(() -> follower.setMaxPower(.6)),
                 new FollowPathCommand(follower, paths.intake2),
-                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
-                new FollowPathCommand(follower, paths.goToScore2),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 /// Intaking
-                new FollowPathCommand(follower, paths.preIntake3),
-                new InstantCommand(() -> follower.setMaxPower(.6)),
                 new FollowPathCommand(follower, paths.intake3),
-                new InstantCommand(() -> follower.setMaxPower(1)),
                 /// Shooting
-                new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.END)
         );

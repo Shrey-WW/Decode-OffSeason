@@ -12,8 +12,7 @@ public abstract class Paths {
 
     protected Pose startPose, spike1, spike2, spike3, gatePose;
 
-    public PathChain intake1, goToScore1, intake2, goToScore2, intake3, goToScore3, intake4, goToScore4;
-    public PathChain preIntake2, preIntake3, shootPreloads, preIntake4;
+    public PathChain shootPreloads, intake1, goToScore1, intake2, goToScore2, intake3, goToScore3, intake4, goToScore4;
 
     public PathChain intakeSweep1, intakeSweep2, leave, openGate, openGate2, openGate3;
 
@@ -26,7 +25,6 @@ public abstract class Paths {
         switch (autoType) {
             case CLOSE_TWELVE_NO_TURRET: buildCloseTwelveNoTurret(); break;
             case FAR_TWELVE_NO_TURRET:   buildFarTwelveNoTurret();   break;
-            case CLOSE_TWELVE:           buildCloseTwelve();         break;
             case CLOSE_15:               buildCloseFifteen();        break;
             case ELLIOT_FAR:             buildElliotFar();           break;
         }
@@ -34,7 +32,6 @@ public abstract class Paths {
 
     public abstract void buildCloseTwelveNoTurret();
     public abstract void buildFarTwelveNoTurret();
-    public abstract void buildCloseTwelve();
     public abstract void buildCloseFifteen();
     public abstract void buildElliotFar();
 }

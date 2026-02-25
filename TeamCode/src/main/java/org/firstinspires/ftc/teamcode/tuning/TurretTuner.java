@@ -66,36 +66,45 @@ public class TurretTuner extends CommandOpMode {
         telemetry.addData("Velocity (deg/s)", velDeg);
         telemetry.addLine();
 
-        switch (Mode) {
-            case 0: // Manual
-                servo1.set(pwr);
-                servo2.set(pwr);
-                telemetry.addData("Power", pwr);
-                break;
+        if (Math.abs(posDeg) >= 90) {
+            double p = Math.signum(posDeg) * -.5;
+            servo1.set(p);
+            servo2.set(p);
+            pwr = 0;
+            TargetVelocity = 0;
+        }
+        else {
+            switch (Mode) {
+                case 0: // Manual
+                    servo1.set(pwr);
+                    servo2.set(pwr);
+                    telemetry.addData("Power", pwr);
+                    break;
 
-            case 1: // Velocity Only
-                turretController.setVelCoefficients(pVel, iVel, dVel);
-                turretController.setFeedForward(kF);
-                double velOutput = turretController.calculateVelocityOnly(TargetVelocity, velDeg);
-                servo1.set(velOutput);
-                servo2.set(velOutput);
-                telemetry.addData("Target Velocity (deg/s)", TargetVelocity);
-                telemetry.addData("Velocity Error",          turretController.getVelocityError());
-                telemetry.addData("Output",                  velOutput);
-                break;
+                case 1: // Velocity Only
+                    turretController.setVelCoefficients(pVel, iVel, dVel);
+                    turretController.setFeedForward(kF);
+                    double velOutput = turretController.calculateVelocityOnly(TargetVelocity, velDeg);
+                    servo1.set(velOutput);
+                    servo2.set(velOutput);
+                    telemetry.addData("Target Velocity (deg/s)", TargetVelocity);
+                    telemetry.addData("Velocity Error", turretController.getVelocityError());
+                    telemetry.addData("Output", velOutput);
+                    break;
 
-            case 2: // Full Cascade
-                turretController.setCoefficients(pPos, iPos, dPos, pVel, iVel, dVel, kF);
-                double fullOutput = turretController.calculate(TargetAngle, posDeg, velDeg);
-                servo1.set(fullOutput);
-                servo2.set(fullOutput);
-                telemetry.addData("Target Angle (deg)",      TargetAngle);
-                telemetry.addData("Position Error",          turretController.getPositionError());
-                telemetry.addLine();
-                telemetry.addData("Target Velocity (deg/s)", turretController.getTargetVelocity());
-                telemetry.addData("Velocity Error",          turretController.getVelocityError());
-                telemetry.addData("Output",                  fullOutput);
-                break;
+                case 2: // Full Cascade
+                    turretController.setCoefficients(pPos, iPos, dPos, pVel, iVel, dVel, kF);
+                    double fullOutput = turretController.calculate(TargetAngle, posDeg, velDeg);
+                    servo1.set(fullOutput);
+                    servo2.set(fullOutput);
+                    telemetry.addData("Target Angle (deg)", TargetAngle);
+                    telemetry.addData("Position Error", turretController.getPositionError());
+                    telemetry.addLine();
+                    telemetry.addData("Target Velocity (deg/s)", turretController.getTargetVelocity());
+                    telemetry.addData("Velocity Error", turretController.getVelocityError());
+                    telemetry.addData("Output", fullOutput);
+                    break;
+            }
         }
 
         telemetry.update();
