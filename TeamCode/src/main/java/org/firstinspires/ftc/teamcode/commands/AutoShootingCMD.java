@@ -18,9 +18,11 @@ public class AutoShootingCMD extends ShootingCMD {
 
     private final double TimeLimit;
 
+    private Double overrideVelocity = Double.NaN;
+
     private final ElapsedTime ShotChecker = new ElapsedTime();
 
-
+    private static final double ARBITRARY_CONSTANT = 35000;
     private boolean isRecovering = true;
 
     public static double numBallsShot;
@@ -35,6 +37,11 @@ public class AutoShootingCMD extends ShootingCMD {
         this(s, t, i, tt, ll, 2500);
     }
 
+    public AutoShootingCMD(double velocity, Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
+        this(s, t, i, tt, ll, 2500);
+        overrideVelocity = velocity;
+    }
+
     @Override
     public void initialize(){
         numBallsShot = 0;
@@ -45,9 +52,25 @@ public class AutoShootingCMD extends ShootingCMD {
 
     @Override
     public void execute(){
+
         double currentVelocity = shooter.getVelo();
 
-        VELO();
+        if (!overrideVelocity.isNaN()) {
+            TargetVel = overrideVelocity;
+            double currentVel = shooter.getVelo();
+            shooter.setVelocity(TargetVel);
+            if (currentVel > TargetVel - ARBITRARY_CONSTANT/TargetVel) {
+                transfer.Spin(1);
+                intake.Spin(1);
+            }
+            else{
+                transfer.Spin(.4);
+                intake.Spin(0);
+            }
+        }
+        else {
+            VELO();
+        }
 
         if (ShotChecker.milliseconds() > 33){
             didShoot(currentVelocity);

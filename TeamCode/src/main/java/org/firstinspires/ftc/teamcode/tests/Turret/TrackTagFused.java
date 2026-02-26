@@ -80,7 +80,7 @@ public class TrackTagFused extends CommandOpMode {
         kalman.setROdom(R_odom);
 
         double fusedTarget = kalman.update(odomTarget, llTarget);
-        turret.PIDto(fusedTarget);
+        turret.TurnTo(fusedTarget);
 
         telemetry.addData("odom target (deg)", odomTarget);
         telemetry.addData("ll target (deg)", llTarget != null ? llTarget : "no target");

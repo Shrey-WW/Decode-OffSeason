@@ -31,6 +31,8 @@ public class Rusty extends Robot {
 
     private final Limelight3A limelight;
     private final OpMode opmode;
+    private final double GoalX;
+    private static final double GoalY = 140;
 
     // Subsystems
     private Intake intake;
@@ -49,6 +51,7 @@ public class Rusty extends Robot {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
+        GoalX = a == Alliance.BLUE ? 13 : 140;
     }
 
     public void init() {
@@ -99,8 +102,7 @@ public class Rusty extends Robot {
             hub.clearBulkCache();
         }
 
-        double turretPos = turret.getPosTicks();
-
+        OdomTracking();
         updateIntake();
         updateShooter();
         updateDrive();
@@ -125,7 +127,7 @@ public class Rusty extends Robot {
         }
 
         if (resettingTurret) {
-            turret.PIDto(0);
+            turret.TurnTo(0);
             if (Math.abs(turretPos) < TURRET_RESET_TOLERANCE) {
                 resettingTurret = false;
                 turret.pwrOff();
@@ -140,8 +142,25 @@ public class Rusty extends Robot {
             if (targetPosition >= TURRET_LIMIT_CW || targetPosition <= TURRET_LIMIT_CCW) {
                 turret.pwrOff();
             } else {
-                turret.PIDto(targetPosition);
+                turret.TurnTo(targetPosition);
             }
+        }
+    }
+
+    private void OdomTracking() {
+        Pose cPos = follower.getPose();
+        double dy = GoalY - cPos.getY();
+        double dx = GoalX - cPos.getX();
+        double CorrectedHeading = Math.atan2(dy, dx);
+        double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
+        double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
+
+        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
+            turret.TurnTo(TargetTurretDeg);
+
+        if (resettingTurret) {
+            turret.resetEncoder();
+            resettingTurret = false;
         }
     }
 
@@ -167,5 +186,11 @@ public class Rusty extends Robot {
                 -opmode.gamepad1.right_stick_x,
                 true
         );
+    }
+
+    private double angleWrap(double radians) {
+        if (radians > Math.PI) radians -= 2 * Math.PI;
+        if (radians < -Math.PI) radians += 2 * Math.PI;
+        return radians;
     }
 }

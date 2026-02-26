@@ -33,6 +33,7 @@ public class ElliotFarBlue extends AutoBase {
 
     @Override
     public void run(){
+        OdomTracking();
         super.run();
     }
 }

@@ -49,7 +49,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected Pose startingPose;
     protected SequentialCommandGroup AutoSequence;
 
-    protected double GoalX, GoalY = 135;
+    protected double GoalX, GoalY = 140;
     private int loopCounter = 0;
 
     public void initialize() {
@@ -71,7 +71,7 @@ public abstract class AutoBase extends CommandOpMode {
 
         if (alliance == Alliance.RED) {
             limelight.pipelineSwitch(1);
-            GoalX = 132.5;
+            GoalX = 140;
             paths = new RedPaths(autoType, follower);
         } else {
             limelight.pipelineSwitch(0);
@@ -92,8 +92,6 @@ public abstract class AutoBase extends CommandOpMode {
             hub.clearBulkCache();
         }
 
-        updateShooter();
-
         if (loopCounter % 8 == 0) {
             Pose currentPose = follower.getPose();
             telemetry.addData("x", currentPose.getX());
@@ -106,12 +104,12 @@ public abstract class AutoBase extends CommandOpMode {
         loopCounter++;
     }
 
-    private void updateShooter() {
+    protected void updateShooter() {
         if (AutoState.launchstate == LaunchState.IDLE) {
             shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
         } else if (AutoState.launchstate == LaunchState.END) {
             shooter.setVelocity(SHOOTER_END_VELOCITY);
-            turret.PIDto(0);
+            turret.TurnTo(0);
         }
     }
 
@@ -135,8 +133,26 @@ public abstract class AutoBase extends CommandOpMode {
             if (targetPosition >= TURRET_LIMIT_CW || targetPosition <= TURRET_LIMIT_CCW) {
                 turret.pwrOff();
             } else {
-                turret.PIDto(targetPosition);
+                turret.TurnTo(targetPosition);
             }
         }
+    }
+
+    protected void OdomTracking() {
+        Pose cPos = follower.getPose();
+        double dy = GoalY - cPos.getY();
+        double dx = GoalX - cPos.getX();
+        double CorrectedHeading = Math.atan2(dy, dx);
+        double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
+        double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
+
+        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
+            turret.TurnTo(TargetTurretDeg);
+    }
+
+    private double angleWrap(double radians) {
+        if (radians > Math.PI) radians -= 2 * Math.PI;
+        if (radians < -Math.PI) radians += 2 * Math.PI;
+        return radians;
     }
 }

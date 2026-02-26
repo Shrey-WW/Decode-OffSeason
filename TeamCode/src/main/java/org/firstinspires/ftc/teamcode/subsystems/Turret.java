@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder;
 import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
@@ -14,7 +13,7 @@ public class Turret extends SubsystemBase {
     private final CRServoEx servo1, servo2;
     private final MotorEx RevBoreEncoder;
     private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
-    private double pPos = 7.5, iPos = .000004, dPos = 0, pVel = .0015, iVel = 0.000000005, dVel = .00001, kV = .004;
+    private final double pPos = 7.7, iPos = .000004, dPos = 0, pVel = .0015, iVel = 0.000000005, dVel = .00001, kV = .004;
 
     private final TurretController TurretController = new TurretController(pPos, iPos, dPos, pVel, iVel, dVel, kV);
 
@@ -32,7 +31,7 @@ public class Turret extends SubsystemBase {
      @param setPoint Target Position in Degrees
      @param pFF prediction value
     **/
-    public void PIDto(double setPoint, double pFF){
+    public void TurnTo(double setPoint, double pFF){
         double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec());
         servo1.set(output + pFF);
         servo2.set(output + pFF);
@@ -41,7 +40,7 @@ public class Turret extends SubsystemBase {
     /**
      @param setPoint Target Position in Degrees
      **/
-    public void PIDto(double setPoint){
+    public void TurnTo(double setPoint){
         double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec());
         servo1.set(output);
         servo2.set(output);
@@ -85,9 +84,12 @@ public class Turret extends SubsystemBase {
     /**
      * @return returns the velocity of the turret in Degrees/s
      */
-    public double
-    getVelocityDegPerSec(){
+    public double getVelocityDegPerSec(){
         return RevBoreEncoder.getVelocity() / TICKS_PER_DEGREE;
+    }
+
+    public void resetEncoder(){
+        RevBoreEncoder.stopAndResetEncoder();
     }
 
 }

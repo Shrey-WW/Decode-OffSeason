@@ -39,7 +39,8 @@ public class TrackTagOdom extends CommandOpMode {
         double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
         double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
 
-        turret.PIDto(TargetTurretDeg);
+        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
+            turret.TurnTo(TargetTurretDeg);
 
         telemetry.addData("rVelocity", follower.getVelocity().getMagnitude());
         telemetry.addData("rVelocity direction", Math.toDegrees(follower.getVelocity().getTheta()));

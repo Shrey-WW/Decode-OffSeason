@@ -46,7 +46,7 @@ public class TrackTagLL extends CommandOpMode {
             double targetPosition = -Tx + turret.getPosDeg();
             telemetry.addData("Tx", Tx);
             telemetry.addData("target pos", targetPosition);
-            turret.PIDto(targetPosition);
+            turret.TurnTo(targetPosition);
         }
 
         telemetry.addData("current pos", turret.getPosDeg());
