@@ -13,8 +13,6 @@ import org.firstinspires.ftc.teamcode.constants.AutoType;
 @Autonomous
 public class ElliotFarBlue extends AutoBase {
 
-    private Follower follower;
-
 
     @Override
     public void initialize(){

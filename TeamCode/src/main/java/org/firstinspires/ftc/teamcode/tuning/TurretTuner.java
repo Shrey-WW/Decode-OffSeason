@@ -27,10 +27,10 @@ public class TurretTuner extends CommandOpMode {
     public static double pwr = 0;
 
     // Velocity loop — used in modes 1 and 2
-    public static double kF = 0, pVel = 0, iVel = 0, dVel = 0;
+    public static double kF = .004, pVel = .0015, iVel = 0.000000005, dVel = .00001;
 
     // Position loop — used in mode 2 only
-    public static double pPos = 0, iPos = 0, dPos = 0;
+    public static double pPos = 7.5, iPos = .000004, dPos = 0;
 
     // Targets
     public static double TargetVelocity = 0;  // ONLY VEL MODE
@@ -49,6 +49,7 @@ public class TurretTuner extends CommandOpMode {
         servo1 = new CRServoEx(hardwareMap, "turret1").setCachingTolerance(.0005);
         servo2 = new CRServoEx(hardwareMap, "turret2").setCachingTolerance(.0005);
         servo1.setInverted(true);
+        servo2.setInverted(true);
         RevEncoder.stopAndResetEncoder();
 
         turretController = new TurretController(pPos, iPos, dPos, pVel, iVel, dVel, kF);
@@ -67,11 +68,12 @@ public class TurretTuner extends CommandOpMode {
         telemetry.addLine();
 
         if (Math.abs(posDeg) >= 90) {
-            double p = Math.signum(posDeg) * -.5;
+            double p = Math.signum(posDeg) * -.2;
             servo1.set(p);
             servo2.set(p);
             pwr = 0;
             TargetVelocity = 0;
+            TargetAngle = 86.67;
         }
         else {
             switch (Mode) {

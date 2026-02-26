@@ -21,9 +21,7 @@ public class Blue15close extends AutoBase {
                 new FollowPathCommand(follower, paths.intake1),
                 new FollowPathCommand(follower, paths.openGate),
                 new FollowPathCommand(follower, paths.goToScore1),
-                new FollowPathCommand(follower, paths.openGate2),
                 new FollowPathCommand(follower, paths.intake2),
-                new FollowPathCommand(follower, paths.openGate3),
                 new FollowPathCommand(follower, paths.intake3),
                 new FollowPathCommand(follower, paths.intake4)
         );
@@ -32,6 +30,7 @@ public class Blue15close extends AutoBase {
 
     @Override
     public void run(){
+        intake.Spin(1);
         super.run();
     }
 }
