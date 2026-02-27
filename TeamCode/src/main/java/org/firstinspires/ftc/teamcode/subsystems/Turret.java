@@ -13,7 +13,7 @@ public class Turret extends SubsystemBase {
     private final CRServoEx servo1, servo2;
     private final MotorEx RevBoreEncoder;
     private static final double TICKS_PER_DEGREE = (double) 69632 / 360;
-    private final double pPos = 7.7, iPos = .000004, dPos = 0, pVel = .0015, iVel = 0.000000005, dVel = .00001, kV = .004;
+    private final double pPos = 8, iPos = .000006, dPos = 0, pVel = .0015, iVel = 0.000000005, dVel = .00001, kV = .004;
 
     private final TurretController TurretController = new TurretController(pPos, iPos, dPos, pVel, iVel, dVel, kV);
 
@@ -24,7 +24,6 @@ public class Turret extends SubsystemBase {
         servo2 = new CRServoEx(hw, "turret2").setCachingTolerance(.0005);
         servo1.setInverted(true);
         servo2.setInverted(true);
-        RevBoreEncoder.stopAndResetEncoder();
     }
 
     /**

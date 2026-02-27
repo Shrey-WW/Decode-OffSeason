@@ -17,7 +17,7 @@ public class ElliotFarBlue extends AutoBase {
     @Override
     public void initialize(){
         autoType = AutoType.ELLIOT_FAR;
-        startingPose = new Pose(56.000, 8.000, Math.toRadians(90));
+        startingPose = new Pose(56.000, 8.500, Math.toRadians(90));
         super.initialize();
 
 

@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public abstract class AutoBase extends CommandOpMode {
 
     private static final double SHOOTER_IDLE_VELOCITY = 800;
     private static final double SHOOTER_END_VELOCITY = 500;
+
 
     // Subsystems
     protected Intake intake;
@@ -80,6 +82,8 @@ public abstract class AutoBase extends CommandOpMode {
         }
         paths.buildPaths();
         limelight.start();
+
+        turret.resetEncoder();
     }
 
     public void run() {
@@ -145,9 +149,8 @@ public abstract class AutoBase extends CommandOpMode {
         double CorrectedHeading = Math.atan2(dy, dx);
         double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
         double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
+        turret.TurnTo(TargetTurretDeg);
 
-        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
-            turret.TurnTo(TargetTurretDeg);
     }
 
     private double angleWrap(double radians) {

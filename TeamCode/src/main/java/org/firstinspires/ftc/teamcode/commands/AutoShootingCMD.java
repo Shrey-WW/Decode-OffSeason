@@ -23,7 +23,7 @@ public class AutoShootingCMD extends ShootingCMD {
     private final ElapsedTime ShotChecker = new ElapsedTime();
 
     private static final double ARBITRARY_CONSTANT = 35000;
-    private boolean isRecovering = true;
+    private boolean isRecovering = true, doubleShot = false;
 
     public static double numBallsShot;
 
@@ -72,12 +72,14 @@ public class AutoShootingCMD extends ShootingCMD {
             VELO();
         }
 
-        if (ShotChecker.milliseconds() > 33){
+        if (ShotChecker.milliseconds() >= 30) {
             didShoot(currentVelocity);
+            ShotChecker.reset();
         }
 
-        if (currentVelocity >= getTargetVel() - 40){
+        if (currentVelocity >= getTargetVel() - 30){
             isRecovering = false;
+            doubleShot = false;
         }
     }
 
@@ -94,13 +96,13 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public void didShoot(double cVel){
-        if (cVel <= getTargetVel() - 110 && !isRecovering){
-            numBallsShot += 2;
-            isRecovering = true;
-        }
-        else if (cVel <= getTargetVel() - 50 && !isRecovering){
+        if (cVel <= getTargetVel() - 60 && !isRecovering && !doubleShot){
             numBallsShot++;
             isRecovering = true;
+        }
+        if (cVel <= getTargetVel() - 70 && !isRecovering && !doubleShot) {
+            numBallsShot++;
+            doubleShot = true;
         }
     }
 

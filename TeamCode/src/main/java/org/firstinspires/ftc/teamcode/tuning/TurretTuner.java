@@ -67,15 +67,15 @@ public class TurretTuner extends CommandOpMode {
         telemetry.addData("Velocity (deg/s)", velDeg);
         telemetry.addLine();
 
-        if (Math.abs(posDeg) >= 90) {
-            double p = Math.signum(posDeg) * -.2;
-            servo1.set(p);
-            servo2.set(p);
-            pwr = 0;
-            TargetVelocity = 0;
-            TargetAngle = 86.67;
-        }
-        else {
+//        if (Math.abs(posDeg) >= 90) {
+//            double p = Math.signum(posDeg) * -.2;
+//            servo1.set(p);
+//            servo2.set(p);
+//            pwr = 0;
+//            TargetVelocity = 0;
+//            TargetAngle = 86.67;
+//        }
+//        else {
             switch (Mode) {
                 case 0: // Manual
                     servo1.set(pwr);
@@ -107,7 +107,7 @@ public class TurretTuner extends CommandOpMode {
                     telemetry.addData("Output", fullOutput);
                     break;
             }
-        }
+//        }
 
         telemetry.update();
         super.run();

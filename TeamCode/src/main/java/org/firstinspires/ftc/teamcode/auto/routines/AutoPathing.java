@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 public class AutoPathing extends OpMode {
-    Pose startingPose = new Pose(19, 121, Math.toRadians(144));
+    Pose startingPose = new Pose(56, 8.5, Math.toRadians(90));
     Follower follower;
     @Override
     public void init(){

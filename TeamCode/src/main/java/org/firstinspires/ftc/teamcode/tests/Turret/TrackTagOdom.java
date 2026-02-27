@@ -38,12 +38,15 @@ public class TrackTagOdom extends CommandOpMode {
         double CorrectedHeading = Math.atan2(dy, dx);
         double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
         double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
-
-        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
+        if (Math.abs(turret.getPosDeg()) >= 90) {
+            turret.TurnTo(89.5);
+        }
+        else {
             turret.TurnTo(TargetTurretDeg);
+        }
 
-        telemetry.addData("rVelocity", follower.getVelocity().getMagnitude());
-        telemetry.addData("rVelocity direction", Math.toDegrees(follower.getVelocity().getTheta()));
+        telemetry.addData("Robot X Velocity", follower.getVelocity().getXComponent());
+        telemetry.addData("Robot Y Velocity,", follower.getVelocity().getYComponent());
         telemetry.addData("X: ", cPos.getX());
         telemetry.addData("Y: ", cPos.getY());
         telemetry.addData("heading (deg)", Math.toDegrees(cPos.getHeading()));

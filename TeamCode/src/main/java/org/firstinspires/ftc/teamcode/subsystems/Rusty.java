@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.commands.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 
 import java.util.List;
 
@@ -33,6 +34,10 @@ public class Rusty extends Robot {
     private final OpMode opmode;
     private final double GoalX;
     private static final double GoalY = 140;
+    private TurretKalmanFilter kalman;
+    public static double Q = 1.0;
+    public static double R_odom = 5;
+    public static double R_ll = 4;
 
     // Subsystems
     private Intake intake;
@@ -51,7 +56,7 @@ public class Rusty extends Robot {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
-        GoalX = a == Alliance.BLUE ? 13 : 140;
+        GoalX = a == Alliance.BLUE ? 15 : 140;
     }
 
     public void init() {
@@ -59,14 +64,22 @@ public class Rusty extends Robot {
         initControls();
         launchState = LaunchState.IDLE;
         follower = Constants.createFollower(opmode.hardwareMap);
-        follower.setStartingPose(new Pose(19, 135, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(50, 115, Math.toRadians(0)));
         follower.startTeleopDrive();
         Hubs = opmode.hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : Hubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
         schedule(new InstantCommand(() -> shooter.moveServo(.8)));
+
         register(intake, transfer, shooter, turret);
+
+        double initialTarget = Math.toDegrees(angleWrap(
+                Math.atan2(GoalY - 115, GoalX - 50) - 0
+        ));
+
+        kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
+        turret.resetEncoder();
     }
 
     private void initSubsystems() {
@@ -89,7 +102,7 @@ public class Rusty extends Robot {
                 .whenReleased(new InstantCommand(transfer::PwrOff));
 
         new GamepadButton(driver, GamepadKeys.Button.A)
-                .whenPressed(() -> resettingTurret = true);
+                .whenPressed(() -> turret.resetEncoder());
     }
 
     @Override
@@ -154,14 +167,9 @@ public class Rusty extends Robot {
         double CorrectedHeading = Math.atan2(dy, dx);
         double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
         double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
+        double kalmanTarget = kalman.update(TargetTurretDeg, null);
+        turret.TurnTo(kalmanTarget);
 
-        if (!(Math.abs(turret.getPosDeg()) >= 90 && Math.abs(TargetTurretDeg) >= 90))
-            turret.TurnTo(TargetTurretDeg);
-
-        if (resettingTurret) {
-            turret.resetEncoder();
-            resettingTurret = false;
-        }
     }
 
     private void updateIntake() {

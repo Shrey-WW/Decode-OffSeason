@@ -7,8 +7,9 @@ public class TurretController {
 
     // POSITION LOOP (Outer)
     private double pPos, iPos, dPos;
-    public static final double maxTargetVelocity = 105;
-
+    public static final double maxTargetVelocity = 150;
+    public static final double maxPosition = 120;
+    public static final double minPosition = -90;
     // VELOCITY LOOP (Inner)
     private double pVel, iVel, dVel;
     private double kV;
@@ -47,16 +48,15 @@ public class TurretController {
      * @param currentVelDegPerSec Current Velocity in Degrees/s
      */
     public double calculate(double targetAngleDeg, double currentAngleDeg, double currentVelDegPerSec) {
-
+        targetAngleDeg = MathUtils.clamp(targetAngleDeg, minPosition, maxPosition);
         double dt = timer.seconds();
         timer.reset();
         if (dt > 0.2 || dt <= 0) dt = 0.01;
 
-        // --- 1. OUTER LOOP (POSITION) ---
+        //          OUTER LOOP (POSITION)
         double posError = targetAngleDeg - currentAngleDeg;
 
         posIntegral += posError * dt;
-        posIntegral = MathUtils.clamp(posIntegral, -posIntegralLimit, posIntegralLimit);
 
 
         double posDerivative = 0;
@@ -68,17 +68,13 @@ public class TurretController {
         double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative);
 
         // Clamp Velocity
-        if (Math.abs(targetVelocity) > maxTargetVelocity) {
-            targetVelocity = Math.signum(targetVelocity) * maxTargetVelocity;
-        }
+        targetVelocity = MathUtils.clamp(targetVelocity, -maxTargetVelocity, maxTargetVelocity);
 
-        // 2. INNER LOOP (VELOCITY)
+        //          INNER LOOP (VELOCITY)
         double velError = targetVelocity - currentVelDegPerSec;
 
         velIntegral += velError * dt;
-        velIntegral = MathUtils.clamp(velIntegral, -velIntegralLimit, velIntegralLimit);
 
-        // Derivative on measurement
         double velDerivative = 0;
         if (!Double.isNaN(lastVelMeasurement)) {
             velDerivative = -(currentVelDegPerSec - lastVelMeasurement) / dt;
@@ -133,11 +129,11 @@ public class TurretController {
     // Integral windup limits
 
     public void setPosIntegralLimit(double limit) {
-        this.posIntegralLimit = Math.abs(limit);
+        posIntegralLimit = Math.abs(limit);
     }
 
     public void setVelIntegralLimit(double limit) {
-        this.velIntegralLimit = Math.abs(limit);
+        velIntegralLimit = Math.abs(limit);
     }
 
     // Coefficient setter methods

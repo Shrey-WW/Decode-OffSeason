@@ -26,7 +26,7 @@ public class TrackTagFused extends CommandOpMode {
     public static double R_ll = 4;
 
     private static final double TX_FILTER_ALPHA = 0.4;
-    private static final Pose startpose = new Pose(1000, 135, 0);
+    private static final Pose startpose = new Pose(100, 135, 0);
 
     private Limelight3A limelight;
     private Turret turret;

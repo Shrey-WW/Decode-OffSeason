@@ -10,11 +10,11 @@ public abstract class Paths {
     protected final AutoType autoType;
     protected final Follower follower;
 
-    protected Pose startPose, spike1, spike2, spike3, gatePose;
+    protected Pose startPose, spike1, spike2, spike3, gatePose, scorePose;
 
-    public PathChain shootPreloads, intake1, goToScore1, intake2, goToScore2, intake3, goToScore3, intake4, goToScore4;
+    public PathChain shootPreloads, intake1, goToScore1, intake2, intake3, goToScore3, intake4;
 
-    public PathChain intakeSweep1, intakeSweep2, leave, openGate, openGate2, openGate3;
+    public PathChain intakeSweep1, intakeSweep2, leave, openGate;
 
     public Paths(AutoType autoType, Follower follower) {
         this.follower = follower;
