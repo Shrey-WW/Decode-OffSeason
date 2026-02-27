@@ -167,7 +167,7 @@ public class Rusty extends Robot {
         double CorrectedHeading = Math.atan2(dy, dx);
         double TargetTurretRad = angleWrap(CorrectedHeading - cPos.getHeading());
         double TargetTurretDeg = Math.toDegrees(TargetTurretRad);
-        double kalmanTarget = kalman.update(TargetTurretDeg, null);
+        double kalmanTarget = kalman.estimate(TargetTurretDeg, null);
         turret.TurnTo(kalmanTarget);
 
     }

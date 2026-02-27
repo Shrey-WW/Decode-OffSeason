@@ -13,6 +13,7 @@ public class TurretController {
     // VELOCITY LOOP (Inner)
     private double pVel, iVel, dVel;
     private double kV;
+    private double robotVelocityFF = 0;
 
     // Integral windup limits
     private double posIntegralLimit = Double.MAX_VALUE;
@@ -65,7 +66,7 @@ public class TurretController {
         }
         lastPosMeasurement = currentAngleDeg;
 
-        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative);
+        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative) + robotVelocityFF);
 
         // Clamp Velocity
         targetVelocity = MathUtils.clamp(targetVelocity, -maxTargetVelocity, maxTargetVelocity);
@@ -94,6 +95,18 @@ public class TurretController {
         lastOutput = MathUtils.clamp(output, -1.0, 1.0);
 
         return lastOutput;
+    }
+
+    /**
+     * CALCULATION LOOP
+     * @param targetAngleDeg  Target Angle in Degrees
+     * @param currentAngleDeg Current Angle in Degrees
+     * @param currentVelDegPerSec Current Velocity in Degrees/s
+     * @param robotAngularVel Robot Angular Velocity in Degrees
+     */
+    public double calculate(double targetAngleDeg, double currentAngleDeg, double currentVelDegPerSec, double robotAngularVel){
+        robotVelocityFF = robotAngularVel;
+        return calculate(targetAngleDeg, currentAngleDeg, currentVelDegPerSec);
     }
 
     /**

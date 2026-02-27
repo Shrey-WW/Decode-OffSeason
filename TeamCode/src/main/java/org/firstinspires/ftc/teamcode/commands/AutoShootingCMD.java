@@ -18,14 +18,12 @@ public class AutoShootingCMD extends ShootingCMD {
 
     private final double TimeLimit;
 
-    private Double overrideVelocity = Double.NaN;
+
 
     private final ElapsedTime ShotChecker = new ElapsedTime();
-
-    private static final double ARBITRARY_CONSTANT = 35000;
-    private boolean isRecovering = true, doubleShot = false;
-
     public static double numBallsShot;
+    private double localPeakVelocity = 0.0;
+    private double lastShotTime;
 
     public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, double timeout) {
         super(s, t, i, tt, ll);
@@ -35,11 +33,6 @@ public class AutoShootingCMD extends ShootingCMD {
 
     public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
         this(s, t, i, tt, ll, 2500);
-    }
-
-    public AutoShootingCMD(double velocity, Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-        this(s, t, i, tt, ll, 2500);
-        overrideVelocity = velocity;
     }
 
     @Override
@@ -53,34 +46,11 @@ public class AutoShootingCMD extends ShootingCMD {
     @Override
     public void execute(){
 
-        double currentVelocity = shooter.getVelo();
+        double cVel = shooter.getVelo();
 
-        if (!overrideVelocity.isNaN()) {
-            TargetVel = overrideVelocity;
-            double currentVel = shooter.getVelo();
-            shooter.setVelocity(TargetVel);
-            if (currentVel > TargetVel - ARBITRARY_CONSTANT/TargetVel) {
-                transfer.Spin(1);
-                intake.Spin(1);
-            }
-            else{
-                transfer.Spin(.4);
-                intake.Spin(0);
-            }
-        }
-        else {
-            VELO();
-        }
+        VELO();
 
-        if (ShotChecker.milliseconds() >= 30) {
-            didShoot(currentVelocity);
-            ShotChecker.reset();
-        }
-
-        if (currentVelocity >= getTargetVel() - 30){
-            isRecovering = false;
-            doubleShot = false;
-        }
+        didBallShoot(cVel);
     }
 
     @Override
@@ -95,14 +65,24 @@ public class AutoShootingCMD extends ShootingCMD {
         return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
     }
 
-    public void didShoot(double cVel){
-        if (cVel <= getTargetVel() - 60 && !isRecovering && !doubleShot){
-            numBallsShot++;
-            isRecovering = true;
+    public void didBallShoot(double cVel){
+        if (cVel > 500) {
+
+            if (cVel > localPeakVelocity) {
+                localPeakVelocity = cVel;
+            }
+
+            if ((localPeakVelocity - cVel) > 40) {
+
+                if (timer.milliseconds() - lastShotTime > 100) {
+                    numBallsShot++;
+                    lastShotTime = timer.milliseconds();
+                    localPeakVelocity = cVel;
+                }
+            }
         }
-        if (cVel <= getTargetVel() - 70 && !isRecovering && !doubleShot) {
-            numBallsShot++;
-            doubleShot = true;
+        else {
+            localPeakVelocity = 0.0;
         }
     }
 

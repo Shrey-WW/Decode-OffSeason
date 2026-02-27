@@ -26,7 +26,8 @@ public class ElliotFarBlue extends AutoBase {
                 new FollowPathCommand(follower, paths.intake1),
                 new FollowPathCommand(follower, paths.intake2),
                 new FollowPathCommand(follower, paths.intake3),
-                new FollowPathCommand(follower, paths.intake4)
+                new FollowPathCommand(follower, paths.intake4),
+                new FollowPathCommand(follower, paths.leave)
         );
         schedule(AutoSequence);
     }

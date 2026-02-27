@@ -31,9 +31,9 @@ public class Turret extends SubsystemBase {
      @param pFF prediction value
     **/
     public void TurnTo(double setPoint, double pFF){
-        double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec());
-        servo1.set(output + pFF);
-        servo2.set(output + pFF);
+        double output = TurretController.calculate(setPoint, getPosDeg(), getVelocityDegPerSec(), pFF);
+        servo1.set(output);
+        servo2.set(output);
     }
 
     /**

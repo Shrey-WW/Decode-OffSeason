@@ -30,7 +30,6 @@ public abstract class ShootingCMD extends CommandBase {
     protected double TargetVel = 0;
 
     private static final double DISTANCE_FILTER_ALPHA = 0.20;
-    private static final double ARBITRARY_CONSTANT = 35000;
     private double filteredDistance = Double.NaN;
 
     public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
@@ -57,36 +56,28 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = velo;
             shooter.setVelocity(velo);
             double currentVel = shooter.getVelo();
-            if (currentVel > velo - ARBITRARY_CONSTANT/velo) {
+            if (currentVel > velo - (-0.133333 * velo + 280)) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
                 transfer.Spin(.4);
-                intake.Spin(0);
+                intake.Spin(.5);
             }
         }
         else{
             TargetVel = DefaultTargetVel;
             double currentVel = shooter.getVelo();
             shooter.setVelocity(DefaultTargetVel);
-            if (currentVel > DefaultTargetVel - ARBITRARY_CONSTANT/DefaultTargetVel) {
+            if (currentVel > DefaultTargetVel - (-0.133333 * DefaultTargetVel + 280)) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
             else{
                 transfer.Spin(.4);
-                intake.Spin(0);
+                intake.Spin(.5);
             }
         }
-    }
-
-    protected boolean turretAligned(@NonNull LLResult lr){
-        double Tx = lr.getTx();
-        double Ta = lr.getTa();
-        if (Ta < .45)
-            return Math.abs(Tx) < 9;
-        return Math.abs(Tx) < 4;
     }
 
     private double getDistanceFromTag(@NonNull LLResult lr){
@@ -98,9 +89,5 @@ public abstract class ShootingCMD extends CommandBase {
             filteredDistance = DISTANCE_FILTER_ALPHA * raw + .8 * filteredDistance;
         }
         return filteredDistance;
-    }
-
-    protected double getTargetVel(){
-        return TargetVel;
     }
 }
