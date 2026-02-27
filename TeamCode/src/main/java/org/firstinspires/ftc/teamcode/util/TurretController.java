@@ -66,7 +66,7 @@ public class TurretController {
         }
         lastPosMeasurement = currentAngleDeg;
 
-        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative) + robotVelocityFF);
+        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative) + robotVelocityFF;
 
         // Clamp Velocity
         targetVelocity = MathUtils.clamp(targetVelocity, -maxTargetVelocity, maxTargetVelocity);
