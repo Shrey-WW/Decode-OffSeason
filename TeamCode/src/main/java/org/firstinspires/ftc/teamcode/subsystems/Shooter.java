@@ -24,8 +24,8 @@ public class Shooter extends SubsystemBase {
         shooter2.setRunMode(Motor.RunMode.VelocityControl);
         shooter1 = new Motor(hw, "shooter1", Motor.GoBILDA.BARE);
         servo = new ServoEx(hw, "hood");
-        shooter2.setVeloCoefficients(3,0,0);
-        shooter2.setFeedforwardCoefficients(0, 1);
+        shooter2.setVeloCoefficients(3.5,0,0);
+        shooter2.setFeedforwardCoefficients(0, 1.01);
         ShootingMotors = new MotorGroup(shooter2, shooter1);
     }
 

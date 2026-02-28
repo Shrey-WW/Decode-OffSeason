@@ -14,10 +14,12 @@ public class DidBallShoot extends CommandOpMode {
 
     private double numBallsShot = 0;
 
+    private double localPeakVelocity;
+    private double lastShotTime;
     private Shooter shooter;
     private Intake intake;
     private Transfer transfer;
-    private ElapsedTime time;
+    private ElapsedTime timer;
     private Boolean Recovering = true;
     private Boolean doubleShot = false;
 
@@ -26,7 +28,7 @@ public class DidBallShoot extends CommandOpMode {
         shooter = new Shooter(hardwareMap);
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
-        time = new ElapsedTime();
+        timer = new ElapsedTime();
         intake.Spin(1);
         transfer.Spin(1);
     }
@@ -35,7 +37,7 @@ public class DidBallShoot extends CommandOpMode {
     public void run(){
         double currentVel = shooter.getVelo();
 
-        didShoot(currentVel);
+        didBallShoot(currentVel);
 
 
         shooter.setVelocity(.45);
@@ -50,21 +52,24 @@ public class DidBallShoot extends CommandOpMode {
         super.run();
     }
 
-    public void didShoot(double cVel){
-        if (cVel <= 1040 && !Recovering){
-            numBallsShot++;
-            Recovering = true;
-            doubleShot = false;
-        }
-        if (Recovering && !doubleShot && cVel < 1020){
-            numBallsShot++;
-            doubleShot = true;
-        }
+    public void didBallShoot(double cVel){
+        if (cVel > 500) {
 
+            if (cVel > localPeakVelocity) {
+                localPeakVelocity = cVel;
+            }
 
-        if (cVel >= 1080){
-            Recovering = false;
-            doubleShot = false;
+            if ((localPeakVelocity - cVel) > 40) {
+
+                if (timer.milliseconds() - lastShotTime > 100) {
+                    numBallsShot++;
+                    lastShotTime = timer.milliseconds();
+                    localPeakVelocity = cVel;
+                }
+            }
+        }
+        else {
+            localPeakVelocity = 0.0;
         }
     }
 }

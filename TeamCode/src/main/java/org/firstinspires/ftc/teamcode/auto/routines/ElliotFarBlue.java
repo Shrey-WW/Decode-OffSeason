@@ -16,6 +16,7 @@ public class ElliotFarBlue extends AutoBase {
 
     @Override
     public void initialize(){
+        SHOOTER_IDLE_VELOCITY = 1300;
         autoType = AutoType.ELLIOT_FAR;
         startingPose = new Pose(56.000, 8.500, Math.toRadians(90));
         super.initialize();
@@ -34,7 +35,7 @@ public class ElliotFarBlue extends AutoBase {
 
     @Override
     public void run(){
-        OdomTracking();
+        ARC();
         super.run();
     }
 }

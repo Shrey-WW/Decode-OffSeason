@@ -27,12 +27,14 @@ import java.util.List;
 
 public abstract class AutoBase extends CommandOpMode {
 
-    private static final double TURRET_LIMIT_CW = 4.5;
-    private static final double TURRET_LIMIT_CCW = -3.3;
-    private static final double TX_TO_TURRET_GAIN = 2.0;
-
-    private static final double SHOOTER_IDLE_VELOCITY = 800;
-    private static final double SHOOTER_END_VELOCITY = 500;
+    private static final double TX_FILTER_ALPHA = 0.4;
+    protected double filteredTx;
+    public static double Q = 1;
+    public static double R_odom = 10;
+    public static double R_ll = 6;
+    protected static double SHOOTER_IDLE_VELOCITY = 900;
+    protected static double SPIN_UP_VELOCITY = 1100;
+    protected static final double SHOOTER_END_VELOCITY = 500;
 
 
     // Subsystems
@@ -44,6 +46,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected Follower follower;
 
     // Auto config
+    private TurretKalmanFilter kalman;
     private List<LynxModule> Hubs;
     protected AutoType autoType;
     protected Alliance alliance;
@@ -51,7 +54,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected Pose startingPose;
     protected SequentialCommandGroup AutoSequence;
 
-    protected double GoalX, GoalY = 140;
+    protected double GoalX, GoalY = 137;
     private int loopCounter = 0;
 
     public void initialize() {
@@ -73,16 +76,21 @@ public abstract class AutoBase extends CommandOpMode {
 
         if (alliance == Alliance.RED) {
             limelight.pipelineSwitch(1);
-            GoalX = 140;
+            GoalX = 137;
             paths = new RedPaths(autoType, follower);
         } else {
             limelight.pipelineSwitch(0);
             paths = new BluePaths(autoType, follower);
-            GoalX = 13;
+            GoalX = 7;
         }
         paths.buildPaths();
         limelight.start();
 
+        double initialTarget = Math.toDegrees(angleWrap(
+                Math.atan2(GoalY - startingPose.getY(), GoalX - startingPose.getX()) - startingPose.getHeading()
+        ));
+
+        kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
         turret.resetEncoder();
     }
 
@@ -114,6 +122,8 @@ public abstract class AutoBase extends CommandOpMode {
         } else if (AutoState.launchstate == LaunchState.END) {
             shooter.setVelocity(SHOOTER_END_VELOCITY);
             turret.TurnTo(0);
+        } else if (AutoState.launchstate == LaunchState.SPIN_UP) {
+            shooter.setVelocity(SPIN_UP_VELOCITY);
         }
     }
 
@@ -122,24 +132,21 @@ public abstract class AutoBase extends CommandOpMode {
      * converting tx offset into a turret position adjustment via PID.
      */
     protected void ARC() {
-        double turretPos = turret.getPosTicks();
+        Pose cPos = follower.getPose();
+        double odomTarget = Math.toDegrees(angleWrap(
+                Math.atan2(GoalY - cPos.getY(), GoalX - cPos.getX()) - cPos.getHeading()
+        ));
 
-        // Hard safety cutoff regardless of mode
-        if (turretPos >= TURRET_LIMIT_CW || turretPos <= TURRET_LIMIT_CCW) {
-            turret.pwrOff();
-            return;
+        limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
+        LLResult llResult = limelight.getLatestResult();
+        Double llTarget = null;
+        if (llResult != null && llResult.isValid()) {
+            filteredTx = TX_FILTER_ALPHA * llResult.getTx() + (1 - TX_FILTER_ALPHA) * filteredTx;
+            llTarget = -filteredTx + turret.getPosDeg();
         }
 
-        LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
-            double txRadians = -Math.toRadians(result.getTx());
-            double targetPosition = txRadians * TX_TO_TURRET_GAIN + turretPos;
-            if (targetPosition >= TURRET_LIMIT_CW || targetPosition <= TURRET_LIMIT_CCW) {
-                turret.pwrOff();
-            } else {
-                turret.TurnTo(targetPosition);
-            }
-        }
+        double fusedTarget = kalman.estimate(odomTarget, llTarget);
+        turret.TurnTo(fusedTarget);
     }
 
     protected void OdomTracking() {

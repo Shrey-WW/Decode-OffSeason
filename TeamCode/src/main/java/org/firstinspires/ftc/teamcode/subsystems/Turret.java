@@ -24,6 +24,7 @@ public class Turret extends SubsystemBase {
         servo2 = new CRServoEx(hw, "turret2").setCachingTolerance(.0005);
         servo1.setInverted(true);
         servo2.setInverted(true);
+        RevBoreEncoder.stopAndResetEncoder();
     }
 
     /**

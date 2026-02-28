@@ -39,22 +39,22 @@ public class VELOV2 extends CommandOpMode {
     private Intake intake;
     private Limelight3A limelight;
 
-    private final InterpLUT VELO_LUT = new InterpLUT();
+    private final InterpLUT VELO = new InterpLUT();
     private double filteredDistance = Double.NaN;
 
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        VELO_LUT.add(0,   800);
-        VELO_LUT.add(24,  1000);
-        VELO_LUT.add(50,  1100);
-        VELO_LUT.add(67,  1220);
-        VELO_LUT.add(90,  1540);
-        VELO_LUT.add(98,  1560);
-        VELO_LUT.add(110, 1700);
-        VELO_LUT.add(150, 1900);
-        VELO_LUT.createLUT();
+        VELO.add(0, 800);
+        VELO.add(24.4, 1050);
+        VELO.add(41, 1100);
+        VELO.add(66, 1260);
+        VELO.add(76, 1280);
+        VELO.add(90, 1440);
+        VELO.add(102, 1660);
+        VELO.add(120, 1750);
+        VELO.createLUT();
 
         shooter  = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
@@ -92,7 +92,7 @@ public class VELOV2 extends CommandOpMode {
 
             case 1: // Test — full VELO logic
                 if (llResult != null && llResult.isValid()) {
-                    double targetVelo  = VELO_LUT.get(getDistanceFromTag(llResult));
+                    double targetVelo  = VELO.get(getDistanceFromTag(llResult));
                     double currentVelo = shooter.getVelo();
                     shooter.setVelocity(targetVelo);
                     if (currentVelo > targetVelo - 80) {

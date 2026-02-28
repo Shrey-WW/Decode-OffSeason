@@ -26,6 +26,7 @@ public abstract class ShootingCMD extends CommandBase {
     private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
     private static final double HEIGHT_OF_APRILTAG = 29.5;
 
+
     protected static final double DefaultTargetVel = 1200;
     protected double TargetVel = 0;
 
@@ -39,13 +40,13 @@ public abstract class ShootingCMD extends CommandBase {
         turret = tt;
         limelight = ll;
         VELO.add(0, 800);
-        VELO.add(24, 1000);
-        VELO.add(50, 1100);
-        VELO.add(67, 1220);
-        VELO.add(90, 1540);
-        VELO.add(98, 1560);
-        VELO.add(110, 1700);
-        VELO.add(150, 1900);
+        VELO.add(24.4, 1050);
+        VELO.add(41, 1100);
+        VELO.add(66, 1260);
+        VELO.add(76, 1280);
+        VELO.add(90, 1440);
+        VELO.add(102, 1660);
+        VELO.add(120, 1750);
         VELO.createLUT();
     }
 
@@ -56,7 +57,7 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = velo;
             shooter.setVelocity(velo);
             double currentVel = shooter.getVelo();
-            if (currentVel > velo - (-0.133333 * velo + 280)) {
+            if (currentVel > velo - getRecoveryOffset(velo)) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
@@ -69,7 +70,7 @@ public abstract class ShootingCMD extends CommandBase {
             TargetVel = DefaultTargetVel;
             double currentVel = shooter.getVelo();
             shooter.setVelocity(DefaultTargetVel);
-            if (currentVel > DefaultTargetVel - (-0.133333 * DefaultTargetVel + 280)) {
+            if (currentVel > DefaultTargetVel - 140) {
                 transfer.Spin(1);
                 intake.Spin(1);
             }
@@ -89,5 +90,9 @@ public abstract class ShootingCMD extends CommandBase {
             filteredDistance = DISTANCE_FILTER_ALPHA * raw + .8 * filteredDistance;
         }
         return filteredDistance;
+    }
+
+    private double getRecoveryOffset(double tVel){
+        return 3.16789e11 / Math.pow(tVel, 3.02958);
     }
 }

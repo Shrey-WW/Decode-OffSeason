@@ -67,14 +67,13 @@ public class AutoShootingCMD extends ShootingCMD {
 
     public void didBallShoot(double cVel){
         if (cVel > 500) {
-
             if (cVel > localPeakVelocity) {
                 localPeakVelocity = cVel;
             }
 
-            if ((localPeakVelocity - cVel) > 40) {
+            if ((localPeakVelocity - cVel) > 50) {
 
-                if (timer.milliseconds() - lastShotTime > 100) {
+                if (timer.milliseconds() - lastShotTime > 50) {
                     numBallsShot++;
                     lastShotTime = timer.milliseconds();
                     localPeakVelocity = cVel;

@@ -29,8 +29,8 @@ public class TurretController {
     // Telemetry variables
     private double lastTargetVelocity = 0;
     private double lastOutput = 0;
-    private double lastPosErrorOut = 0;
-    private double lastVelErrorOut = 0;
+    private double lastPosError = 0;
+    private double lastVelError = 0;
 
     private ElapsedTime timer = new ElapsedTime();
 
@@ -50,6 +50,7 @@ public class TurretController {
      */
     public double calculate(double targetAngleDeg, double currentAngleDeg, double currentVelDegPerSec) {
         targetAngleDeg = MathUtils.clamp(targetAngleDeg, minPosition, maxPosition);
+
         double dt = timer.seconds();
         timer.reset();
         if (dt > 0.2 || dt <= 0) dt = 0.01;
@@ -66,7 +67,7 @@ public class TurretController {
         }
         lastPosMeasurement = currentAngleDeg;
 
-        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative) + robotVelocityFF;
+        double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative);
 
         // Clamp Velocity
         targetVelocity = MathUtils.clamp(targetVelocity, -maxTargetVelocity, maxTargetVelocity);
@@ -87,8 +88,8 @@ public class TurretController {
 
         // telemetry values
         lastTargetVelocity = targetVelocity;
-        lastPosErrorOut = posError;
-        lastVelErrorOut = velError;
+        lastPosError = posError;
+        lastVelError = velError;
 
 
         // Clamp Motor Power
@@ -133,7 +134,7 @@ public class TurretController {
         double output = (pVel * velError) + (iVel * velIntegral) + (dVel * velDerivative) + (kV * targetVelDegPerSec);
 
         lastTargetVelocity = targetVelDegPerSec;
-        lastVelErrorOut = velError;
+        lastVelError = velError;
         lastOutput = MathUtils.clamp(output, -1.0, 1.0);
 
         return lastOutput;
@@ -171,12 +172,10 @@ public class TurretController {
     }
 
 
-    public double getPositionError() { return lastPosErrorOut; }
-    public double getVelocityError() { return lastVelErrorOut; }
+    public double getPositionError() { return lastPosError; }
+    public double getVelocityError() { return lastVelError; }
     public double getTargetVelocity() { return lastTargetVelocity; }
-    public double getOutput() { return lastOutput; }
-    public double getPosIntegral() { return posIntegral; }
-    public double getVelIntegral() { return velIntegral; }
+    public double getLastOutput() { return lastOutput; }
 
     /**
      * Resets all accumulated state.
@@ -188,8 +187,8 @@ public class TurretController {
         lastVelMeasurement = Double.NaN;
         lastTargetVelocity = 0;
         lastOutput = 0;
-        lastPosErrorOut = 0;
-        lastVelErrorOut = 0;
+        lastPosError = 0;
+        lastVelError = 0;
         timer.reset();
     }
 }

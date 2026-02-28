@@ -10,9 +10,10 @@ public abstract class Paths {
     protected final AutoType autoType;
     protected final Follower follower;
 
-    protected Pose startPose, spike1, spike2, spike3, gatePose, scorePose;
+    public Pose startPose;
+    protected Pose spike1, spike2, spike3, gatePose, scorePose;
 
-    public PathChain shootPreloads, intake1, goToScore1, intake2, intake3, goToScore3, intake4;
+    public PathChain shootPreloads, intake1, goToScore1, intake2, goToScore2, intake3, goToScore3, intake4;
 
     public PathChain intakeSweep1, intakeSweep2, leave, openGate;
 
