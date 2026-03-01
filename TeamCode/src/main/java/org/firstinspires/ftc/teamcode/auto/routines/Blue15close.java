@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.auto.routines;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
+import com.seattlesolvers.solverslib.command.WaitUntilCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
@@ -22,8 +24,17 @@ public class Blue15close extends AutoBase {
         super.initialize();
 
         AutoSequence = new SequentialCommandGroup(
-                new FollowPathCommand(follower, paths.shootPreloads),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
+                new ParallelCommandGroup(
+                        new FollowPathCommand(follower, paths.shootPreloads),
+                        new WaitUntilCommand(() -> follower.getCurrentTValue() == .6)
+                                .andThen(
+                                        new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900).alongWith(
+                                                new InstantCommand(() -> follower.setMaxPower(.65)
+                                                )
+                                        )
+                                )
+                ),
+                new InstantCommand(() -> follower.setMaxPower(1)),
                 new FollowPathCommand(follower, paths.intake1),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
                 new FollowPathCommand(follower, paths.intake2),

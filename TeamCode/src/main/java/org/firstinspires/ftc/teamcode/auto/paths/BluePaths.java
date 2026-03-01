@@ -96,7 +96,7 @@ public class BluePaths extends Paths {
                 ).setTangentHeadingInterpolation()
                 .addPath(
                         new BezierLine(
-                                new Pose(12.500, 35.000),
+                                new Pose(11, 36.500),
                                 new Pose(55.500, 15.000)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(115))
@@ -145,7 +145,7 @@ public class BluePaths extends Paths {
 
         goToScore3 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(9, 9),
+                                new Pose(9, 8.75),
                                 new Pose(55.500, 15.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(115))
@@ -169,8 +169,8 @@ public class BluePaths extends Paths {
                                 new Pose(56, 78)
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                        new HeadingInterpolator.PiecewiseNode(0, 7, HeadingInterpolator.tangent.reverse()),
-                        new HeadingInterpolator.PiecewiseNode(7, 1, HeadingInterpolator.constant(Math.toRadians(180)))
+                        new HeadingInterpolator.PiecewiseNode(0, 65, HeadingInterpolator.tangent.reverse()),
+                        new HeadingInterpolator.PiecewiseNode(65, 1, HeadingInterpolator.constant(Math.toRadians(180)))
         )).build();
 
         intake1 = follower.pathBuilder().addPath(

@@ -5,6 +5,6 @@ public class AutoState {
 
     public AutoState()
     {
-        launchstate = LaunchState.IDLE;
+        launchstate = LaunchState.SPIN_UP;
     }
 }
