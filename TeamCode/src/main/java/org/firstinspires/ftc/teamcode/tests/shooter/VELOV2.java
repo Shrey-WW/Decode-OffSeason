@@ -27,6 +27,7 @@ public class VELOV2 extends CommandOpMode {
 
     // Manual target velocity
     public static double velo = 0;
+    public static double hoodpos = .8;
 
     private static final double HEIGHT_LIMELIGHT      = 16.5;
     private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
@@ -52,8 +53,8 @@ public class VELOV2 extends CommandOpMode {
         VELO.add(66, 1260);
         VELO.add(76, 1280);
         VELO.add(90, 1440);
-        VELO.add(102, 1660);
-        VELO.add(120, 1750);
+        VELO.add(100, 1700);
+        VELO.add(108, 1750);
         VELO.createLUT();
 
         shooter  = new Shooter(hardwareMap);
@@ -77,8 +78,8 @@ public class VELOV2 extends CommandOpMode {
         switch (Mode) {
             case 0: // Manual — set velo
                 shooter.setVelocity(velo);
-                transfer.Spin(1);
-                intake.Spin(1);
+                transfer.Spin(gamepad1.right_trigger);
+                intake.Spin(gamepad1.right_trigger);
                 telemetry.addData("Manual Velo", velo);
                 if (llResult != null && llResult.isValid()) {
                     double dist = getDistanceFromTag(llResult);
@@ -88,6 +89,7 @@ public class VELOV2 extends CommandOpMode {
                     telemetry.addData("Ty", llResult.getTy());
                     telemetry.addData("Ta", llResult.getTa());
                 }
+                shooter.moveServo(hoodpos);
                 break;
 
             case 1: // Test — full VELO logic
@@ -107,7 +109,6 @@ public class VELOV2 extends CommandOpMode {
                     telemetry.addData("Velocity Error",  targetVelo - currentVelo);
                 }
         }
-
         telemetry.update();
     }
 

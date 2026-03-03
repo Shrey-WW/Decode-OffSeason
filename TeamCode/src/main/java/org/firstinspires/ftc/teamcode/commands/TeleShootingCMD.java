@@ -28,6 +28,7 @@ public class TeleShootingCMD extends ShootingCMD {
 
     @Override
     public void end(boolean interrupted) {
+        shooter.moveServo(.8);
         intake.Spin(0);
         transfer.Spin(-.6);
         Rusty.launchState = LaunchState.IDLE;

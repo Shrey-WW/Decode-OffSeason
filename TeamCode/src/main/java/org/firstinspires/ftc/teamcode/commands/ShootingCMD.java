@@ -44,9 +44,9 @@ public abstract class ShootingCMD extends CommandBase {
         VELO.add(41, 1100);
         VELO.add(66, 1260);
         VELO.add(76, 1280);
-        VELO.add(90, 1440);
-        VELO.add(102, 1660);
-        VELO.add(120, 1750);
+        VELO.add(90, 1640);
+        VELO.add(100, 1800);
+        VELO.add(120, 1860);
         VELO.createLUT();
     }
 
@@ -89,10 +89,14 @@ public abstract class ShootingCMD extends CommandBase {
         } else {
             filteredDistance = DISTANCE_FILTER_ALPHA * raw + .8 * filteredDistance;
         }
+        if (filteredDistance >= 85)
+        {
+            shooter.moveServo(.7);
+        }
         return filteredDistance;
     }
 
     private double getRecoveryOffset(double tVel){
-        return 3.16789e11 / Math.pow(tVel, 3.02958);
+        return -0.2 * tVel + 380;
     }
 }

@@ -66,7 +66,7 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     public void didBallShoot(double cVel){
-        if (cVel > 500) {
+        if (cVel > 200) {
             if (cVel > localPeakVelocity) {
                 localPeakVelocity = cVel;
             }

@@ -48,12 +48,8 @@ public class Blue12close extends AutoBase {
 
     @Override
     public void run() {
-        if (AutoState.launchstate == LaunchState.SHOOTING) {
-            ARC();
-        }
-        telemetry.addData("numballshot", AutoShootingCMD.numBallsShot);
-        telemetry.addData("turret pos", turret.getPosTicks());
-        telemetry.addData("tx", limelight.getLatestResult().getTx());
+        ARC();
+        updateShooter();
         super.run();
     }
 }

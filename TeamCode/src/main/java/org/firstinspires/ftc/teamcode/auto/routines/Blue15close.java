@@ -24,33 +24,24 @@ public class Blue15close extends AutoBase {
         super.initialize();
 
         AutoSequence = new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        new FollowPathCommand(follower, paths.shootPreloads),
-                        new WaitUntilCommand(() -> follower.getCurrentTValue() == .6)
-                                .andThen(
-                                        new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900).alongWith(
-                                                new InstantCommand(() -> follower.setMaxPower(.65)
-                                                )
-                                        )
-                                )
-                ),
-                new InstantCommand(() -> follower.setMaxPower(1)),
-                new FollowPathCommand(follower, paths.intake1),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
+                new FollowPathCommand(follower, paths.shootPreloads),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
+                new FollowPathCommand(follower, paths.intake1, .8),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new FollowPathCommand(follower, paths.intake2),
-                new WaitCommand(2000),
+                new WaitCommand(1800),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore2),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                 new FollowPathCommand(follower, paths.intake3),
-                new WaitCommand(2000),
+                new WaitCommand(1800),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore3),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                 new FollowPathCommand(follower, paths.intake4),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1900),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.END)
                 );
         schedule(AutoSequence, new InstantCommand(() -> shooter.moveServo(.8)));

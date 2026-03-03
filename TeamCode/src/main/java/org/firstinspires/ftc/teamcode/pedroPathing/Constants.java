@@ -26,7 +26,7 @@ public class Constants {
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
             .useSecondaryDrivePIDF(true)
-            .centripetalScaling(.05)
+            .centripetalScaling(.0005)
             .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.17,0,.07,.012))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1.3, 0, .05, .05))
             .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(.001,0,0,0,.2));
@@ -54,7 +54,7 @@ public class Constants {
             .xVelocity(71)
             .yVelocity(39);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 200, .7, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

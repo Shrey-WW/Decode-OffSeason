@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp (group = "tests")
 public class TrackTagOdom extends CommandOpMode {
 
-    private static final double GoalX = 10;
-    private static final int GoalY = 140;
+    private static final double GoalX = 0;
+    private static final int GoalY = 144;
     Turret turret;
     Follower follower;
 
@@ -23,7 +23,7 @@ public class TrackTagOdom extends CommandOpMode {
     public void initialize(){
         turret = new Turret(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 136, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(19, 121, Math.toRadians(144)));
         follower.startTeleopDrive();
         register(turret);
     }

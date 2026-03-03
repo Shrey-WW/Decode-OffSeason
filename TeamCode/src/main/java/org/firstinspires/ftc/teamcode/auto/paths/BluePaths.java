@@ -160,80 +160,87 @@ public class BluePaths extends Paths {
 
     public void buildCloseFifteen() {
         startPose = new Pose(19, 121, 2.4065);
-        spike1 = new Pose(23, 84);
-        spike2 = new Pose(12, 51);
+        spike1 = new Pose(23, 84.5);
+        spike2 = new Pose(12, 56);
 
         shootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
                                 startPose,
-                                new Pose(56, 78)
+                                new Pose(53, 78)
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                        new HeadingInterpolator.PiecewiseNode(0, 65, HeadingInterpolator.tangent.reverse()),
-                        new HeadingInterpolator.PiecewiseNode(65, 1, HeadingInterpolator.constant(Math.toRadians(180)))
+                        new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
+                        new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(180)))
         )).build();
 
         intake1 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(56, 78),
+                        new Pose(53, 78),
                         new Pose(50, 50),
                         spike2
                 )).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(
                         new BezierCurve(
                                 spike2,
-                                new Pose(22, 51),
-                                new Pose(56, 78)
+                                new Pose(22, 54),
+                                new Pose(53, 78)
                         )).setTangentHeadingInterpolation().setReversed().build();
 
         intake2 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(56, 78),
-                        new Pose(22, 51),
-                        new Pose(8.5, 57)
+                        new Pose(53, 78),
+                        new Pose(22, 53),
+                        new Pose(8.8, 61.2)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .62, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.62, 1, HeadingInterpolator.constant(Math.toRadians(157)))
+                new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
+                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
                 )).build();
 
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.5, 57),
+                        new Pose(8.8, 61.2),
                         new Pose(22, 51),
-                        new Pose(56, 78)
-                )).setTangentHeadingInterpolation().setReversed().build();
+                        new Pose(53, 78)
+                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(200)))
+        )).setGlobalDeceleration(.6).build();
 
         intake3 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(56, 78),
-                        new Pose(22, 51),
-                        new Pose(8.5, 57)
+                        new Pose(53, 78),
+                        new Pose(22, 53),
+                        new Pose(8.8, 61.2)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .62, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.62, 1, HeadingInterpolator.constant(Math.toRadians(157)))
+                new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
+                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
         )).build();
 
         goToScore3 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.5, 57),
+                        new Pose(8.8, 61.2),
                         new Pose(30, 51),
-                        new Pose(54, 84)
-                )).setTangentHeadingInterpolation().setReversed().build();
+                        new Pose(54, 84.5)
+                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
+                new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
+                new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(180)))
+        )).setGlobalDeceleration(.6).build();
 
         intake4 = follower.pathBuilder().addPath(
                 new BezierLine(
-                        new Pose(54, 84),
+                        new Pose(54, 84.5),
                         spike1
                 )).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(
                         new BezierLine(
                                 spike1,
-                                new Pose(50, 115)
-                        )).setConstantHeadingInterpolation(Math.toRadians(225)).build();
+                                new Pose(48, 110)
+                        )).setConstantHeadingInterpolation(Math.toRadians(225)).setGlobalDeceleration(.6).build();
     }
 
     public void buildElliotFar(){
-        spike1 = new Pose(17, 39);
+        startPose = new Pose(56.000, 8.500, Math.toRadians(90));
+        spike1 = new Pose(15, 39);
         scorePose = new Pose(55, 17);
 
         shootPreloads = follower.pathBuilder()
@@ -259,22 +266,33 @@ public class BluePaths extends Paths {
                                 spike1,
                                 scorePose
                         )
-                ).setTangentHeadingInterpolation().setReversed().build();
+                ).setTangentHeadingInterpolation().setReversed().setGlobalDeceleration(.25).build();
 
-        intake2 = follower.pathBuilder()
+
+        intakeSweep1 = follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(4, 40.6),
-                                new Pose(0, 7.5)
+                                new Pose(8, 60),
+                                new Pose(8, 27)
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
                         new HeadingInterpolator.PiecewiseNode(0, .5, HeadingInterpolator.linear(Math.toRadians(150), Math.toRadians(270))),
-                        new HeadingInterpolator.PiecewiseNode(.5, 1, HeadingInterpolator.constant(Math.toRadians(270))
-                        )))
+                        new HeadingInterpolator.PiecewiseNode(.5, 1, HeadingInterpolator.constant(Math.toRadians(270)))
+                )).setNoDeceleration().build();
+
+
+        intake2 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(0, 7.5),
+                                new Pose(8, 27),
+                                new Pose(8, 9)
+                        )
+                ).setConstantHeadingInterpolation(Math.toRadians(270))
+                .addPath(
+                        new BezierCurve(
+                                new Pose(8, 9),
+                                new Pose(8, 15),
                                 scorePose
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
@@ -286,12 +304,12 @@ public class BluePaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(9.5, 24.3)
+                                new Pose(16, 26)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(
                         new BezierLine(
-                                new Pose(9.5, 24.3),
+                                new Pose(16, 26),
                                 scorePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
@@ -300,12 +318,12 @@ public class BluePaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(9.5, 24.3)
+                                new Pose(16, 26)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(
                         new BezierLine(
-                                new Pose(9.5, 24.3),
+                                new Pose(16, 26),
                                 scorePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180)).build();

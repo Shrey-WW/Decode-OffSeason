@@ -30,10 +30,10 @@ public class Rusty extends Robot {
 
     private final OpMode opmode;
     private final double GoalX;
-    private static final double GoalY = 137;
+    private static final double GoalY = 144;
     public static double Q = 1;
     public static double R_odom = 10;
-    public static double R_ll = 6;
+    public static double R_ll = 7;
 
     // Subsystems
     private TurretKalmanFilter kalman;
@@ -53,7 +53,7 @@ public class Rusty extends Robot {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
-        GoalX = a == Alliance.BLUE ? 7 : 137;
+        GoalX = a == Alliance.BLUE ? 0 : 144;
     }
 
     public void init() {

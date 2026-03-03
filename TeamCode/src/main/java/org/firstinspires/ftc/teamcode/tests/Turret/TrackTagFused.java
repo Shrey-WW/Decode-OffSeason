@@ -18,15 +18,15 @@ import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 @TeleOp(group = "tests")
 public class TrackTagFused extends CommandOpMode {
 
-    public static double GoalX = 130;
+    public static double GoalX = 3;
     public static double GoalY = 140;
 
     public static double Q = 1.0;
-    public static double R_odom = 5;
-    public static double R_ll = 4;
+    public static double R_odom = 10;
+    public static double R_ll = 7;
 
     private static final double TX_FILTER_ALPHA = 0.4;
-    private static final Pose startpose = new Pose(100, 135, 0);
+    private static final Pose startpose = new Pose(19, 121, Math.toRadians(144));
 
     private Limelight3A limelight;
     private Turret turret;
@@ -40,11 +40,11 @@ public class TrackTagFused extends CommandOpMode {
 
         turret = new Turret(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(100, 135, 0));
+        follower.setStartingPose(startpose);
         follower.startTeleopDrive();
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(0);
         limelight.start();
 
         double initialTarget = Math.toDegrees(angleWrap(
