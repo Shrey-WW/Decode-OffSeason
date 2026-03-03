@@ -161,7 +161,7 @@ public class BluePaths extends Paths {
     public void buildCloseFifteen() {
         startPose = new Pose(19, 121, 2.4065);
         spike1 = new Pose(23, 84.5);
-        spike2 = new Pose(12, 56);
+        spike2 = new Pose(12, 57);
 
         shootPreloads = follower.pathBuilder().addPath(
                         new BezierLine(
@@ -176,13 +176,13 @@ public class BluePaths extends Paths {
         intake1 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(53, 78),
-                        new Pose(50, 50),
+                        new Pose(50, 57),
                         spike2
                 )).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(
                         new BezierCurve(
                                 spike2,
-                                new Pose(22, 54),
+                                new Pose(22, 57),
                                 new Pose(53, 78)
                         )).setTangentHeadingInterpolation().setReversed().build();
 
@@ -196,9 +196,16 @@ public class BluePaths extends Paths {
                 new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
                 )).build();
 
-        goToScore2 = follower.pathBuilder().addPath(
+        intakeSweep1 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(8.8, 61.2),
+                        new Pose(11, 60),
+                        new Pose(8.8, 59)
+                )).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+
+        goToScore2 = follower.pathBuilder().addPath(
+                new BezierCurve(
+                        new Pose(8.8, 59),
                         new Pose(22, 51),
                         new Pose(53, 78)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
@@ -235,7 +242,7 @@ public class BluePaths extends Paths {
                         new BezierLine(
                                 spike1,
                                 new Pose(48, 110)
-                        )).setConstantHeadingInterpolation(Math.toRadians(225)).setGlobalDeceleration(.6).build();
+                        )).setConstantHeadingInterpolation(Math.toRadians(225)).build();
     }
 
     public void buildElliotFar(){

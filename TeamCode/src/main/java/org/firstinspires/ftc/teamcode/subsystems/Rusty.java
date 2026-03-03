@@ -57,8 +57,10 @@ public class Rusty extends Robot {
     }
 
     public void init() {
+
         initSubsystems();
         initControls();
+
         launchState = LaunchState.IDLE;
         follower = Constants.createFollower(opmode.hardwareMap);
         follower.setStartingPose(new Pose(50, 115, Math.toRadians(0)));
@@ -67,9 +69,6 @@ public class Rusty extends Robot {
         for (LynxModule hub : Hubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
-        schedule(new InstantCommand(() -> shooter.moveServo(.8)));
-
-        register(intake, transfer, shooter, turret);
 
         double initialTarget = Math.toDegrees(angleWrap(
                 Math.atan2(GoalY - 115, GoalX - 50)
@@ -77,6 +76,10 @@ public class Rusty extends Robot {
 
         kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
         turret.resetEncoder();
+
+        schedule(new InstantCommand(() -> shooter.moveServo(.8)));
+
+        register(intake, transfer, shooter, turret);
     }
 
     private void initSubsystems() {
@@ -123,8 +126,7 @@ public class Rusty extends Robot {
     }
 
     /**
-     * Autonomous Rotational Correction — tracks the Limelight target by
-     * converting tx offset into a turret position adjustment via PID.
+     * April-Tag Rotational Correction
      */
     private void ARC() {
         Pose cPos = follower.getPose();

@@ -20,15 +20,17 @@ public class Blue15close extends AutoBase {
     @Override
     public void initialize(){
         autoType = AutoType.CLOSE_15;
+        SPIN_UP_VELOCITY = 1250;
         startingPose = new Pose(19, 121, 2.4065);
         super.initialize();
 
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, paths.shootPreloads),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
-                new FollowPathCommand(follower, paths.intake1, .8),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1500),
+                new FollowPathCommand(follower, paths.intake1, .85),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new FollowPathCommand(follower, paths.intake2),
+                new FollowPathCommand(follower, paths.intakeSweep1),
                 new WaitCommand(1800),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore2),
@@ -39,8 +41,7 @@ public class Blue15close extends AutoBase {
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore3),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
-                new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
-                new FollowPathCommand(follower, paths.intake4),
+                new FollowPathCommand(follower, paths.intake4, .85),
                 new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.END)
                 );

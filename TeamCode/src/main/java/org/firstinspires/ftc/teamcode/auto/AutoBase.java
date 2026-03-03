@@ -123,8 +123,7 @@ public abstract class AutoBase extends CommandOpMode {
     }
 
     /**
-     * Autonomous Rotational Correction — tracks the Limelight target by
-     * converting tx offset into a turret position adjustment via PID.
+     * April-Tag Rotational Correction
      */
     protected void ARC() {
         Pose cPos = follower.getPose();
