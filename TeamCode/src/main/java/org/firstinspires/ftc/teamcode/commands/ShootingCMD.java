@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.util.InterpLUT;
 
@@ -21,6 +22,9 @@ public abstract class ShootingCMD extends CommandBase {
     protected final Transfer transfer;
     protected final Turret turret;
     protected Limelight3A limelight;
+    protected VoltageSensor voltageSensor;
+    private static final double VOLTAGE_BASE = 13;
+    private static final double VOLTAGE_MIN = 10.5;
 
     private static final double HEIGHT_LIMELIGHT = 16.5;
     private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
@@ -33,12 +37,13 @@ public abstract class ShootingCMD extends CommandBase {
     private static final double DISTANCE_FILTER_ALPHA = 0.20;
     private double filteredDistance = Double.NaN;
 
-    public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
+    public ShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, VoltageSensor vs){
         shooter = s;
         transfer = t;
         intake = i;
         turret = tt;
         limelight = ll;
+        voltageSensor = vs;
         VELO.add(0, 800);
         VELO.add(24.4, 1050);
         VELO.add(41, 1100);
@@ -97,6 +102,8 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     private double getRecoveryOffset(double tVel){
-        return -0.1 * tVel + 220;
+        double cVoltage = voltageSensor.getVoltage();
+        cVoltage = Math.max(cVoltage, VOLTAGE_MIN);
+        return (-0.16666 * tVel + 340) * (cVoltage / VOLTAGE_BASE);
     }
 }

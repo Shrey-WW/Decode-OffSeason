@@ -55,6 +55,7 @@ public class VELOV2 extends CommandOpMode {
         VELO.add(90, 1440);
         VELO.add(100, 1700);
         VELO.add(108, 1750);
+        VELO.add(150, 1800);
         VELO.createLUT();
 
         shooter  = new Shooter(hardwareMap);

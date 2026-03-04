@@ -339,7 +339,7 @@ public class BluePaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(30, 17))
+                                new Pose(43, 17))
                 ).setConstantHeadingInterpolation(Math.toRadians(180)).build();
     }
 }

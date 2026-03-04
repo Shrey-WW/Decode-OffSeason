@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.subsystems.Rusty;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
@@ -11,8 +12,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 public class TeleShootingCMD extends ShootingCMD {
 
-    public TeleShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll) {
-        super(s, t, i, tt, ll);
+    public TeleShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, VoltageSensor vs) {
+        super(s, t, i, tt, ll, vs);
         addRequirements(shooter, transfer, intake, turret);
     }
 

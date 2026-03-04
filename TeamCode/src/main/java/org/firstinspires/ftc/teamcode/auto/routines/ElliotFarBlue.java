@@ -27,14 +27,14 @@ public class ElliotFarBlue extends AutoBase {
 
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, paths.shootPreloads),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 4000),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 4000),
                 new FollowPathCommand(follower, paths.intake1),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 4000),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 4000),
                 new FollowPathCommand(follower, paths.intakeSweep1),
                 new FollowPathCommand(follower, paths.intake2),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 4000),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 4000),
                 new FollowPathCommand(follower, paths.intake3),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 4000),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 4000),
                 new FollowPathCommand(follower, paths.leave)
         );
         schedule(AutoSequence.alongWith(new InstantCommand(() -> shooter.moveServo(.7))));

@@ -5,6 +5,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -45,6 +46,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected Transfer transfer;
     protected Turret turret;
     protected Limelight3A limelight;
+    protected VoltageSensor voltageSensor;
     protected Follower follower;
 
     // Auto config
@@ -69,6 +71,7 @@ public abstract class AutoBase extends CommandOpMode {
         intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
         turret = new Turret(hardwareMap);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
         Hubs = hardwareMap.getAll(LynxModule.class);

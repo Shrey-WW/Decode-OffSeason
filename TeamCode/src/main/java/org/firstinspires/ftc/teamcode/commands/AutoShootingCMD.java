@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.constants.AutoState;
@@ -25,14 +26,14 @@ public class AutoShootingCMD extends ShootingCMD {
     private double localPeakVelocity = 0.0;
     private double lastShotTime;
 
-    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, double timeout) {
-        super(s, t, i, tt, ll);
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, VoltageSensor vs, double timeout) {
+        super(s, t, i, tt, ll, vs);
         TimeLimit = timeout;
         addRequirements(intake, transfer, shooter, turret);
     }
 
-    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll){
-        this(s, t, i, tt, ll, 2500);
+    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, VoltageSensor vs){
+        this(s, t, i, tt, ll, vs, 2500);
     }
 
     @Override

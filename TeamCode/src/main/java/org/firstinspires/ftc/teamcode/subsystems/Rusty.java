@@ -4,8 +4,8 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
@@ -14,53 +14,57 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.TeleShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
+import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 
-import java.util.List;
 
 public class Rusty extends Robot {
 
-    private static final double TX_FILTER_ALPHA = 0.4;
-    private double filteredTx;
 
-    private static final double SHOOTER_IDLE_VELOCITY = 800;
+
+    private static final double SHOOTER_IDLE_VELOCITY = 1000;
     private static final double TRIGGER_DEADZONE = 0.05;
-
     private final OpMode opmode;
     private final double GoalX;
     private static final double GoalY = 144;
-    public static double Q = 1;
-    public static double R_odom = 10;
-    public static double R_ll = 7;
 
     // Subsystems
-    private TurretKalmanFilter kalman;
     private final Limelight3A limelight;
     private Intake intake;
     private Transfer transfer;
     private Shooter shooter;
     private Turret turret;
     private Follower follower;
-    private List<LynxModule> Hubs;
+    private VoltageSensor voltageSensor;
+
+
+    //Kalman Filter Vals
+    private TurretKalmanFilter kalman;
+    private static final double Q = 1;
+    private static final double R_odom = 10;
+    private static final double R_ll = 7;
+
+
+    private static final double TX_FILTER_ALPHA = 0.4;
+    private double filteredTx;
 
     // State
     public static LaunchState launchState;
     private int loopCounter = 0;
 
-    public Rusty(OpMode op, Alliance a) {
+    public Rusty(OpMode op, Alliance a, AutoType at) {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
+        GoalX = a == Alliance.BLUE ? 0 : 144;
         follower = Constants.createFollower(opmode.hardwareMap);
-        if (a == Alliance.BLUE) {
-            follower.setStartingPose(new Pose(48, 110, Math.toRadians(225)));
-            GoalX = 0;
-        } else {
-            GoalX = 144;
-            follower.setStartingPose(new Pose(48, 110, Math.toRadians(225)).mirror(144));
-        }
+
+        Pose start = at == AutoType.CLOSE_15 ? new Pose(19, 121, Math.toRadians(225)) : new Pose(56, 8, Math.toRadians(180));
+        start = a == Alliance.RED ? start.mirror(144) : start;
+
+        follower.setPose(start);
     }
 
     public void init() {
@@ -69,10 +73,6 @@ public class Rusty extends Robot {
 
         launchState = LaunchState.IDLE;
         follower.startTeleopDrive();
-        Hubs = opmode.hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : Hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
 
         double initialTarget = Math.toDegrees(angleWrap(
                 Math.atan2(GoalY - 115, GoalX - 50) - follower.getHeading()
@@ -91,12 +91,13 @@ public class Rusty extends Robot {
         transfer = new Transfer(opmode.hardwareMap);
         shooter = new Shooter(opmode.hardwareMap);
         turret = new Turret(opmode.hardwareMap);
+        voltageSensor = opmode.hardwareMap.voltageSensor.iterator().next();
         limelight.start();
     }
 
     private void initControls() {
         GamepadEx driver = new GamepadEx(opmode.gamepad1);
-        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, turret, limelight);
+        TeleShootingCMD shootingCMD = new TeleShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor);
 
         new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)
                 .whenHeld(shootingCMD);
@@ -111,10 +112,6 @@ public class Rusty extends Robot {
         super.run();
         follower.update();
         limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
-
-        for (LynxModule hub : Hubs) {
-            hub.clearBulkCache();
-        }
 
         ARC();
         updateIntake();
