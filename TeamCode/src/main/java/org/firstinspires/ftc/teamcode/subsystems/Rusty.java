@@ -53,17 +53,21 @@ public class Rusty extends Robot {
         opmode = op;
         limelight = op.hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
-        GoalX = a == Alliance.BLUE ? 0 : 144;
+        follower = Constants.createFollower(opmode.hardwareMap);
+        if (a == Alliance.BLUE) {
+            follower.setStartingPose(new Pose(48, 110, Math.toRadians(225)));
+            GoalX = 0;
+        } else {
+            GoalX = 144;
+            follower.setStartingPose(new Pose(48, 110, Math.toRadians(225)).mirror(144));
+        }
     }
 
     public void init() {
-
         initSubsystems();
         initControls();
 
         launchState = LaunchState.IDLE;
-        follower = Constants.createFollower(opmode.hardwareMap);
-        follower.setStartingPose(new Pose(50, 115, Math.toRadians(0)));
         follower.startTeleopDrive();
         Hubs = opmode.hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : Hubs) {
@@ -71,7 +75,7 @@ public class Rusty extends Robot {
         }
 
         double initialTarget = Math.toDegrees(angleWrap(
-                Math.atan2(GoalY - 115, GoalX - 50)
+                Math.atan2(GoalY - 115, GoalX - 50) - follower.getHeading()
         ));
 
         kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);

@@ -97,6 +97,6 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     private double getRecoveryOffset(double tVel){
-        return -0.2 * tVel + 380;
+        return -0.1 * tVel + 220;
     }
 }

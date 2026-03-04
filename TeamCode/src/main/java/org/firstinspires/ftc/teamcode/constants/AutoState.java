@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.constants;
 
 public class AutoState {
-    public static LaunchState launchstate;
+    public static LaunchState launchstate = LaunchState.SPIN_UP;
 
     public AutoState()
     {

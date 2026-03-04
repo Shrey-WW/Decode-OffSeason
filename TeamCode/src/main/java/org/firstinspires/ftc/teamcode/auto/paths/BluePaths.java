@@ -190,7 +190,7 @@ public class BluePaths extends Paths {
                 new BezierCurve(
                         new Pose(53, 78),
                         new Pose(22, 53),
-                        new Pose(8.8, 61.2)
+                        new Pose(8.8, 62)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
                 new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
@@ -198,10 +198,10 @@ public class BluePaths extends Paths {
 
         intakeSweep1 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 61.2),
+                        new Pose(8.8, 62),
                         new Pose(11, 60),
-                        new Pose(8.8, 59)
-                )).setConstantHeadingInterpolation(Math.toRadians(180)).build();
+                        new Pose(8.8, 58)
+                )).setConstantHeadingInterpolation(Math.toRadians(157)).build();
 
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierCurve(

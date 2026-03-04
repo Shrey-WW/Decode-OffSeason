@@ -65,7 +65,7 @@ public class AutoShootingCMD extends ShootingCMD {
         return timer.milliseconds() >= TimeLimit || numBallsShot >= 3;
     }
 
-    public void didBallShoot(double cVel){
+    private void didBallShoot(double cVel){
         if (cVel > 200) {
             if (cVel > localPeakVelocity) {
                 localPeakVelocity = cVel;

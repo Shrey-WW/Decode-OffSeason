@@ -26,23 +26,23 @@ public class Blue15close extends AutoBase {
 
         AutoSequence = new SequentialCommandGroup(
                 new FollowPathCommand(follower, paths.shootPreloads),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1500),
-                new FollowPathCommand(follower, paths.intake1, .85),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
+                new FollowPathCommand(follower, paths.intake1, .92),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
                 new FollowPathCommand(follower, paths.intake2),
                 new FollowPathCommand(follower, paths.intakeSweep1),
                 new WaitCommand(1800),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore2),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.IDLE),
                 new FollowPathCommand(follower, paths.intake3),
                 new WaitCommand(1800),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
                 new FollowPathCommand(follower, paths.goToScore3),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
-                new FollowPathCommand(follower, paths.intake4, .85),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1700),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
+                new FollowPathCommand(follower, paths.intake4, .92),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, 1600),
                 new InstantCommand(() -> AutoState.launchstate = LaunchState.END)
                 );
         schedule(AutoSequence, new InstantCommand(() -> shooter.moveServo(.8)));
