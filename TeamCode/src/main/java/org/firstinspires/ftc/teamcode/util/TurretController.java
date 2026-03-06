@@ -7,16 +7,16 @@ public class TurretController {
 
     // POSITION LOOP (Outer)
     private double pPos, iPos, dPos;
-    public static final double maxTargetVelocity = 200;
+    public static final double maxTargetVelocity = 150;
     public static final double maxPosition = 120;
     public static final double minPosition = -90;
+
     // VELOCITY LOOP (Inner)
     private double pVel, iVel, dVel;
     private double kV;
     private double robotVelocityFF = 0;
 
     // Integral windup limits
-    private double posIntegralLimit = Double.MAX_VALUE;
     private double velIntegralLimit = Double.MAX_VALUE;
 
     // STATE VARIABLES
@@ -138,16 +138,6 @@ public class TurretController {
         lastOutput = MathUtils.clamp(output, -1.0, 1.0);
 
         return lastOutput;
-    }
-
-    // Integral windup limits
-
-    public void setPosIntegralLimit(double limit) {
-        posIntegralLimit = Math.abs(limit);
-    }
-
-    public void setVelIntegralLimit(double limit) {
-        velIntegralLimit = Math.abs(limit);
     }
 
     // Coefficient setter methods

@@ -22,13 +22,12 @@ import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 
 public class Rusty extends Robot {
 
-
-
     private static final double SHOOTER_IDLE_VELOCITY = 1000;
     private static final double TRIGGER_DEADZONE = 0.05;
     private final OpMode opmode;
     private final double GoalX;
     private static final double GoalY = 144;
+    private final Pose resetPose;
 
     // Subsystems
     private final Limelight3A limelight;
@@ -64,6 +63,8 @@ public class Rusty extends Robot {
         Pose start = at == AutoType.CLOSE_15 ? new Pose(48, 110, Math.toRadians(225)) : new Pose(43, 17, Math.toRadians(180));
 
         start = a == Alliance.RED ? start.mirror(144) : start;
+
+        resetPose = a == Alliance.RED ? new Pose(19, 121, Math.toRadians(144)).mirror(144) : new Pose(19, 121, Math.toRadians(144));
 
         follower.setPose(start);
     }
@@ -103,6 +104,9 @@ public class Rusty extends Robot {
         new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)
                 .whenHeld(intake.SpinOut.alongWith(transfer.SpinOut))
                 .whenReleased(new InstantCommand(transfer::PwrOff));
+
+        new GamepadButton(driver, GamepadKeys.Button.OPTIONS)
+                .whenPressed(() -> follower.setPose(resetPose));
     }
 
     @Override
@@ -118,7 +122,7 @@ public class Rusty extends Robot {
 
         if (loopCounter % 8 == 0) {
             opmode.telemetry.addData("flywheel velo", shooter.getVelo());
-            opmode.telemetry.addData("turret heading deg", turret.getPosDeg());
+            opmode.telemetry.addData("voltage", voltageSensor.getVoltage());
             opmode.telemetry.update();
         }
         loopCounter++;
@@ -148,9 +152,9 @@ public class Rusty extends Robot {
     private void updateIntake() {
         if (opmode.gamepad1.right_trigger > TRIGGER_DEADZONE) {
             intake.Spin(1);
-            transfer.Spin(-.6);
         } else if (!opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
             intake.PwrOff();
+            transfer.Spin(-.6);
         }
     }
 

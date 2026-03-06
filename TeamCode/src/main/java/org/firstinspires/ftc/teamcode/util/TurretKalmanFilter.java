@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class TurretKalmanFilter {
 
-    private double Q;       // process noise — how fast the true target can change
+    private double Q;       // process noise
     private double R_odom;  // odometry measurement noise
     private double R_ll;    // limelight measurement noise
 
-    private double estimate;       // state estimate (turret target, degrees)
+    private double estimate;       // state estimate
     private double P;       // error covariance
 
     public TurretKalmanFilter(double q, double ROdom, double RLL, double initialEstimate) {
@@ -18,10 +18,9 @@ public class TurretKalmanFilter {
     }
 
     /**
-     * Run one filter cycle.
      * @param odomTarget  odometry turret target (Degrees)
      * @param llTarget    limelight turret target (Degrees)
-     * @return fused turret target (degrees)
+     * @return turret target (degrees)
      */
     public double estimate(double odomTarget, Double llTarget) {
         P += Q;
@@ -44,6 +43,4 @@ public class TurretKalmanFilter {
     public void setQ(double Q)          { this.Q = Q; }
     public void setROdom(double R_odom) { this.R_odom = R_odom; }
     public void setRLl(double R_ll)     { this.R_ll = R_ll; }
-    public double getEstimate()         { return estimate; }
-    public double getCovariance()       { return P; }
 }
