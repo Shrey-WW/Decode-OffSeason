@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
+import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
@@ -115,18 +116,12 @@ public abstract class AutoBase extends CommandOpMode {
     }
 
     protected void updateShooter() {
-        switch (AutoState.launchstate) {
-            case IDLE:
-                shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
-                break;
-
-            case END:
-                shooter.setVelocity(SHOOTER_END_VELOCITY);
-                break;
-
-            case SPIN_UP:
-                shooter.setVelocity(SPIN_UP_VELOCITY);
-                break;
+        if (AutoState.launchstate == LaunchState.IDLE) {
+            shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
+        } else if (AutoState.launchstate == LaunchState.END) {
+            shooter.setVelocity(SHOOTER_END_VELOCITY);
+        } else if (AutoState.launchstate == LaunchState.SPIN_UP) {
+            shooter.setVelocity(SPIN_UP_VELOCITY);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.routines;
 
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 
+@Autonomous(group = "Autos")
 public class RedClose15 extends AutoBase {
 
     double TurretPosition = 0;
@@ -21,7 +23,7 @@ public class RedClose15 extends AutoBase {
     public void initialize(){
         autoType = AutoType.CLOSE_15;
         SPIN_UP_VELOCITY = 1250;
-        startingPose = new Pose(19, 121, 2.4065).mirror();
+        startingPose = new Pose(19, 121, 2.4065).mirror(144);
         alliance = Alliance.RED;
         super.initialize();
 

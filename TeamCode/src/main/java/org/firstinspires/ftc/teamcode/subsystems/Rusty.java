@@ -36,7 +36,7 @@ public class Rusty extends Robot {
     private Transfer transfer;
     private Shooter shooter;
     private Turret turret;
-    private Follower follower;
+    private final Follower follower;
     private VoltageSensor voltageSensor;
 
 

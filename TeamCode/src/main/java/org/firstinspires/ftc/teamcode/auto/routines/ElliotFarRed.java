@@ -8,19 +8,19 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.auto.AutoBase;
 import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
+import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 
-
-@Autonomous (group = "Autos")
-public class ElliotFarBlue extends AutoBase {
-
+@Autonomous(group = "Autos")
+public class ElliotFarRed extends AutoBase {
 
     @Override
     public void initialize(){
         SHOOTER_IDLE_VELOCITY = 1400;
         SPIN_UP_VELOCITY = 1400;
         autoType = AutoType.ELLIOT_FAR;
-        startingPose = new Pose(56.000, 8.500, Math.toRadians(90));
+        startingPose = new Pose(56.000, 8.500, Math.toRadians(90)).mirror(144);
+        alliance = Alliance.RED;
         super.initialize();
 
 

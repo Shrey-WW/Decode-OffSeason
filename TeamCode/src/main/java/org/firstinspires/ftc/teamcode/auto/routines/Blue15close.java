@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
 import org.firstinspires.ftc.teamcode.constants.LaunchState;
 
-@Autonomous
+@Autonomous (group = "Autos")
 public class Blue15close extends AutoBase {
     private double TurretPosition = 0;
     @Override
