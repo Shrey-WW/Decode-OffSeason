@@ -160,7 +160,7 @@ public class BluePaths extends Paths {
 
     public void buildCloseFifteen() {
         startPose = new Pose(19, 121, 2.4065);
-        spike1 = new Pose(23, 84.5);
+        spike1 = new Pose(22, 83.5);
         spike2 = new Pose(12, 57);
 
         shootPreloads = follower.pathBuilder().addPath(
@@ -190,52 +190,59 @@ public class BluePaths extends Paths {
                 new BezierCurve(
                         new Pose(53, 78),
                         new Pose(22, 53),
-                        new Pose(8.8, 62)
+                        new Pose(8.8, 60.7)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
+                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(157)))
                 )).build();
 
         intakeSweep1 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 62),
-                        new Pose(11, 60),
+                        new Pose(8.8, 60.7),
+                        new Pose(11, 59),
                         new Pose(8.8, 58)
-                )).setConstantHeadingInterpolation(Math.toRadians(157)).build();
+                )).setConstantHeadingInterpolation(Math.toRadians(160)).build();
 
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 59),
+                        new Pose(8.8, 58),
                         new Pose(22, 51),
                         new Pose(53, 78)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
-                new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(200)))
-        )).setGlobalDeceleration(.6).build();
+                new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(195)))
+        )).build();
 
         intake3 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(53, 78),
                         new Pose(22, 53),
-                        new Pose(8.8, 61.2)
+                        new Pose(8.8, 60.7)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(155)))
+                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(157)))
         )).build();
+
+        intakeSweep2 = follower.pathBuilder().addPath(
+                new BezierCurve(
+                        new Pose(8.8, 60.7),
+                        new Pose(11, 59),
+                        new Pose(8.8, 58)
+                )).setConstantHeadingInterpolation(Math.toRadians(160)).build();
 
         goToScore3 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 61.2),
+                        new Pose(8.8, 58),
                         new Pose(30, 51),
-                        new Pose(54, 84.5)
+                        new Pose(55, 83.5)
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
                 new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(180)))
-        )).setGlobalDeceleration(.6).build();
+        )).build();
 
         intake4 = follower.pathBuilder().addPath(
                 new BezierLine(
-                        new Pose(54, 84.5),
+                        new Pose(54, 83.5),
                         spike1
                 )).setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(

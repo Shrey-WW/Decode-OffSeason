@@ -61,7 +61,8 @@ public class Rusty extends Robot {
         GoalX = a == Alliance.BLUE ? 0 : 144;
         follower = Constants.createFollower(opmode.hardwareMap);
 
-        Pose start = at == AutoType.CLOSE_15 ? new Pose(19, 121, Math.toRadians(225)) : new Pose(56, 8, Math.toRadians(180));
+        Pose start = at == AutoType.CLOSE_15 ? new Pose(48, 110, Math.toRadians(225)) : new Pose(43, 17, Math.toRadians(180));
+
         start = a == Alliance.RED ? start.mirror(144) : start;
 
         follower.setPose(start);
@@ -74,12 +75,9 @@ public class Rusty extends Robot {
         launchState = LaunchState.IDLE;
         follower.startTeleopDrive();
 
-        double initialTarget = Math.toDegrees(angleWrap(
-                Math.atan2(GoalY - 115, GoalX - 50) - follower.getHeading()
-        ));
+        double initialTarget = turret.getPosDeg();
 
         kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
-        turret.resetEncoder();
 
         schedule(new InstantCommand(() -> shooter.moveServo(.8)));
 
@@ -150,9 +148,9 @@ public class Rusty extends Robot {
     private void updateIntake() {
         if (opmode.gamepad1.right_trigger > TRIGGER_DEADZONE) {
             intake.Spin(1);
+            transfer.Spin(-.6);
         } else if (!opmode.gamepad1.right_bumper && !opmode.gamepad1.left_bumper) {
             intake.PwrOff();
-            transfer.Spin(-.5);
         }
     }
 

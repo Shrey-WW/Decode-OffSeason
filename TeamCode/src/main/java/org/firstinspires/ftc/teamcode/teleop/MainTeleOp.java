@@ -42,13 +42,13 @@ public class MainTeleOp extends CommandOpMode {
             }
         }
         else if (allianceSelect && !EndingPosition) {
-            telemetry.addLine("What auto was ran?\nCROSS - CLOSE\nTRIANGLE - FAR");
+            telemetry.addLine("What auto was ran?\nSQUARE - CLOSE\nCIRCLE - FAR");
             telemetry.update();
-            if (gamepad1.a){
+            if (gamepad1.x){
                 EndingPosition = true;
                 autoType = AutoType.CLOSE_15;
             }
-            if (gamepad1.y){
+            if (gamepad1.b){
                 EndingPosition = true;
                 autoType = AutoType.ELLIOT_FAR;
             }

@@ -19,9 +19,6 @@ public class AutoShootingCMD extends ShootingCMD {
 
     private final double TimeLimit;
 
-
-
-    private final ElapsedTime ShotChecker = new ElapsedTime();
     public static double numBallsShot;
     private double localPeakVelocity = 0.0;
     private double lastShotTime;
@@ -32,15 +29,10 @@ public class AutoShootingCMD extends ShootingCMD {
         addRequirements(intake, transfer, shooter, turret);
     }
 
-    public AutoShootingCMD(Shooter s, Transfer t, Intake i, Turret tt, Limelight3A ll, VoltageSensor vs){
-        this(s, t, i, tt, ll, vs, 2500);
-    }
-
     @Override
     public void initialize(){
         numBallsShot = 0;
         timer.reset();
-        ShotChecker.reset();
         AutoState.launchstate = LaunchState.SHOOTING;
     }
 
@@ -56,7 +48,7 @@ public class AutoShootingCMD extends ShootingCMD {
 
     @Override
     public void end(boolean interrupted) {
-        transfer.Spin(-.6);
+        transfer.Spin(-.7);
         intake.Spin(1);
         AutoState.launchstate = LaunchState.IDLE;
     }
@@ -67,14 +59,14 @@ public class AutoShootingCMD extends ShootingCMD {
     }
 
     private void didBallShoot(double cVel){
-        if (cVel > 200) {
+        if (cVel > 500) {
             if (cVel > localPeakVelocity) {
                 localPeakVelocity = cVel;
             }
 
             if ((localPeakVelocity - cVel) > 50) {
 
-                if (timer.milliseconds() - lastShotTime > 30) {
+                if (timer.milliseconds() - lastShotTime > 80) {
                     numBallsShot++;
                     lastShotTime = timer.milliseconds();
                     localPeakVelocity = cVel;

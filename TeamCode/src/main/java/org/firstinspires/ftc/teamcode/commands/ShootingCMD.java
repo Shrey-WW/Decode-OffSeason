@@ -23,16 +23,14 @@ public abstract class ShootingCMD extends CommandBase {
     protected final Turret turret;
     protected Limelight3A limelight;
     protected VoltageSensor voltageSensor;
-    private static final double VOLTAGE_BASE = 13;
+
+    private static final double VOLTAGE_BASE = 12.5;
     private static final double VOLTAGE_MIN = 10.5;
 
     private static final double HEIGHT_LIMELIGHT = 16.5;
     private static final double LIMELIGHT_MOUNT_ANGLE = 12.68;
     private static final double HEIGHT_OF_APRILTAG = 29.5;
-
-
-    protected static final double DefaultTargetVel = 1200;
-    protected double TargetVel = 0;
+    private static final double DefaultTargetVel = 1200;
 
     private static final double DISTANCE_FILTER_ALPHA = 0.20;
     private double filteredDistance = Double.NaN;
@@ -46,9 +44,9 @@ public abstract class ShootingCMD extends CommandBase {
         voltageSensor = vs;
         VELO.add(0, 800);
         VELO.add(24.4, 1050);
-        VELO.add(41, 1100);
-        VELO.add(66, 1260);
-        VELO.add(76, 1280);
+        VELO.add(41, 1140);
+        VELO.add(66, 1310);
+        VELO.add(76, 1370);
         VELO.add(90, 1640);
         VELO.add(100, 1800);
         VELO.add(120, 1860);
@@ -56,31 +54,33 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     protected void VELO(){
+
         LLResult llResult = limelight.getLatestResult();
+
+        double currentVoltage = voltageSensor.getVoltage();
+        currentVoltage = Math.max(currentVoltage, VOLTAGE_MIN);
+
         if (llResult != null && llResult.isValid()) {
+
             double velo = VELO.get(getDistanceFromTag(llResult));
-            TargetVel = velo;
-            shooter.setVelocity(velo);
             double currentVel = shooter.getVelo();
-            if (currentVel > velo - getRecoveryOffset(velo)) {
+
+            shooter.setVelocity(velo);
+            if (currentVel > velo - getRecoveryOffset(velo, currentVoltage)) {
                 transfer.Spin(1);
                 intake.Spin(1);
-            }
-            else{
-                transfer.Spin(.4);
+            } else {
+                transfer.Spin(0);
                 intake.Spin(.5);
             }
-        }
-        else{
-            TargetVel = DefaultTargetVel;
+        } else {
             double currentVel = shooter.getVelo();
             shooter.setVelocity(DefaultTargetVel);
-            if (currentVel > DefaultTargetVel - 140) {
+            if (currentVel > DefaultTargetVel - getRecoveryOffset(DefaultTargetVel, currentVoltage)) {
                 transfer.Spin(1);
                 intake.Spin(1);
-            }
-            else{
-                transfer.Spin(.4);
+            } else {
+                transfer.Spin(0);
                 intake.Spin(.5);
             }
         }
@@ -101,9 +101,11 @@ public abstract class ShootingCMD extends CommandBase {
         return filteredDistance;
     }
 
-    private double getRecoveryOffset(double tVel){
-        double cVoltage = voltageSensor.getVoltage();
-        cVoltage = Math.max(cVoltage, VOLTAGE_MIN);
-        return (-0.16666 * tVel + 340) * (cVoltage / VOLTAGE_BASE);
+    private double getRecoveryOffset(double tVel, double cVoltage){
+        return (-0.16666 * tVel + 340) * getVoltageFactor(cVoltage);
+    }
+
+    private double getVoltageFactor(double cVoltage){
+        return (cVoltage / VOLTAGE_BASE);
     }
 }

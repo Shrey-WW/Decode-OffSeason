@@ -7,7 +7,7 @@ public class TurretController {
 
     // POSITION LOOP (Outer)
     private double pPos, iPos, dPos;
-    public static final double maxTargetVelocity = 150;
+    public static final double maxTargetVelocity = 200;
     public static final double maxPosition = 120;
     public static final double minPosition = -90;
     // VELOCITY LOOP (Inner)

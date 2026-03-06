@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.commands.AutoShootingCMD;
 import org.firstinspires.ftc.teamcode.constants.Alliance;
 import org.firstinspires.ftc.teamcode.constants.AutoState;
 import org.firstinspires.ftc.teamcode.constants.AutoType;
-import org.firstinspires.ftc.teamcode.constants.LaunchState;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
@@ -35,7 +34,7 @@ public abstract class AutoBase extends CommandOpMode {
     public static double Q = 1;
     public static double R_odom = 10;
     public static double R_ll = 7;
-    protected static double SHOOTER_IDLE_VELOCITY = 800;
+    protected static double SHOOTER_IDLE_VELOCITY = 1000;
     protected static double SPIN_UP_VELOCITY = 1100;
     protected static final double SHOOTER_END_VELOCITY = 500;
 
@@ -57,10 +56,9 @@ public abstract class AutoBase extends CommandOpMode {
     protected Paths paths;
     protected Pose startingPose;
     protected SequentialCommandGroup AutoSequence;
-    private ElapsedTime looptimes = new ElapsedTime();
+    private final ElapsedTime looptimes = new ElapsedTime();
 
     protected double GoalX, GoalY = 144;
-    private int loopCounter = 0;
 
     public void initialize() {
         looptimes.reset();
@@ -110,18 +108,25 @@ public abstract class AutoBase extends CommandOpMode {
 
         limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
 
-        telemetry.addData(" loop time", looptimes.milliseconds());
+        telemetry.addData("loop time ", looptimes.milliseconds());
+        telemetry.addData("numBallsShot ", AutoShootingCMD.numBallsShot);
         looptimes.reset();
         telemetry.update();
     }
 
     protected void updateShooter() {
-        if (AutoState.launchstate == LaunchState.IDLE) {
-            shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
-        } else if (AutoState.launchstate == LaunchState.END) {
-            shooter.setVelocity(SHOOTER_END_VELOCITY);
-        } else if (AutoState.launchstate == LaunchState.SPIN_UP) {
-            shooter.setVelocity(SPIN_UP_VELOCITY);
+        switch (AutoState.launchstate) {
+            case IDLE:
+                shooter.setVelocity(SHOOTER_IDLE_VELOCITY);
+                break;
+
+            case END:
+                shooter.setVelocity(SHOOTER_END_VELOCITY);
+                break;
+
+            case SPIN_UP:
+                shooter.setVelocity(SPIN_UP_VELOCITY);
+                break;
         }
     }
 
