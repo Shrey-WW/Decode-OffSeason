@@ -59,7 +59,7 @@ public abstract class AutoBase extends CommandOpMode {
     protected SequentialCommandGroup AutoSequence;
     private final ElapsedTime looptimes = new ElapsedTime();
 
-    protected double GoalX, GoalY = 144;
+    protected double GoalX, GoalY = 140;
 
     public void initialize() {
         looptimes.reset();
@@ -81,7 +81,7 @@ public abstract class AutoBase extends CommandOpMode {
 
         if (alliance == Alliance.RED) {
             limelight.pipelineSwitch(1);
-            GoalX = 144;
+            GoalX = 139;
             paths = new RedPaths(autoType, follower);
         } else {
             limelight.pipelineSwitch(0);

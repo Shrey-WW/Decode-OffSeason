@@ -102,7 +102,7 @@ public abstract class ShootingCMD extends CommandBase {
     }
 
     private double getRecoveryOffset(double tVel, double cVoltage){
-        return (-0.16666 * tVel + 340) * getVoltageFactor(cVoltage);
+        return (-0.16 * tVel + 340) * getVoltageFactor(cVoltage);
     }
 
     private double getVoltageFactor(double cVoltage){

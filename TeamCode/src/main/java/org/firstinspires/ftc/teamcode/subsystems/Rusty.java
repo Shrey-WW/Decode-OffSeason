@@ -59,10 +59,20 @@ public class Rusty extends Robot {
         limelight.pipelineSwitch(a == Alliance.BLUE ? 0 : 1);
         GoalX = a == Alliance.BLUE ? 0 : 144;
         follower = Constants.createFollower(opmode.hardwareMap);
+        Pose start;
 
-        Pose start = at == AutoType.CLOSE_15 ? new Pose(48, 110, Math.toRadians(225)) : new Pose(43, 17, Math.toRadians(180));
-
-        start = a == Alliance.RED ? start.mirror(144) : start;
+        if (at == AutoType.CLOSE_15 && a == Alliance.BLUE){
+            start = new Pose(48, 110, Math.toRadians(225));
+        }
+        else if (at == AutoType.CLOSE_15 && a == Alliance.RED){
+            start = new Pose(48, 110, Math.toRadians(225)).mirror();
+        }
+        else if (at == AutoType.ELLIOT_FAR && a == Alliance.BLUE) {
+            start = new Pose(43, 17, 0);
+        }
+        else {
+            start = start = new Pose(43, 17, 0).mirror();
+        }
 
         resetPose = a == Alliance.RED ? new Pose(19, 121, Math.toRadians(144)).mirror(144) : new Pose(19, 121, Math.toRadians(144));
 
@@ -76,7 +86,9 @@ public class Rusty extends Robot {
         launchState = LaunchState.IDLE;
         follower.startTeleopDrive();
 
-        double initialTarget = turret.getPosDeg();
+        double initialTarget = Math.toDegrees(angleWrap(
+                Math.atan2(GoalY - follower.getPose().getY(), GoalX - follower.getPose().getX()) - follower.getPose().getHeading()
+        ));
 
         kalman = new TurretKalmanFilter(Q, R_odom, R_ll, initialTarget);
 

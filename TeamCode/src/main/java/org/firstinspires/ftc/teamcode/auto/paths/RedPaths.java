@@ -17,14 +17,14 @@ public class RedPaths extends Paths {
     public void buildPaths() { super.buildPaths(); }
     
     public void buildCloseFifteen() {
-        startPose = new Pose(19, 121, 2.4065).mirror(144);
-        spike1 = new Pose(22, 83.5).mirror(144);
-        spike2 = new Pose(12, 57).mirror(144);
+        startPose = new Pose(19, 120, 2.4065).mirror();
+        spike1 = new Pose(18, 82.5).mirror();
+        spike2 = new Pose(9, 57).mirror();
 
         shootPreloads = follower.pathBuilder().addPath(
                 new BezierLine(
                         startPose,
-                        new Pose(53, 78).mirror(144)
+                        new Pose(53, 78).mirror()
                 )
         ).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
@@ -33,22 +33,22 @@ public class RedPaths extends Paths {
 
         intake1 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(53, 78).mirror(144),
-                        new Pose(50, 57).mirror(144),
+                        new Pose(53, 78).mirror(),
+                        new Pose(50, 57).mirror(),
                         spike2
                 )).setConstantHeadingInterpolation(Math.toRadians(0))
                 .addPath(
                         new BezierCurve(
                                 spike2,
-                                new Pose(22, 57).mirror(144),
-                                new Pose(53, 78).mirror(144)
+                                new Pose(22, 57).mirror(),
+                                new Pose(53, 78).mirror()
                         )).setTangentHeadingInterpolation().setReversed().build();
 
         intake2 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(53, 78).mirror(144),
-                        new Pose(22, 53).mirror(144),
-                        new Pose(8.8, 60.7).mirror(144)
+                        new Pose(53, 78).mirror(),
+                        new Pose(22, 53).mirror(),
+                        new Pose(8.8, 58.5).mirror()
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
                 new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(23)))
@@ -56,64 +56,37 @@ public class RedPaths extends Paths {
 
         intakeSweep1 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 60.7).mirror(144),
-                        new Pose(11, 59).mirror(144),
-                        new Pose(8.8, 58).mirror(144)
+                        new Pose(8.8, 58.5).mirror(),
+                        new Pose(12, 57).mirror(),
+                        new Pose(8, 55).mirror()
                 )).setConstantHeadingInterpolation(Math.toRadians(20)).build();
 
         goToScore2 = follower.pathBuilder().addPath(
                 new BezierCurve(
-                        new Pose(8.8, 58).mirror(144),
-                        new Pose(22, 51).mirror(144),
-                        new Pose(53, 78).mirror(144)
+                        new Pose(8, 55).mirror(),
+                        new Pose(22, 51).mirror(),
+                        new Pose(53, 78).mirror()
                 )).setHeadingInterpolation(HeadingInterpolator.piecewise(
                 new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
                 new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(-15)))
         )).build();
 
         intake3 = follower.pathBuilder().addPath(
-                new BezierCurve(
-                        new Pose(53, 78).mirror(144),
-                        new Pose(22, 53).mirror(144),
-                        new Pose(8.8, 60.7).mirror(144)
-                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .45, HeadingInterpolator.tangent),
-                new HeadingInterpolator.PiecewiseNode(.45, 1, HeadingInterpolator.constant(Math.toRadians(23)))
-        )).build();
-
-        intakeSweep2 = follower.pathBuilder().addPath(
-                new BezierCurve(
-                        new Pose(8.8, 60.7).mirror(144),
-                        new Pose(11, 59).mirror(144),
-                        new Pose(8.8, 58).mirror(144)
-                )).setConstantHeadingInterpolation(Math.toRadians(20)).build();
-
-        goToScore3 = follower.pathBuilder().addPath(
-                new BezierCurve(
-                        new Pose(8.8, 58).mirror(144),
-                        new Pose(30, 51).mirror(144),
-                        new Pose(55, 83.5).mirror(144)
-                )).setHeadingInterpolation(HeadingInterpolator.piecewise(
-                new HeadingInterpolator.PiecewiseNode(0, .6, HeadingInterpolator.tangent.reverse()),
-                new HeadingInterpolator.PiecewiseNode(.6, 1, HeadingInterpolator.constant(Math.toRadians(0)))
-        )).build();
-
-        intake4 = follower.pathBuilder().addPath(
                         new BezierLine(
-                                new Pose(54, 83.5).mirror(144),
+                                new Pose(54, 82.5).mirror(),
                                 spike1
                         )).setConstantHeadingInterpolation(Math.toRadians(0))
                 .addPath(
                         new BezierLine(
                                 spike1,
-                                new Pose(48, 110).mirror(144)
+                                new Pose(48, 110).mirror()
                         )).setConstantHeadingInterpolation(Math.toRadians(-45)).build();
     }
 
     public void buildElliotFar(){
-        startPose = new Pose(56.000, 8.500, Math.toRadians(90)).mirror(144);
-        spike1 = new Pose(15, 39).mirror(144);
-        scorePose = new Pose(55, 17).mirror(144);
+        startPose = new Pose(56.000, 8.500, Math.toRadians(90)).mirror();
+        spike1 = new Pose(15, 39).mirror();
+        scorePose = new Pose(55, 17).mirror();
 
         shootPreloads = follower.pathBuilder()
                 .addPath(
@@ -128,7 +101,7 @@ public class RedPaths extends Paths {
                 .addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(53, 37.5).mirror(144),
+                                new Pose(53, 37.5).mirror(),
                                 spike1
                         )
                 )
@@ -144,8 +117,8 @@ public class RedPaths extends Paths {
                 .addPath(
                         new BezierCurve(
                                 scorePose,
-                                new Pose(8, 60).mirror(144),
-                                new Pose(8, 27).mirror(144)
+                                new Pose(8, 60).mirror(),
+                                new Pose(8, 27).mirror()
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
                         new HeadingInterpolator.PiecewiseNode(0, .5, HeadingInterpolator.linear(Math.toRadians(30), Math.toRadians(-90))),
@@ -155,14 +128,14 @@ public class RedPaths extends Paths {
         intake2 = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(8, 27).mirror(144),
-                                new Pose(8, 9).mirror(144)
+                                new Pose(8, 27).mirror(),
+                                new Pose(8, 9).mirror()
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(-90))
                 .addPath(
                         new BezierCurve(
-                                new Pose(8, 9).mirror(144),
-                                new Pose(8, 15).mirror(144),
+                                new Pose(8, 9).mirror(),
+                                new Pose(8, 15).mirror(),
                                 scorePose
                         )
                 ).setHeadingInterpolation(HeadingInterpolator.piecewise(
@@ -174,12 +147,12 @@ public class RedPaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(16, 26).mirror(144)
+                                new Pose(16, 26).mirror()
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(0))
                 .addPath(
                         new BezierLine(
-                                new Pose(16, 26).mirror(144),
+                                new Pose(16, 26).mirror(),
                                 scorePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
@@ -188,12 +161,12 @@ public class RedPaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(16, 26).mirror(144)
+                                new Pose(16, 26).mirror()
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(0))
                 .addPath(
                         new BezierLine(
-                                new Pose(16, 26).mirror(144),
+                                new Pose(16, 26).mirror(),
                                 scorePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
@@ -202,7 +175,7 @@ public class RedPaths extends Paths {
                 .addPath(
                         new BezierLine(
                                 scorePose,
-                                new Pose(43, 17).mirror(144))
+                                new Pose(43, 17).mirror())
                 ).setConstantHeadingInterpolation(Math.toRadians(0)).build();
     }
 }

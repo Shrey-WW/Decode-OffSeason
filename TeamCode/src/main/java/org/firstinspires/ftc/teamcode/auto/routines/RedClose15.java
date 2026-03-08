@@ -23,53 +23,37 @@ public class RedClose15 extends AutoBase {
     public void initialize(){
         autoType = AutoType.CLOSE_15;
         SPIN_UP_VELOCITY = 1250;
-        startingPose = new Pose(19, 121, 2.4065).mirror(144);
+        startingPose = new Pose(19, 120, 2.4065).mirror(144);
         alliance = Alliance.RED;
         super.initialize();
 
         AutoSequence = new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> TurretPosition = 58),
-                        new FollowPathCommand(follower, paths.shootPreloads)
-                ),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 1800),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
-                        new InstantCommand(() -> TurretPosition = 90),
-                        new FollowPathCommand(follower, paths.intake1, .87)
-                ),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 1800),
+                new FollowPathCommand(follower, paths.shootPreloads),
+                new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
+                new WaitCommand(750),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 2500),
+                new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
+                new FollowPathCommand(follower, paths.intake1, .8),
+                new WaitCommand(750),
+                new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 2500),
                 new FollowPathCommand(follower, paths.intake2),
                 new FollowPathCommand(follower, paths.intakeSweep1),
-                new WaitCommand(500),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> TurretPosition = 64),
-                        new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
-                        new InstantCommand(() -> intake.Spin(.7)),
-                        new FollowPathCommand(follower, paths.goToScore2)
-                ),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 1800),
-                new FollowPathCommand(follower, paths.intake3),
-                new FollowPathCommand(follower, paths.intakeSweep2),
-                new WaitCommand(500),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> TurretPosition = 42.1),
-                        new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
-                        new InstantCommand(() -> intake.Spin(.7)),
-                        new FollowPathCommand(follower, paths.goToScore3)
-                ),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 1800),
-                new InstantCommand(() -> TurretPosition = 72.1),
-                new FollowPathCommand(follower, paths.intake4, .87),
+                new WaitCommand(1250),
+                new InstantCommand(() -> AutoState.launchstate = LaunchState.SPIN_UP),
+                new InstantCommand(() -> intake.Spin(.7)),
+                new FollowPathCommand(follower, paths.goToScore2),
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 2500),
+                new FollowPathCommand(follower, paths.intake3, .65),
                 new InstantCommand(() -> intake.Spin(.9)),
-                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 1800)
+                new AutoShootingCMD(shooter, transfer, intake, turret, limelight, voltageSensor, 2500)
         );
         schedule(AutoSequence, new InstantCommand(() -> shooter.moveServo(.8)));
     }
 
     @Override
     public void run(){
-        turret.TurnTo(TurretPosition);
+        ARC();
         updateShooter();
         super.run();
     }
