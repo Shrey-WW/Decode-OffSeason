@@ -26,8 +26,9 @@ public class Turret {
         turret1.setDirection(DcMotorSimple.Direction.REVERSE);
         turret2.setCachingTolerance(.005);
         turret2.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
 
+
+    }
     public void update(){
         switch(currentState){
 
