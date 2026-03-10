@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.seattlesolvers.solverslib.util.MathUtils;
 
-public class TurretController {
+public class CascadeController {
 
     // POSITION LOOP (Outer)
     private double pPos, iPos, dPos;
-    public static final double maxTargetVelocity = 150;
+    public final double maxTargetVelocity;
     public static final double maxPosition = 120;
     public static final double minPosition = -90;
 
@@ -17,7 +16,6 @@ public class TurretController {
     private double robotVelocityFF = 0;
 
     // Integral windup limits
-    private double velIntegralLimit = Double.MAX_VALUE;
 
     // STATE VARIABLES
     private double posIntegral = 0;
@@ -32,24 +30,25 @@ public class TurretController {
     private double lastPosError = 0;
     private double lastVelError = 0;
 
-    private ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime timer = new ElapsedTime();
 
-    public TurretController(double pPos, double iPos, double dPos,
-                            double pVel, double iVel, double dVel, double kV) {
+    public CascadeController(double pPos, double iPos, double dPos,
+                             double pVel, double iVel, double dVel, double kV, double maxVelocity) {
         this.pPos = pPos; this.iPos = iPos; this.dPos = dPos;
         this.pVel = pVel; this.iVel = iVel; this.dVel = dVel;
         this.kV = kV;
+        maxTargetVelocity = maxVelocity;
         timer.reset();
     }
 
     /**
      * CALCULATION LOOP
-     * @param targetAngleDeg  Target Angle in Degrees
-     * @param currentAngleDeg Current Angle in Degrees
-     * @param currentVelDegPerSec Current Velocity in Degrees/s
+     * @param targetAngleDeg  Target Position
+     * @param currentAngleDeg Current Position
+     * @param currentVelDegPerSec Current Velocity
      */
     public double calculate(double targetAngleDeg, double currentAngleDeg, double currentVelDegPerSec) {
-        targetAngleDeg = MathUtils.clamp(targetAngleDeg, minPosition, maxPosition);
+        targetAngleDeg = Math.max(minPosition, Math.min(targetAngleDeg, maxPosition));
 
         double dt = timer.seconds();
         timer.reset();
@@ -70,7 +69,7 @@ public class TurretController {
         double targetVelocity = (pPos * posError) + (iPos * posIntegral) + (dPos * posDerivative);
 
         // Clamp Velocity
-        targetVelocity = MathUtils.clamp(targetVelocity, -maxTargetVelocity, maxTargetVelocity);
+        targetVelocity = Math.max(-maxTargetVelocity, Math.min(targetVelocity, maxTargetVelocity));
 
         //          INNER LOOP (VELOCITY)
         double velError = targetVelocity - currentVelDegPerSec;
@@ -93,7 +92,7 @@ public class TurretController {
 
 
         // Clamp Motor Power
-        lastOutput = MathUtils.clamp(output, -1.0, 1.0);
+        lastOutput = Math.max(-1.0, Math.min(output, 1.0));
 
         return lastOutput;
     }
@@ -112,8 +111,8 @@ public class TurretController {
 
     /**
      * Only runs the inner velocity loop
-     * @param targetVelDegPerSec Target velocity in degrees/s
-     * @param currentVelDegPerSec Current velocity in degrees/s
+     * @param targetVelDegPerSec Target velocity
+     * @param currentVelDegPerSec Current velocity
      */
     public double calculateVelocityOnly(double targetVelDegPerSec, double currentVelDegPerSec) {
         double dt = timer.seconds();
@@ -123,7 +122,6 @@ public class TurretController {
         double velError = targetVelDegPerSec - currentVelDegPerSec;
 
         velIntegral += velError * dt;
-        velIntegral = MathUtils.clamp(velIntegral, -velIntegralLimit, velIntegralLimit);
 
         double velDerivative = 0;
         if (!Double.isNaN(lastVelMeasurement)) {
@@ -135,13 +133,12 @@ public class TurretController {
 
         lastTargetVelocity = targetVelDegPerSec;
         lastVelError = velError;
-        lastOutput = MathUtils.clamp(output, -1.0, 1.0);
+        lastOutput = Math.max(-1.0, Math.min(output, 1.0));
 
         return lastOutput;
     }
 
     // Coefficient setter methods
-
     public void setCoefficients(double pPos, double iPos, double dPos,
                                 double pVel, double iVel, double dVel, double kF) {
         setPosCoefficients(pPos, iPos, dPos);
