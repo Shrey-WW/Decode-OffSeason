@@ -90,7 +90,6 @@ public class CascadeController {
         lastPosError = posError;
         lastVelError = velError;
 
-
         // Clamp Motor Power
         lastOutput = Math.max(-1.0, Math.min(output, 1.0));
 

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.util.CascadeController;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorSimple;
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 
 public class Shooter {
@@ -20,10 +21,10 @@ public class Shooter {
         END
     }
 
-    private static double motorPower;
+    private static double motorVelocity;
     private static final double IDLE_POWER = 0.4;
-    private static double hoodPosition = 0.8;
-    CachingDcMotorEx shooter1, shooter2;
+    CachingDcMotorEx shooter2;
+    CachingDcMotorSimple shooter1;
     CachingServo hoodServo;
     CascadeController VelController;
 
@@ -32,15 +33,14 @@ public class Shooter {
 
 
 public Shooter(@NonNull HardwareMap hw){
-        shooter1 = new CachingDcMotorEx(hw.get(DcMotorEx.class, "shooter1"));
-        shooter2 = new CachingDcMotorEx(hw.get(DcMotorEx.class, "shooter2"));
+        shooter2 = new CachingDcMotorEx(hw.get(DcMotorEx.class, "shooter1"));
+        shooter1 = new CachingDcMotorSimple(hw.get(CachingDcMotorSimple.class, "shooter2"));
         hoodServo = new CachingServo(hw.get(Servo.class, "hood"));
 
         VelController = new CascadeController(0.0,0,0,0,0,0, 0, 2200);
 
-        shooter1.setCachingTolerance(.0005);
-        shooter1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooter2.setCachingTolerance(.0005);
+        shooter1.setCachingTolerance(.000005);
+        shooter2.setCachingTolerance(.000005);
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hoodServo.setCachingTolerance(.0005);
 }
@@ -53,8 +53,9 @@ public Shooter(@NonNull HardwareMap hw){
                 break;
 
             case SHOOTING:
-                shooter2.setPower(motorPower);
-                shooter1.setPower(motorPower);
+                double pwr = VelController.calculateVelocityOnly(motorVelocity, shooter2.getVelocity());
+                shooter2.setPower(pwr);
+                shooter1.setPower(pwr);
                 break;
 
             case END:
@@ -69,12 +70,16 @@ public Shooter(@NonNull HardwareMap hw){
         VelController.setFeedForward(kV);
     }
 
-    public void setPower(double pwr){
-        motorPower = pwr;
+    public void setVelocity(double velo){
+        motorVelocity = velo;
     }
 
     public void setServoPosition(double pos){
         hoodServo.setPosition(pos);
+    }
+
+    public double getVelocity() {
+        return shooter2.getVelocity();
     }
 
     public void shoot(){
@@ -83,9 +88,5 @@ public Shooter(@NonNull HardwareMap hw){
 
     public void idle(){
         currentState = ShootingStates.IDLE;
-    }
-
-    public void end(){
-        currentState = ShootingStates.END;
     }
 }
