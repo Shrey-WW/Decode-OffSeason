@@ -19,6 +19,6 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop(){
-        logan.run();
+        logan.runTeleOp();
     }
 }

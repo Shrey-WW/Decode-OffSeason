@@ -112,7 +112,7 @@ public class Tuning extends SelectableOpMode {
         Drawing.drawDebug(follower);
     }
 
-    /** This creates a full stop of the robot by setting the drive motors to run at 0 power. */
+    /** This creates a full stop of the robot by setting the drive motors to runTeleOp at 0 power. */
     public static void stopRobot() {
         follower.startTeleopDrive(true);
         follower.setTeleOpDrive(0,0,0,true);
@@ -172,9 +172,9 @@ class LocalizationTest extends OpMode {
 /**
  * This is the ForwardTuner OpMode. This tracks the forward movement of the robot and displays the
  * necessary ticks to inches multiplier. This displayed multiplier is what's necessary to scale the
- * robot's current distance in ticks to the specified distance in inches. So, to use this, run the
+ * robot's current distance in ticks to the specified distance in inches. So, to use this, runTeleOp the
  * tuner, then pull/push the robot to the specified distance using a ruler on the ground. When you're
- * at the end of the distance, record the ticks to inches multiplier. Feel free to run multiple trials
+ * at the end of the distance, record the ticks to inches multiplier. Feel free to runTeleOp multiple trials
  * and average the results. Then, input the multiplier into the forward ticks to inches in your
  * localizer of choice.
  *
@@ -220,9 +220,9 @@ class ForwardTuner extends OpMode {
 /**
  * This is the LateralTuner OpMode. This tracks the strafe movement of the robot and displays the
  * necessary ticks to inches multiplier. This displayed multiplier is what's necessary to scale the
- * robot's current distance in ticks to the specified distance in inches. So, to use this, run the
+ * robot's current distance in ticks to the specified distance in inches. So, to use this, runTeleOp the
  * tuner, then pull/push the robot to the specified distance using a ruler on the ground. When you're
- * at the end of the distance, record the ticks to inches multiplier. Feel free to run multiple trials
+ * at the end of the distance, record the ticks to inches multiplier. Feel free to runTeleOp multiple trials
  * and average the results. Then, input the multiplier into the strafe ticks to inches in your
  * localizer of choice.
  *
@@ -268,9 +268,9 @@ class LateralTuner extends OpMode {
 /**
  * This is the TurnTuner OpMode. This tracks the turning movement of the robot and displays the
  * necessary ticks to inches multiplier. This displayed multiplier is what's necessary to scale the
- * robot's current angle in ticks to the specified angle in radians. So, to use this, run the
+ * robot's current angle in ticks to the specified angle in radians. So, to use this, runTeleOp the
  * tuner, then pull/push the robot to the specified angle using a protractor or lines on the ground.
- * When you're at the end of the angle, record the ticks to inches multiplier. Feel free to run
+ * When you're at the end of the angle, record the ticks to inches multiplier. Feel free to runTeleOp
  * multiple trials and average the results. Then, input the multiplier into the turning ticks to
  * radians in your localizer of choice.
  *
@@ -318,7 +318,7 @@ class TurnTuner extends OpMode {
  * This is the ForwardVelocityTuner autonomous follower OpMode. This runs the robot forwards at max
  * power until it reaches some specified distance. It records the most recent velocities, and on
  * reaching the end of the distance, it averages them and prints out the velocity obtained. It is
- * recommended to run this multiple times on a full battery to get the best results. What this does
+ * recommended to runTeleOp this multiple times on a full battery to get the best results. What this does
  * is, when paired with StrafeVelocityTuner, allows FollowerConstants to create a Vector that
  * empirically represents the direction your mecanum wheels actually prefer to go in, allowing for
  * more accurate following.
@@ -344,7 +344,7 @@ class ForwardVelocityTuner extends OpMode {
     /** This initializes the drive motors as well as the cache of velocities and the Panels telemetry. */
     @Override
     public void init_loop() {
-        telemetryM.debug("The robot will run at 1 power until it reaches " + DISTANCE + " inches forward.");
+        telemetryM.debug("The robot will runTeleOp at 1 power until it reaches " + DISTANCE + " inches forward.");
         telemetryM.debug("Make sure you have enough room, since the robot has inertia after cutting power.");
         telemetryM.debug("After running the distance, the robot will cut power from the drivetrain and display the forward velocity.");
         telemetryM.debug("Press B on game pad 1 to stop.");
@@ -354,7 +354,7 @@ class ForwardVelocityTuner extends OpMode {
         drawOnlyCurrent();
     }
 
-    /** This starts the OpMode by setting the drive motors to run forward at full power. */
+    /** This starts the OpMode by setting the drive motors to runTeleOp forward at full power. */
     @Override
     public void start() {
         for (int i = 0; i < RECORD_NUMBER; i++) {
@@ -368,7 +368,7 @@ class ForwardVelocityTuner extends OpMode {
     /**
      * This runs the OpMode. At any point during the running of the OpMode, pressing B on
      * game pad 1 will stop the OpMode. This continuously records the RECORD_NUMBER most recent
-     * velocities, and when the robot has run forward enough, these last velocities recorded are
+     * velocities, and when the robot has runTeleOp forward enough, these last velocities recorded are
      * averaged and printed.
      */
     @Override
@@ -424,7 +424,7 @@ class ForwardVelocityTuner extends OpMode {
  * This is the StrafeVelocityTuner autonomous follower OpMode. This runs the robot left at max
  * power until it reaches some specified distance. It records the most recent velocities, and on
  * reaching the end of the distance, it averages them and prints out the velocity obtained. It is
- * recommended to run this multiple times on a full battery to get the best results. What this does
+ * recommended to runTeleOp this multiple times on a full battery to get the best results. What this does
  * is, when paired with ForwardVelocityTuner, allows FollowerConstants to create a Vector that
  * empirically represents the direction your mecanum wheels actually prefer to go in, allowing for
  * more accurate following.
@@ -454,7 +454,7 @@ class LateralVelocityTuner extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetryM.debug("The robot will run at 1 power until it reaches " + DISTANCE + " inches to the left.");
+        telemetryM.debug("The robot will runTeleOp at 1 power until it reaches " + DISTANCE + " inches to the left.");
         telemetryM.debug("Make sure you have enough room, since the robot has inertia after cutting power.");
         telemetryM.debug("After running the distance, the robot will cut power from the drivetrain and display the strafe velocity.");
         telemetryM.debug("Press B on Gamepad 1 to stop.");
@@ -463,7 +463,7 @@ class LateralVelocityTuner extends OpMode {
         drawOnlyCurrent();
     }
 
-    /** This starts the OpMode by setting the drive motors to run left at full power. */
+    /** This starts the OpMode by setting the drive motors to runTeleOp left at full power. */
     @Override
     public void start() {
         for (int i = 0; i < RECORD_NUMBER; i++) {
@@ -476,7 +476,7 @@ class LateralVelocityTuner extends OpMode {
     /**
      * This runs the OpMode. At any point during the running of the OpMode, pressing B on
      * game pad1 will stop the OpMode. This continuously records the RECORD_NUMBER most recent
-     * velocities, and when the robot has run sideways enough, these last velocities recorded are
+     * velocities, and when the robot has runTeleOp sideways enough, these last velocities recorded are
      * averaged and printed.
      */
     @Override
@@ -554,7 +554,7 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
     /** This initializes the drive motors as well as the Panels telemetryM. */
     @Override
     public void init_loop() {
-        telemetryM.debug("The robot will run forward until it reaches " + VELOCITY + " inches per second.");
+        telemetryM.debug("The robot will runTeleOp forward until it reaches " + VELOCITY + " inches per second.");
         telemetryM.debug("Then, it will cut power from the drivetrain and roll to a stop.");
         telemetryM.debug("Make sure you have enough room.");
         telemetryM.debug("After stopping, the forward zero power acceleration (natural deceleration) will be displayed.");
@@ -564,7 +564,7 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
         drawOnlyCurrent();
     }
 
-    /** This starts the OpMode by setting the drive motors to run forward at full power. */
+    /** This starts the OpMode by setting the drive motors to runTeleOp forward at full power. */
     @Override
     public void start() {
         follower.startTeleopDrive(false);
@@ -658,7 +658,7 @@ class LateralZeroPowerAccelerationTuner extends OpMode {
     /** This initializes the drive motors as well as the Panels telemetry. */
     @Override
     public void init_loop() {
-        telemetryM.debug("The robot will run to the left until it reaches " + VELOCITY + " inches per second.");
+        telemetryM.debug("The robot will runTeleOp to the left until it reaches " + VELOCITY + " inches per second.");
         telemetryM.debug("Then, it will cut power from the drivetrain and roll to a stop.");
         telemetryM.debug("Make sure you have enough room.");
         telemetryM.debug("After stopping, the lateral zero power acceleration (natural deceleration) will be displayed.");
@@ -668,7 +668,7 @@ class LateralZeroPowerAccelerationTuner extends OpMode {
         drawOnlyCurrent();
     }
 
-    /** This starts the OpMode by setting the drive motors to run forward at full power. */
+    /** This starts the OpMode by setting the drive motors to runTeleOp forward at full power. */
     @Override
     public void start() {
         follower.startTeleopDrive(false);
@@ -876,7 +876,7 @@ class HeadingTuner extends OpMode {
 }
 
 /**
- * This is the Drive PIDF Tuner OpMode. It will run the robot in a straight line going forward and back.
+ * This is the Drive PIDF Tuner OpMode. It will runTeleOp the robot in a straight line going forward and back.
  *
  * @author Baron Henderson - 20077 The Indubitables
  * @author Anyi Lin - 10158 Scott's Bots
@@ -902,7 +902,7 @@ class DriveTuner extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetryM.debug("This will run the robot in a straight line going " + DISTANCE + "inches forward.");
+        telemetryM.debug("This will runTeleOp the robot in a straight line going " + DISTANCE + "inches forward.");
         telemetryM.debug("The robot will go forward and backward continuously along the path.");
         telemetryM.debug("Make sure you have enough room.");
         telemetryM.update(telemetry);
@@ -1052,7 +1052,7 @@ class CentripetalTuner extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetryM.debug("This will run the robot in a curve going " + DISTANCE + " inches to the left and the same number of inches forward.");
+        telemetryM.debug("This will runTeleOp the robot in a curve going " + DISTANCE + " inches to the left and the same number of inches forward.");
         telemetryM.debug("The robot will go continuously along the path.");
         telemetryM.debug("Make sure you have enough room.");
         telemetryM.update(telemetry);
@@ -1132,8 +1132,8 @@ class Triangle extends OpMode {
 
     @Override
     public void init_loop() {
-        telemetryM.debug("This will run in a roughly triangular shape, starting on the bottom-middle point.");
-        telemetryM.debug("So, make sure you have enough space to the left, front, and right to run the OpMode.");
+        telemetryM.debug("This will runTeleOp in a roughly triangular shape, starting on the bottom-middle point.");
+        telemetryM.debug("So, make sure you have enough space to the left, front, and right to runTeleOp the OpMode.");
         telemetryM.update(telemetry);
         follower.update();
         drawOnlyCurrent();
@@ -1188,8 +1188,8 @@ class Circle extends OpMode {
 
     @Override
     public void init_loop() {
-        telemetryM.debug("This will run in a roughly circular shape of radius " + RADIUS + ", starting on the right-most edge. ");
-        telemetryM.debug("So, make sure you have enough space to the left, front, and back to run the OpMode.");
+        telemetryM.debug("This will runTeleOp in a roughly circular shape of radius " + RADIUS + ", starting on the right-most edge. ");
+        telemetryM.debug("So, make sure you have enough space to the left, front, and back to runTeleOp the OpMode.");
         telemetryM.debug("It will also continuously face the center of the circle to test your heading and centripetal correction.");
         telemetryM.update(telemetry);
         follower.update();

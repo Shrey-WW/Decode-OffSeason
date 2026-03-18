@@ -84,7 +84,7 @@ public class BluePaths extends Paths {
                         )).setConstantHeadingInterpolation(Math.toRadians(225)).build();
     }
 
-    public void buildElliotFar(){
+    protected void buildElliotFar(){
         startPose = new Pose(56.000, 8.500, Math.toRadians(90));
         spike1 = new Pose(15, 39);
         scorePose = new Pose(55, 17);

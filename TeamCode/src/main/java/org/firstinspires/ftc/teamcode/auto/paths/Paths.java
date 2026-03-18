@@ -24,11 +24,11 @@ public abstract class Paths {
 
     public void buildPaths() {
         switch (autoType) {
-            case CLOSE_15:               buildCloseFifteen();        break;
+            case CLOSE_12:               buildCloseFifteen();        break;
             case ELLIOT_FAR:             buildElliotFar();           break;
         }
     }
 
-    public abstract void buildCloseFifteen();
-    public abstract void buildElliotFar();
+    protected abstract void buildCloseFifteen();
+    protected abstract void buildElliotFar();
 }

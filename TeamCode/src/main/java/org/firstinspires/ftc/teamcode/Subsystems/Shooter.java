@@ -89,4 +89,8 @@ public Shooter(@NonNull HardwareMap hw){
     public void idle(){
         currentState = ShootingStates.IDLE;
     }
+
+    public void end() {
+        currentState = ShootingStates.IDLE;
+    }
 }

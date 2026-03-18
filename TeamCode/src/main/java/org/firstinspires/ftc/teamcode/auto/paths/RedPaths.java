@@ -61,7 +61,7 @@ public class RedPaths extends Paths {
                         new Pose(8, 55).mirror()
                 )).setConstantHeadingInterpolation(Math.toRadians(20)).build();
 
-        goToScore2 = follower.pathBuilder().addPath(
+        goToScore1 = follower.pathBuilder().addPath(
                 new BezierCurve(
                         new Pose(8, 55).mirror(),
                         new Pose(22, 51).mirror(),
@@ -83,7 +83,7 @@ public class RedPaths extends Paths {
                         )).setConstantHeadingInterpolation(Math.toRadians(-45)).build();
     }
 
-    public void buildElliotFar(){
+    protected void buildElliotFar(){
         startPose = new Pose(56.000, 8.500, Math.toRadians(90)).mirror();
         spike1 = new Pose(15, 39).mirror();
         scorePose = new Pose(55, 17).mirror();

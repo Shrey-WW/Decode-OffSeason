@@ -16,13 +16,13 @@ import org.firstinspires.ftc.teamcode.util.TurretKalmanFilter;
 public class Logan {
 
     // Subsystems
-    private final Intake intake;
-    private final Transfer transfer;
-    private final Shooter shooter;
-    private final Turret turret;
-    private final Follower follower;
-    private final Limelight3A limelight;
-    private final VoltageSensor voltageSensor;
+    public final Intake intake;
+    public final Transfer transfer;
+    public final Shooter shooter;
+    public final Turret turret;
+    public final Follower follower;
+    public final Limelight3A limelight;
+    public final VoltageSensor voltageSensor;
     private final OpMode opmode;
 
     // Button states
@@ -75,13 +75,27 @@ public class Logan {
     }
 
     public void start() {
-        transfer.reverse();
+        transfer.Reverse();
+        intake.Off();
+        shooter.idle();
+        turret.track();
         follower.startTeleOpDrive();
         limelight.start();
-        turret.track();
     }
 
-    public void run() {
+    public void runAuto(){
+        limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
+        LLResult llResult = limelight.getLatestResult();
+        ARC(llResult);
+        VELO(llResult);
+        intake.update();
+        transfer.update();
+        shooter.update();
+        turret.update();
+        follower.update();
+    }
+
+    public void runTeleOp() {
         limelight.updateRobotOrientation(Math.toDegrees(follower.getHeading()));
         LLResult llResult = limelight.getLatestResult();
         ARC(llResult);
@@ -112,7 +126,7 @@ public class Logan {
             VELO(llResult);
         } else if (lastRB) {
             shooter.idle();
-            transfer.reverse();
+            transfer.Reverse();
         }
         lastRB = rb;
 
@@ -132,7 +146,7 @@ public class Logan {
     /**
      * April-Tag Rotational Correction
      */
-    private void ARC(LLResult llResult) {
+    public void ARC(LLResult llResult) {
         Pose cPos = follower.getPose();
         double odomTarget = Math.toDegrees(angleWrap(
                 Math.atan2(GoalY - cPos.getY(), GoalX - cPos.getX()) - cPos.getHeading()
@@ -147,7 +161,7 @@ public class Logan {
         turret.setTargetPosition(kalman.estimate(odomTarget, llTarget));
     }
 
-    private void VELO(LLResult llResult) {
+    public void VELO(LLResult llResult) {
         double currentVoltage = Math.max(voltageSensor.getVoltage(), VOLTAGE_MIN);
 
         double targetVel = (llResult != null && llResult.isValid())
@@ -157,10 +171,10 @@ public class Logan {
         shooter.setVelocity(targetVel);
 
         if (shooter.getVelocity() > targetVel - getRecoveryOffset(targetVel, currentVoltage)) {
-            transfer.transfer();
+            transfer.Transfer();
             intake.Intaking();
         } else {
-            transfer.off();
+            transfer.Off();
             intake.RestIntake();
         }
     }

@@ -40,15 +40,15 @@ public class Transfer {
         }
     }
 
-    public void transfer() {
+    public void Transfer() {
         currentState = TransferStates.TRANSFERING;
     }
 
-    public void reverse() {
+    public void Reverse() {
         currentState = TransferStates.REVERSE;
     }
 
-    public void off() {
+    public void Off() {
         currentState = TransferStates.OFF;
     }
 }
